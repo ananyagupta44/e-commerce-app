@@ -1,0 +1,366 @@
+@import url("https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap");
+
+/* ─── Page Shell ─────────────────────────────────────────── */
+.placeorder-page {
+  min-height: 100vh;
+  background: #09090b;
+  color: #d4d4d8;
+  padding: 48px 56px 80px;
+  font-family: "Syne", sans-serif;
+  position: relative;
+}
+
+.placeorder-page::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 55% 35% at 85% 5%, rgba(124,58,237,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 35% 25% at 5% 90%, rgba(99,102,241,0.05) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.placeorder-page > * { position: relative; z-index: 1; }
+
+/* ─── Header ─────────────────────────────────────────────── */
+.placeorder-header {
+  margin-bottom: 48px;
+  padding-bottom: 36px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.placeorder-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #a78bfa;
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  font-family: "DM Mono", monospace;
+  margin-bottom: 12px;
+}
+
+.placeorder-eyebrow::before {
+  content: "";
+  display: block;
+  width: 24px;
+  height: 1px;
+  background: #a78bfa;
+}
+
+.placeorder-title {
+  font-size: 52px;
+  font-weight: 800;
+  color: #fafafa;
+  letter-spacing: -1.5px;
+  line-height: 1;
+  margin: 0;
+}
+
+/* ─── Layout ─────────────────────────────────────────────── */
+.placeorder-layout {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 28px;
+  align-items: start;
+}
+
+.placeorder-left {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ─── Section Card ───────────────────────────────────────── */
+.po-section {
+  background: #18181b;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 20px;
+  padding: 28px 32px;
+  transition: border-color 0.3s;
+}
+
+.po-section:hover { border-color: rgba(167,139,250,0.2); }
+
+.po-section-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: "DM Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: #a78bfa;
+  margin-bottom: 16px;
+}
+
+.po-section-label::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: rgba(167,139,250,0.2);
+}
+
+/* ─── Info Rows ──────────────────────────────────────────── */
+.po-info-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 8px;
+  line-height: 1.6;
+}
+
+.po-info-key {
+  font-family: "DM Mono", monospace;
+  font-size: 11px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #71717a;
+  flex-shrink: 0;
+  padding-top: 2px;
+  min-width: 68px;
+}
+
+.po-info-val {
+  font-size: 14px;
+  color: #d4d4d8;
+  font-weight: 500;
+}
+
+/* ─── Payment Badge ──────────────────────────────────────── */
+.po-payment-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(124,58,237,0.1);
+  border: 1px solid rgba(124,58,237,0.25);
+  color: #c4b5fd;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-family: "DM Mono", monospace;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+/* ─── Order Items ────────────────────────────────────────── */
+.po-items-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.po-item {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 16px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.po-item:last-child { border-bottom: none; padding-bottom: 0; }
+.po-item:first-child { padding-top: 0; }
+
+.po-item-img {
+  width: 68px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 12px;
+  flex-shrink: 0;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.po-item-body { flex: 1; min-width: 0; }
+
+.po-item-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: #fafafa;
+  text-decoration: none;
+  display: block;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color 0.2s;
+}
+
+.po-item-name:hover { color: #c4b5fd; }
+
+.po-item-qty {
+  font-family: "DM Mono", monospace;
+  font-size: 12px;
+  color: #71717a;
+  letter-spacing: 0.5px;
+}
+
+.po-item-price {
+  font-family: "DM Mono", monospace;
+  font-size: 15px;
+  font-weight: 500;
+  color: #fafafa;
+  flex-shrink: 0;
+  text-align: right;
+}
+
+.po-item-price-unit {
+  display: block;
+  font-size: 11px;
+  color: #52525b;
+  margin-bottom: 2px;
+}
+
+/* ─── Summary Panel ──────────────────────────────────────── */
+.po-summary {
+  background: #18181b;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 24px;
+  padding: 32px;
+  position: sticky;
+  top: 32px;
+}
+
+.po-summary-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: #fafafa;
+  letter-spacing: -0.3px;
+  margin: 0 0 24px;
+}
+
+.po-summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.po-summary-label {
+  font-family: "DM Mono", monospace;
+  font-size: 11px;
+  color: #a1a1aa;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.po-summary-value {
+  font-family: "DM Mono", monospace;
+  font-size: 13px;
+  font-weight: 500;
+  color: #d4d4d8;
+}
+
+.po-summary-value.free { color: #6ee7b7; }
+
+.po-summary-divider {
+  border: none;
+  border-top: 1px solid rgba(255,255,255,0.07);
+  margin: 18px 0;
+}
+
+.po-summary-total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 24px;
+}
+
+.po-summary-total-label {
+  font-size: 15px;
+  font-weight: 700;
+  color: #fafafa;
+}
+
+.po-summary-total-value {
+  font-size: 28px;
+  font-weight: 800;
+  color: #fafafa;
+  letter-spacing: -0.5px;
+}
+
+/* ─── Free Shipping Banner ───────────────────────────────── */
+.po-free-shipping {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(52,211,153,0.08);
+  border: 1px solid rgba(52,211,153,0.2);
+  border-radius: 12px;
+  padding: 10px 14px;
+  margin-bottom: 20px;
+  font-family: "DM Mono", monospace;
+  font-size: 11px;
+  color: #6ee7b7;
+  letter-spacing: 0.5px;
+}
+
+/* ─── Place Order Button ─────────────────────────────────── */
+.place-order-btn {
+  width: 100%;
+  background: #7c3aed;
+  border: none;
+  color: white;
+  padding: 18px;
+  border-radius: 16px;
+  font-family: "Syne", sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+}
+
+.place-order-btn:hover:not(:disabled) {
+  background: #6d28d9;
+  transform: translateY(-2px);
+  box-shadow: 0 14px 36px rgba(124,58,237,0.45);
+}
+
+.place-order-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.place-order-btn-arrow {
+  font-size: 18px;
+  transition: transform 0.2s;
+}
+
+.place-order-btn:hover:not(:disabled) .place-order-btn-arrow {
+  transform: translateX(4px);
+}
+
+.btn-spinner {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: white;
+  animation: spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.po-secure-notice {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 14px;
+  font-family: "DM Mono", monospace;
+  font-size: 11px;
+  color: #71717a;
+}
+
+/* ─── Responsive ─────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .placeorder-page { padding: 36px 24px 60px; }
+  .placeorder-title { font-size: 36px; }
+  .placeorder-layout { grid-template-columns: 1fr; }
+  .po-summary { position: static; }
+}

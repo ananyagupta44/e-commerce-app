@@ -1,40 +1,72 @@
 import { useState } from "react";
-
 import axios from "axios";
+import "../css/AdminAIPage.css";
+import ReactMarkdown from "react-markdown";
+import { useEffect, useRef } from "react";
+
+const suggestions = [
+  "Which products are low in stock?",
+  "Which products should I promote this week?",
+  "Generate SEO description for luxury sneakers",
+  "Suggest Instagram marketing ideas",
+  "Analyze our inventory strategy",
+  "Which products have highest ratings?",
+  "Generate email campaign ideas",
+  "How can I improve conversions?",
+  "Suggest bundle offers for customers",
+  "Write a premium product description",
+];
 
 const AdminAIPage = () => {
-  const [message, setMessage] =
-    useState("");
+  const [message, setMessage] = useState("");
 
-  const [chat, setChat] =
-    useState([]);
+  const chatBoxRef = useRef(null);
 
-  const [loading, setLoading] =
-    useState(false);
+  const [chat, setChat] = useState(() => {
+    const savedChat = localStorage.getItem("nova_ai_chat");
 
-  const sendMessage = async () => {
-    if (!message.trim()) return;
+    return savedChat ? JSON.parse(savedChat) : [];
+  });
+
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    localStorage.setItem(
+      "nova_ai_chat",
+
+      JSON.stringify(chat),
+    );
+  }, [chat]);
+
+  useEffect(() => {
+    if (chatBoxRef.current) {
+      chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
+    }
+  }, [chat]);
+
+  const sendMessage = async (customMessage) => {
+    const finalMessage = customMessage || message;
+
+    if (!finalMessage.trim()) return;
 
     const userMessage = {
       role: "user",
-      text: message,
+      text: finalMessage,
     };
 
-    setChat((prev) => [
-      ...prev,
-      userMessage,
-    ]);
+    setChat((prev) => [...prev, userMessage]);
 
     setLoading(true);
 
+    setMessage("");
+
     try {
-      const { data } =
-        await axios.post(
-          "http://localhost:5000/api/ai/assistant",
-          {
-            message,
-          },
-        );
+      const { data } = await axios.post(
+        "http://localhost:5000/api/ai/assistant",
+        {
+          message: finalMessage,
+        },
+      );
 
       setChat((prev) => [
         ...prev,
@@ -43,139 +75,128 @@ const AdminAIPage = () => {
           text: data.reply,
         },
       ]);
-
-      setMessage("");
     } catch (error) {
-      console.log(error);
+      setChat((prev) => [
+        ...prev,
+        {
+          role: "ai",
+          text: "AI is temporarily unavailable.",
+        },
+      ]);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div
-      style={{
-        padding: 40,
-        minHeight: "100vh",
-        background:
-          "#020617",
-        color: "white",
-      }}
-    >
-      <h1
-        style={{
-          fontSize: 42,
-          marginBottom: 30,
-        }}
-      >
-        AI Admin Assistant
-      </h1>
+    <div className="ai-page">
+      {/* SIDEBAR */}
 
-      <div
-        style={{
-          background:
-            "#111827",
+      <div className="ai-sidebar">
+        <div>
+          <p className="ai-logo">✨ NOVA AI</p>
 
-          borderRadius: 20,
+          <h2>Ecommerce Assistant</h2>
 
-          padding: 24,
+          <p className="ai-sidebar-text">
+            Your intelligent admin copilot for analytics, products, marketing,
+            and growth.
+          </p>
+        </div>
 
-          minHeight: 500,
+        <div className="ai-suggestions">
+          <p className="suggestions-title">Suggestions</p>
 
-          marginBottom: 20,
-
-          overflowY: "auto",
-        }}
-      >
-        {chat.map((msg, index) => (
-          <div
-            key={index}
-            style={{
-              marginBottom: 20,
-
-              display: "flex",
-
-              justifyContent:
-                msg.role === "user"
-                  ? "flex-end"
-                  : "flex-start",
-            }}
-          >
-            <div
-              style={{
-                maxWidth: "70%",
-
-                padding: 18,
-
-                borderRadius: 18,
-
-                background:
-                  msg.role ===
-                  "user"
-                    ? "#6366f1"
-                    : "#1e293b",
-              }}
-            >
-              {msg.text}
-            </div>
-          </div>
-        ))}
-
-        {loading && (
-          <p>AI is thinking...</p>
-        )}
+          {suggestions.map((item, index) => (
+            <button key={index} onClick={() => sendMessage(item)}>
+              {item}
+            </button>
+          ))}
+        </div>
       </div>
 
-      <div
-        style={{
-          display: "flex",
-          gap: 14,
-        }}
-      >
-        <input
-          value={message}
-          onChange={(e) =>
-            setMessage(
-              e.target.value,
-            )
-          }
-          placeholder="Ask AI anything..."
-          style={{
-            flex: 1,
+      {/* CHAT AREA */}
 
-            padding: 18,
+      <div className="ai-chat-area">
+        {/* HEADER */}
 
-            borderRadius: 16,
+        <div className="ai-chat-header">
+          <div>
+            <h1>AI Assistant</h1>
 
-            border: "none",
+            <p>Powered by AI</p>
+          </div>
 
-            background:
-              "#111827",
+          <div className="ai-status">● Online</div>
+          <button
+            onClick={() => {
+              setChat([]);
 
-            color: "white",
-          }}
-        />
+              localStorage.removeItem("nova_ai_chat");
+            }}
+            className="clear-chat-btn"
+          >
+            New Chat
+          </button>
+        </div>
 
-        <button
-          onClick={sendMessage}
-          style={{
-            padding:
-              "0 28px",
+        {/* CHAT */}
 
-            border: "none",
+        <div className="ai-chat-box" ref={chatBoxRef}>
+          {chat.length === 0 && (
+            <div className="ai-empty">
+              <div className="ai-empty-icon">✨</div>
 
-            borderRadius: 16,
+              <h2>How can I help you today?</h2>
 
-            background:
-              "#6366f1",
+              <p>Ask anything about your ecommerce business.</p>
+            </div>
+          )}
 
-            color: "white",
+          {chat.map((msg, index) => (
+            <div
+              key={index}
+              className={`chat-message ${
+                msg.role === "user" ? "user-message" : "ai-message"
+              }`}
+            >
+              <div className="chat-avatar">
+                {msg.role === "user" ? "👤" : "✨"}
+              </div>
 
-            fontWeight: 700,
-          }}
-        >
-          Send
-        </button>
+              <div className="chat-content">
+                <ReactMarkdown>{msg.text}</ReactMarkdown>
+              </div>
+            </div>
+          ))}
+
+          {loading && (
+            <div className="chat-message ai-message">
+              <div className="chat-avatar">✨</div>
+
+              <div className="typing-loader">
+                <span />
+                <span />
+                <span />
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* INPUT */}
+
+        <div className="ai-input-container">
+          <textarea
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            placeholder="Ask AI anything..."
+            className="ai-input"
+          />
+
+          <button onClick={() => sendMessage()} className="ai-send-btn">
+            Send →
+          </button>
+        </div>
       </div>
     </div>
   );

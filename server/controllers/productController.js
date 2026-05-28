@@ -83,7 +83,7 @@ export const getProducts = async (req, res) => {
 // CREATE PRODUCT
 export const createProduct = async (req, res) => {
   try {
-    const { name, description, price, discount, category, image, stock } =
+    const { name, description, price, discount, category, images, stock } =
       req.body;
 
     const product = await Product.create({
@@ -92,7 +92,7 @@ export const createProduct = async (req, res) => {
       price,
       discount,
       category: category.toLowerCase(),
-      image,
+      images,
       stock,
     });
 
@@ -144,7 +144,9 @@ export const updateProduct = async (req, res) => {
     product.category =
       req.body.category?.trim().toLowerCase() || product.category;
 
-    product.image = req.body.image || product.image;
+    if (req.body.images) {
+      product.images = req.body.images;
+    }
 
     product.stock = req.body.stock || product.stock;
 

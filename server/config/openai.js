@@ -1,9 +1,12 @@
 import OpenAI from "openai";
+import dotenv from "dotenv";
 
-console.log(process.env.TEST_VALUE);
+dotenv.config();
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: process.env.GROQ_API_KEY,
+
+  baseURL: "https://api.groq.com/openai/v1",
 });
 
 export default openai;

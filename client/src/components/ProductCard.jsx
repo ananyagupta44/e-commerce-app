@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import getImageUrl from "../utils/getImageUrl";
 
 const ProductCard = ({ product }) => {
   const [wished, setWished] = useState(false);
@@ -32,8 +33,8 @@ const ProductCard = ({ product }) => {
         {
           product: product._id,
           name: product.name,
-          image: product.image,
-          price: product.finalPrice,
+          images: product.images,
+          price: finalPrice,
           qty: 1,
           stock: product.stock,
           originalPrice: product.price,
@@ -246,7 +247,7 @@ const ProductCard = ({ product }) => {
       <div className="pc-card">
         {/* Image links to product detail page */}
         <Link to={`/product/${product._id}`} className="pc-img-wrap">
-          <img src={product.image} alt={product.name} />
+          <img src={getImageUrl(product.images?.[0])} alt={product.name} />
           <button
             className={`pc-wish${wished ? " active" : ""}`}
             onClick={(e) => {
@@ -269,7 +270,7 @@ const ProductCard = ({ product }) => {
               {/* FINAL PRICE */}
               <p className="pc-price">
                 <span>$</span>
-                {product.finalPrice.toFixed(2)}
+                {finalPrice.toFixed(2)}
               </p>
 
               {/* ORIGINAL PRICE + DISCOUNT */}

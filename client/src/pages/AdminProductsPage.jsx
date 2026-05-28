@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link, useLocation } from "react-router-dom";
 import "../css/AdminProductsPage.css";
+import FloatingAIButton from "../components/FloatingAIButton";
 
 const AdminProductsPage = () => {
   const [products, setProducts] = useState([]);
@@ -11,7 +12,7 @@ const AdminProductsPage = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [newProduct, setNewProduct] = useState({
     name: "",
-    image: "",
+    images: [],
     description: "",
     price: "",
     discount: "",
@@ -44,7 +45,7 @@ const AdminProductsPage = () => {
       setShowModal(false);
       setNewProduct({
         name: "",
-        image: "",
+        images: [],
         description: "",
         price: "",
         discount: "",
@@ -53,6 +54,42 @@ const AdminProductsPage = () => {
       });
     } catch (error) {
       console.error(error);
+    }
+  };
+
+  const uploadFileHandler = async (e) => {
+    const files = Array.from(e.target.files);
+
+    try {
+      const userInfo = getUserInfo();
+
+      const uploadedImages = [];
+
+      for (const file of files) {
+        const formData = new FormData();
+
+        formData.append("image", file);
+
+        const { data } = await axios.post(
+          "http://localhost:5000/api/admin/upload",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization: `Bearer ${userInfo.token}`,
+            },
+          },
+        );
+
+        uploadedImages.push(data.image);
+      }
+
+      setNewProduct((prev) => ({
+        ...prev,
+        images: [...prev.images, ...uploadedImages],
+      }));
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -168,9 +205,9 @@ const AdminProductsPage = () => {
                   key={product._id}
                   style={{ animationDelay: `${i * 0.05}s` }}
                 >
-                  {product.image ? (
+                  {product.images?.[0] ? (
                     <img
-                      src={product.image}
+                      src={`http://localhost:5000${product.images[0]}`}
                       alt={product.name}
                       className="ap-product-img"
                     />
@@ -249,27 +286,99 @@ const AdminProductsPage = () => {
 
               <div className="ap-form">
                 <div className="ap-input-wrap">
-                  <label className="ap-input-label">Product Name</label>
-                  <input
-                    className="ap-input"
-                    placeholder="e.g. Wireless Headphones"
-                    value={newProduct.name}
-                    onChange={(e) =>
-                      setNewProduct({ ...newProduct, name: e.target.value })
-                    }
-                  />
-                </div>
+                  <label className="ap-input-label">Product Images</label>
 
-                <div className="ap-input-wrap">
-                  <label className="ap-input-label">Image URL</label>
+                  {newProduct.images.map((img, index) => (
+                    <div
+                      key={index}
+                      style={{
+                        marginBottom: "14px",
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: "flex",
+                          gap: "10px",
+                          alignItems: "center",
+                        }}
+                      >
+                        <input
+                          className="ap-input"
+                          placeholder="/uploads/products/shoe1.jpg"
+                          value={img}
+                          onChange={(e) => {
+                            const updatedImages = [...newProduct.images];
+
+                            updatedImages[index] = e.target.value;
+
+                            setNewProduct({
+                              ...newProduct,
+                              images: updatedImages,
+                            });
+                          }}
+                        />
+
+                        {/* REMOVE BUTTON */}
+                        {newProduct.images.length > 1 && (
+                          <button
+                            type="button"
+                            className="ap-stock-btn"
+                            onClick={() => {
+                              const updatedImages = newProduct.images.filter(
+                                (_, i) => i !== index,
+                              );
+
+                              setNewProduct({
+                                ...newProduct,
+                                images: updatedImages,
+                              });
+                            }}
+                          >
+                            ✕
+                          </button>
+                        )}
+                      </div>
+
+                      {/* IMAGE PREVIEW */}
+                      {img && (
+                        <img
+                          src={`http://localhost:5000${img}`}
+                          alt=""
+                          style={{
+                            width: "80px",
+                            height: "80px",
+                            objectFit: "cover",
+                            borderRadius: "12px",
+                            marginTop: "10px",
+                            border: "1px solid rgba(255,255,255,0.08)",
+                          }}
+                        />
+                      )}
+                    </div>
+                  ))}
                   <input
-                    className="ap-input"
-                    placeholder="https://..."
-                    value={newProduct.image}
-                    onChange={(e) =>
-                      setNewProduct({ ...newProduct, image: e.target.value })
-                    }
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={uploadFileHandler}
+                    style={{
+                      marginTop: "12px",
+                      color: "white",
+                    }}
                   />
+                  {/* ADD IMAGE BUTTON */}
+                  <button
+                    type="button"
+                    className="ap-cat-add-btn"
+                    onClick={() =>
+                      setNewProduct({
+                        ...newProduct,
+                        images: [...newProduct.images, ""],
+                      })
+                    }
+                  >
+                    + Add Image
+                  </button>
                 </div>
 
                 <div className="ap-input-row">
@@ -388,6 +497,7 @@ const AdminProductsPage = () => {
             </div>
           </div>
         )}
+        <FloatingAIButton />
       </div>
     </>
   );

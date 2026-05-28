@@ -13,6 +13,7 @@ import furnitureImage from "../assets/furnitureCategory.png";
 import shoesImage from "../assets/shoesCategory.png";
 import fashionImage from "../assets/fashionCategory.png";
 import kitchenImage from "../assets/kitchenCategory.png";
+import HeroImageCarousel from "../components/HeroImageCarousel";
 const HomePage = () => {
   const navigate = useNavigate();
   const [bestDeals, setBestDeals] = useState([]);
@@ -74,11 +75,10 @@ const HomePage = () => {
       <section
         style={{
           width: "100%",
-          padding: "80px 60px",
+          padding: "0px 60px 80px 60px",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          gap: 60,
           flexWrap: "wrap",
         }}
       >
@@ -86,7 +86,7 @@ const HomePage = () => {
 
         <div
           style={{
-            flex: "1 1 500px",
+            flex: "1 1 160px",
           }}
         >
           {/* BADGE */}
@@ -258,51 +258,7 @@ const HomePage = () => {
         </div>
 
         {/* RIGHT SIDE */}
-
-        <div
-          style={{
-            flex: "1 1 400px",
-            display: "flex",
-            justifyContent: "center",
-          }}
-        >
-          <div
-            style={{
-              width: 350,
-              height: 350,
-
-              borderRadius: "50%",
-
-              background:
-                "radial-gradient(circle at 60% 40%, rgba(99,102,241,0.25) 0%, rgba(139,92,246,0.1) 50%, transparent 70%)",
-
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              position: "relative",
-              fontSize: 140,
-            }}
-          >
-            🛍️
-            {/* FLASH SALE */}
-            <div
-              style={{
-                position: "absolute",
-                top: 30,
-                right: 10,
-                background: "#1e293b",
-                border: "1px solid #334155",
-                borderRadius: 14,
-                padding: "10px 16px",
-                color: "#a5b4fc",
-                fontWeight: 700,
-                fontSize: 14,
-              }}
-            >
-              ⚡ Flash Sale
-            </div>
-          </div>
-        </div>
+        <HeroImageCarousel />
       </section>
 
       {/* BEST DEALS */}
@@ -384,20 +340,28 @@ const HomePage = () => {
               display: "flex",
               gap: "24px",
               width: "max-content",
+              marginTop: "25px",
             }}
           >
             {[...bestDeals, ...bestDeals].map((product, index) => (
-              <div
+              <motion.div
                 key={`${product._id}-${index}`}
+                whileHover={{
+                  y: -8,
+                }}
+                transition={{
+                  duration: 0.35,
+                }}
                 style={{
                   minWidth: "280px",
-                  maxWidth: "280px",
-
+                  maxWidth: "350px",
                   flexShrink: 0,
                 }}
               >
-                <ProductCard product={product} />
-              </div>
+                <div className="homepage-product-wrapper">
+                  <ProductCard product={product} />
+                </div>
+              </motion.div>
             ))}
           </motion.div>
         </div>

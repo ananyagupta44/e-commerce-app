@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import axios from "axios";
 import "../css/AdminOrdersPage.css";
+import FloatingAIButton from "../components/FloatingAIButton";
 
 const STATUS_CONFIG = {
   Pending: {
@@ -295,6 +296,7 @@ const AdminOrdersPage = () => {
             )}
           </div>
         </div>
+        <FloatingAIButton />
       </div>
     </>
   );

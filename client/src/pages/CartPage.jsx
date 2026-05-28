@@ -57,7 +57,7 @@ const CartPage = () => {
         {
           product: item.product,
           name: item.name,
-          image: item.image,
+          images: item.images,
           price: item.price,
           qty,
           stock: item.stock,
@@ -122,7 +122,7 @@ const CartPage = () => {
             {cartItems.map((item) => (
               <div key={item.product} className="cart-item">
                 <img
-                  src={item.image}
+                  src={item.images?.[0] || item.image}
                   alt={item.name}
                   className="cart-item-img"
                 />

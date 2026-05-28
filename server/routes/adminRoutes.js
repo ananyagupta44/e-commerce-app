@@ -1,6 +1,7 @@
 import express, { Router } from "express";
 
 import { protect, admin } from "../middleware/authMiddleware.js";
+import upload from "../middleware/uploadMiddleware.js";
 
 import {
   getAdminStats,
@@ -37,5 +38,11 @@ router.get("/categories", protect, admin, getCategories);
 
 // UPDATE ORDER STATUS
 router.put("/orders/:id", protect, admin, updateOrderStatus);
+
+router.post("/upload", protect, admin, upload.single("image"), (req, res) => {
+  res.json({
+    image: `/uploads/products/${req.file.filename}`,
+  });
+});
 
 export default router;

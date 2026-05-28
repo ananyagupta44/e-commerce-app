@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link, useLocation } from "react-router-dom";
 import "../css/AdminDashboard.css";
+import FloatingAIButton from "../components/FloatingAIButton";
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState({
@@ -161,6 +162,7 @@ const AdminDashboard = () => {
               ))}
             </div>
           </div>
+          <FloatingAIButton />
         </div>
       )}
     </>

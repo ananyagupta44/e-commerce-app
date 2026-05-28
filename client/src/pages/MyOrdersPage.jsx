@@ -133,7 +133,7 @@ const MyOrdersPage = () => {
                 {order.orderItems.map((item) => (
                   <div key={item.product} className="order-item">
                     <div className="order-item-img-wrap">
-                      <img src={item.image} alt={item.name} />
+                      <img src={item.images} alt={item.name} />
                     </div>
 
                     <div className="order-item-content">

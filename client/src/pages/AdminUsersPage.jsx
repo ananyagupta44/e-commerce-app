@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import axios from "axios";
 import "../css/AdminUsersPage.css";
+import FloatingAIButton from "../components/FloatingAIButton";
 
 const ROLE_CONFIG = {
   admin: {
@@ -216,6 +217,7 @@ const AdminUsersPage = () => {
             )}
           </div>
         </div>
+        <FloatingAIButton />
       </div>
     </>
   );

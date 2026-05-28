@@ -1,15 +1,12 @@
 import dotenv from "dotenv";
 
-dotenv.config({
-  path: "./.env",
-});
+dotenv.config();
 
-console.log(process.env.OPENAI_API_KEY);
-
+console.log(process.env.GROQ_API_KEY);
 import express from "express";
 import mongoose from "mongoose";
+import path from "path";
 import cors from "cors";
-
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
@@ -32,6 +29,7 @@ app.use("/api/cart", cartRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/ai", aiRoutes);
+app.use("/uploads", express.static("uploads"));
 
 connectDB();
 

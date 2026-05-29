@@ -99,12 +99,12 @@ export const getAllProducts = async (req, res) => {
 
 export const createProduct = async (req, res) => {
   try {
-    const { name, image, description, discount, price, category, stock } =
+    const { name, images, description, discount, price, category, stock } =
       req.body;
 
     const product = new Product({
       name,
-      image,
+      images,
       description,
       price,
       category,
@@ -136,7 +136,7 @@ export const updateProduct = async (req, res) => {
 
     product.name = req.body.name || product.name;
 
-    product.image = req.body.image || product.image;
+    product.images = req.body.images || product.images;
 
     product.description = req.body.description || product.description;
 

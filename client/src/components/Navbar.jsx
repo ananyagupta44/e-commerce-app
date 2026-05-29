@@ -1,7 +1,13 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+
 import axios from "axios";
+
 import { useState, useEffect, useRef } from "react";
-import { useLocation } from "react-router-dom";
+
+import { Menu, X } from "lucide-react";
+
+import "../css/Navbar.css";
+
 import logoImage from "../assets/logo.png";
 
 const getStoredUser = () => {
@@ -18,62 +24,61 @@ const getStoredUser = () => {
 const Navbar = () => {
   const navigate = useNavigate();
 
-  const [searchQuery, setSearchQuery] = useState("");
-  const [showDropdown, setShowDropdown] = useState(false);
-  const [searchFocused, setSearchFocused] = useState(false);
-  const [cartCount, setCartCount] = useState(0);
-  const [wishlistCount, setWishlistCount] = useState(0);
-  const [showCategories, setShowCategories] = useState(false);
-  const [userInfo, setUserInfo] = useState(() => getStoredUser());
-  const [products, setProducts] = useState([]);
-  const [categories, setCategories] = useState([]);
   const location = useLocation();
+
+  const [mobileMenu, setMobileMenu] = useState(false);
+
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const [cartCount, setCartCount] = useState(0);
+
+  const [wishlistCount, setWishlistCount] = useState(0);
+
+  const [showDropdown, setShowDropdown] = useState(false);
+
+  const [showCategories, setShowCategories] = useState(false);
+
+  const [userInfo, setUserInfo] = useState(() => getStoredUser());
+
+  const [categories, setCategories] = useState([]);
+
+  const dropdownRef = useRef();
+
+  const categoryRef = useRef();
 
   const queryParams = new URLSearchParams(location.search);
 
   const category = queryParams.get("category");
-  // user dropdown ref
-  const dropdownRef = useRef();
-  // categories dropdown ref
-  const categoryRef = useRef();
 
-  // ─── FETCH CART COUNT ─────────────────────────────────────────────
+  // FETCH CART
   const fetchCartCount = async () => {
     try {
       const storedUser = getStoredUser();
+
       if (!storedUser) {
         setCartCount(0);
         return;
       }
 
       const { data } = await axios.get("http://localhost:5000/api/cart", {
-        headers: { Authorization: `Bearer ${storedUser.token}` },
+        headers: {
+          Authorization: `Bearer ${storedUser.token}`,
+        },
       });
+
       const totalItems = data.reduce((acc, item) => acc + item.qty, 0);
+
       setCartCount(totalItems);
     } catch (error) {
       console.log(error);
-      setCartCount(0);
     }
   };
 
-  // ─── WISHLIST COUNT ───────────────────────────────────────────────
+  // WISHLIST
   const updateWishlistCount = () => {
     const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+
     setWishlistCount(wishlist.length);
-  };
-
-  // FETCH PRODUCTS
-  const fetchProducts = async () => {
-    try {
-      const res = await fetch("http://localhost:5000/api/products");
-
-      const data = await res.json();
-
-      setProducts(data);
-    } catch (error) {
-      console.log(error);
-    }
   };
 
   // FETCH CATEGORIES
@@ -82,32 +87,21 @@ const Navbar = () => {
       const { data } = await axios.get(
         "http://localhost:5000/api/products/categories",
       );
-
       setCategories(data);
     } catch (error) {
       console.log(error);
     }
   };
 
-  // HANDLE CATEGORY
-  const handleCategory = (category) => {
-    navigate(`/products?category=${category}`);
-  };
-
-  // USE EFFECT
   useEffect(() => {
-    fetchProducts();
-    fetchCategories();
     fetchCartCount();
     updateWishlistCount();
-
+    fetchCategories();
     const syncAuth = () => setUserInfo(getStoredUser());
-
     window.addEventListener("storage", syncAuth);
     window.addEventListener("storage", fetchCartCount);
     window.addEventListener("storage", updateWishlistCount);
     window.addEventListener("cartUpdated", fetchCartCount);
-
     return () => {
       window.removeEventListener("storage", syncAuth);
       window.removeEventListener("storage", fetchCartCount);
@@ -115,20 +109,6 @@ const Navbar = () => {
       window.removeEventListener("cartUpdated", fetchCartCount);
     };
   }, []);
-
-  useEffect(() => {
-    if (category) {
-      fetch(`http://localhost:5000/api/products/category/${category}`)
-        .then((res) => res.json())
-        .then((data) => setProducts(data));
-    } else {
-      fetch(`http://localhost:5000/api/products`)
-        .then((res) => res.json())
-        .then((data) => setProducts(data));
-    }
-  }, [category]);
-
-  // ─── CLOSE DROPDOWN ON OUTSIDE CLICK ─────────────────────────────
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -147,335 +127,168 @@ const Navbar = () => {
     };
   }, []);
 
-  // ─── LOGOUT ───────────────────────────────────────────────────────
-  const logoutHandler = () => {
-    localStorage.removeItem("userInfo");
-    sessionStorage.removeItem("userInfo");
-    setUserInfo(null);
-    setCartCount(0);
-    navigate("/login");
-  };
-
-  // ─── SEARCH ───────────────────────────────────────────────────────
+  // SEARCH
   const handleSearch = (e) => {
     if (e.key === "Enter" && searchQuery.trim()) {
       const query = searchQuery.trim().toLowerCase();
 
-      // FIND CATEGORY MATCH
       const matchedCategory = categories.find((cat) =>
         query.includes(cat.toLowerCase()),
       );
 
-      // CATEGORY SEARCH
       if (matchedCategory) {
         navigate(`/products?category=${matchedCategory}`);
-      }
-
-      // NORMAL SEARCH
-      else {
+      } else {
         navigate(`/products?keyword=${query}`);
       }
+
+      setMobileMenu(false);
     }
   };
 
-  const dropdownLink = {
-    display: "block",
-    textDecoration: "none",
-    color: "white",
-    padding: "10px 0",
-    fontWeight: "500",
+  // LOGOUT
+  const logoutHandler = () => {
+    localStorage.removeItem("userInfo");
+
+    sessionStorage.removeItem("userInfo");
+
+    setUserInfo(null);
+
+    setCartCount(0);
+
+    navigate("/login");
   };
 
   return (
-    <header
-      style={{
-        fontFamily: "DM Mono, monospace",
-        position: "sticky",
-        top: 0,
-        zIndex: 100,
-        background: "rgba(5,5,16,0.85)",
-        backdropFilter: "blur(20px)",
-        borderBottom: "1px solid #1e293b",
-      }}
-    >
-      <div
-        className="flex justify-between items-center"
-        style={{
-          width: "100%",
-          padding: "0 40px",
-          height: 64,
-          gap: 24,
-        }}
-      >
-        {/* NAV LINKS */}
-        <nav style={{ display: "flex", gap: 20, marginLeft: 20 }}>
-          <Link to="/" style={{ color: "#fff", textDecoration: "none" }}>
-            Home
-          </Link>
-          <Link
-            to="/products"
-            style={{ color: "#fff", textDecoration: "none" }}
+    <header className="navbar">
+      <div className="navbar-container">
+        {/* LEFT */}
+        <div className="navbar-left">
+          {/* MOBILE MENU BTN */}
+          <button
+            className="mobile-menu-btn"
+            onClick={() => setMobileMenu(!mobileMenu)}
           >
-            Products
-          </Link>
+            {mobileMenu ? <X size={24} /> : <Menu size={24} />}
+          </button>
 
-          <div ref={categoryRef} style={{ position: "relative" }}>
-            {/* DROPDOWN BUTTON */}
-            <button
-              onClick={() => setShowCategories((prev) => !prev)}
-              style={{
-                background: "transparent",
-                border: "none",
-                color: "#fff",
-                cursor: "pointer",
-                fontSize: "15px",
-                fontWeight: "500",
-              }}
-            >
-              Categories ▼
-            </button>
+          {/* LINKS */}
+          <nav className={`navbar-links ${mobileMenu ? "active" : ""}`}>
+            <Link to="/">Home</Link>
 
-            {/* DROPDOWN MENU */}
-            {showCategories && (
-              <div
-                style={{
-                  position: "absolute",
-                  top: "120%",
-                  left: 0,
-                  background: "#0f172a",
-                  border: "1px solid #1e293b",
-                  borderRadius: "12px",
-                  padding: "10px",
-                  minWidth: "180px",
-                  zIndex: 999,
-                  boxShadow: "0 10px 30px rgba(0,0,0,0.4)",
-                }}
+            <Link to="/products">Products</Link>
+
+            {/* CATEGORIES */}
+            <div className="category-dropdown" ref={categoryRef}>
+              <button
+                className="category-btn"
+                onClick={() => setShowCategories(!showCategories)}
               >
-                {categories.map((cat) => (
-                  <button
-                    key={cat.charAt(0).toUpperCase() + cat.slice(1)}
-                    onClick={() => {
-                      handleCategory(cat);
-                      setShowCategories(false);
-                    }}
-                    style={{
-                      display: "block",
-                      width: "100%",
-                      textAlign: "left",
-                      padding: "10px 12px",
-                      background: "transparent",
-                      border: "none",
-                      color: "white",
-                      cursor: "pointer",
-                      borderRadius: "8px",
-                      fontSize: "14px",
-                    }}
-                    onMouseEnter={(e) => {
-                      e.target.style.background = "#1e293b";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.background = "transparent";
-                    }}
-                  >
-                    {cat.charAt(0).toUpperCase() + cat.slice(1)}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        </nav>
+                Categories ▼
+              </button>
+
+              {showCategories && (
+                <div className="category-menu">
+                  {categories.map((cat) => (
+                    <button
+                      key={cat}
+                      onClick={() => {
+                        navigate(`/products?category=${cat}`);
+
+                        setShowCategories(false);
+
+                        setMobileMenu(false);
+                      }}
+                    >
+                      {cat}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </nav>
+        </div>
 
         {/* LOGO */}
-        <Link
-          className="absolute left-1/2 -translate-x-1/2"
-          to="/"
-          style={{ textDecoration: "none" }}
-        >
-          {" "}
-          <div>
-            <img
-              src={logoImage}
-              alt="Logo"
-              style={{
-                width: "60px",
-                height: "60px",
-                objectFit: "cover",
-              }}
-            />{" "}
-          </div>
+        <Link to="/" className="navbar-logo-center">
+          <img src={logoImage} alt="Logo" />
         </Link>
 
-        {/* RIGHT SIDE */}
-        <div style={{ display: "flex", alignItems: "center", gap: 15 }}>
+        {/* RIGHT */}
+        <div className="navbar-right">
           {/* SEARCH */}
-          <div
-            style={{
-              width: 280,
-              background: searchFocused
-                ? "rgba(99,102,241,0.08)"
-                : "rgba(255,255,255,0.04)",
-
-              border: `1px solid ${searchFocused ? "#6366f1" : "#1e293b"}`,
-              borderRadius: 12,
-              display: "flex",
-              alignItems: "center",
-              padding: "0 14px",
-              height: 40,
-            }}
-          >
+          <div className="navbar-search">
             <input
+              type="text"
               placeholder="Search products..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              onFocus={() => setSearchFocused(true)}
-              onBlur={() => setSearchFocused(false)}
               onKeyDown={handleSearch}
-              style={{
-                background: "transparent",
-                border: "none",
-                outline: "none",
-                color: "white",
-                width: "100%",
-              }}
             />
           </div>
+
           {/* WISHLIST */}
-          <Link
-            to="/wishlist"
-            style={{ color: "#fff", textDecoration: "none" }}
-          >
-            ❤️ {wishlistCount}
-          </Link>
+          <Link to="/wishlist">❤️ {wishlistCount}</Link>
 
           {/* CART */}
-          <Link to="/cart" style={{ color: "#fff", textDecoration: "none" }}>
-            🛒 {cartCount}
-          </Link>
+          <Link to="/cart">🛒 {cartCount}</Link>
 
-          {/* USER DROPDOWN or LOGIN/REGISTER */}
+          {/* USER */}
           {userInfo ? (
-            <div ref={dropdownRef} style={{ position: "relative" }}>
+            <div className="user-dropdown" ref={dropdownRef}>
               <button
+                className="user-btn"
                 onClick={() => setShowDropdown((prev) => !prev)}
-                style={{
-                  padding: "10px 16px",
-                  borderRadius: "10px",
-                  border: "1px solid #334155",
-                  background: "rgba(255,255,255,0.05)",
-                  color: "white",
-                  cursor: "pointer",
-                  fontWeight: "600",
-                }}
               >
-                {/* ✅ safely access name with fallback */}
                 {userInfo.user?.name || userInfo.user?.email || "Account"} ▼
               </button>
 
               {showDropdown && (
-                <div
-                  style={{
-                    position: "absolute",
-                    top: "120%",
-                    right: 0,
-                    width: "260px",
-                    background: "#0f172a",
-                    border: "1px solid #1e293b",
-                    borderRadius: "16px",
-                    padding: "20px",
-                    zIndex: 999,
-                    boxShadow: "0 10px 30px rgba(0,0,0,0.4)",
-                  }}
-                >
+                <div className="dropdown-menu">
                   {/* USER INFO */}
-                  <div style={{ marginBottom: "16px" }}>
-                    <h3
-                      style={{
-                        margin: "0 0 6px",
-                        fontSize: "20px",
-                        color: "white",
-                        fontWeight: "bold",
-                      }}
-                    >
-                      {/* ✅ fallback chain so something always shows */}
+                  <div className="dropdown-user-info">
+                    <h3 className="dropdown-user-name">
                       {userInfo.user?.name || "User"}
                     </h3>
-                    {userInfo?.user?.role === "admin" && (
-                      <Link to="/admin" style={dropdownLink}>
-                        Admin Dashboard
-                      </Link>
-                    )}
-                    <p
-                      style={{ margin: 0, color: "#94a3b8", fontSize: "14px" }}
-                    >
+
+                    <p className="dropdown-user-email">
                       {userInfo.user?.email || ""}
                     </p>
                   </div>
 
-                  <hr
-                    style={{
-                      border: "1px solid #1e293b",
-                      marginBottom: "14px",
-                    }}
-                  />
+                  <hr className="dropdown-divider" />
 
-                  <Link to="/myorders" style={dropdownLink}>
+                  {/* ADMIN */}
+                  {userInfo?.user?.role === "admin" && (
+                    <Link to="/admin" className="dropdown-link">
+                      Admin Dashboard
+                    </Link>
+                  )}
+
+                  <Link to="/myorders" className="dropdown-link">
                     My Orders
                   </Link>
-                  <Link to="/profile" style={dropdownLink}>
+
+                  <Link to="/profile" className="dropdown-link">
                     Profile
                   </Link>
 
-                  <button
-                    onClick={logoutHandler}
-                    style={{
-                      width: "100%",
-                      marginTop: "14px",
-                      background: "#ef4444",
-                      border: "none",
-                      color: "white",
-                      padding: "12px",
-                      borderRadius: "10px",
-                      cursor: "pointer",
-                      fontWeight: "700",
-                    }}
-                  >
+                  <button onClick={logoutHandler} className="logout-btn">
                     Logout
                   </button>
                 </div>
               )}
             </div>
           ) : (
-            <>
+            <div className="auth-buttons">
               <Link to="/login">
-                <button
-                  style={{
-                    padding: "8px 14px",
-                    borderRadius: 8,
-                    border: "1px solid #334155",
-                    background: "transparent",
-                    color: "#fff",
-                    cursor: "pointer",
-                  }}
-                >
-                  Login
-                </button>
+                <button className="login-btn">Login</button>
               </Link>
 
               <Link to="/register">
-                <button
-                  style={{
-                    padding: "8px 14px",
-                    borderRadius: 8,
-                    border: "none",
-                    background: "linear-gradient(135deg,#6366f1,#8b5cf6)",
-                    color: "#fff",
-                    cursor: "pointer",
-                  }}
-                >
-                  Register
-                </button>
+                <button className="register-btn">Register</button>
               </Link>
-            </>
+            </div>
           )}
         </div>
       </div>

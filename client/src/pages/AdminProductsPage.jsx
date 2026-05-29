@@ -36,6 +36,7 @@ const AdminProductsPage = () => {
   const addProductHandler = async () => {
     try {
       const userInfo = getUserInfo();
+      console.log(newProduct);
       const { data } = await axios.post(
         "http://localhost:5000/api/admin/products",
         newProduct,
@@ -58,9 +59,9 @@ const AdminProductsPage = () => {
   };
 
   const uploadFileHandler = async (e) => {
-    const files = Array.from(e.target.files);
-
     try {
+      const files = Array.from(e.target.files);
+
       const userInfo = getUserInfo();
 
       const uploadedImages = [];
@@ -75,7 +76,6 @@ const AdminProductsPage = () => {
           formData,
           {
             headers: {
-              "Content-Type": "multipart/form-data",
               Authorization: `Bearer ${userInfo.token}`,
             },
           },
@@ -90,6 +90,7 @@ const AdminProductsPage = () => {
       }));
     } catch (error) {
       console.log(error);
+      alert("Image upload failed");
     }
   };
 
@@ -285,77 +286,27 @@ const AdminProductsPage = () => {
               </div>
 
               <div className="ap-form">
+                {/* PRODUCT NAME */}
+                <div className="ap-input-wrap">
+                  <label className="ap-input-label">Product Name</label>
+
+                  <input
+                    className="ap-input"
+                    placeholder="e.g. Wireless Headphones"
+                    value={newProduct.name}
+                    onChange={(e) =>
+                      setNewProduct({
+                        ...newProduct,
+                        name: e.target.value,
+                      })
+                    }
+                  />
+                </div>
+                {/* PRODUCT IMAGES */}
                 <div className="ap-input-wrap">
                   <label className="ap-input-label">Product Images</label>
 
-                  {newProduct.images.map((img, index) => (
-                    <div
-                      key={index}
-                      style={{
-                        marginBottom: "14px",
-                      }}
-                    >
-                      <div
-                        style={{
-                          display: "flex",
-                          gap: "10px",
-                          alignItems: "center",
-                        }}
-                      >
-                        <input
-                          className="ap-input"
-                          placeholder="/uploads/products/shoe1.jpg"
-                          value={img}
-                          onChange={(e) => {
-                            const updatedImages = [...newProduct.images];
-
-                            updatedImages[index] = e.target.value;
-
-                            setNewProduct({
-                              ...newProduct,
-                              images: updatedImages,
-                            });
-                          }}
-                        />
-
-                        {/* REMOVE BUTTON */}
-                        {newProduct.images.length > 1 && (
-                          <button
-                            type="button"
-                            className="ap-stock-btn"
-                            onClick={() => {
-                              const updatedImages = newProduct.images.filter(
-                                (_, i) => i !== index,
-                              );
-
-                              setNewProduct({
-                                ...newProduct,
-                                images: updatedImages,
-                              });
-                            }}
-                          >
-                            ✕
-                          </button>
-                        )}
-                      </div>
-
-                      {/* IMAGE PREVIEW */}
-                      {img && (
-                        <img
-                          src={`http://localhost:5000${img}`}
-                          alt=""
-                          style={{
-                            width: "80px",
-                            height: "80px",
-                            objectFit: "cover",
-                            borderRadius: "12px",
-                            marginTop: "10px",
-                            border: "1px solid rgba(255,255,255,0.08)",
-                          }}
-                        />
-                      )}
-                    </div>
-                  ))}
+                  {/* FILE INPUT */}
                   <input
                     type="file"
                     accept="image/*"
@@ -366,19 +317,65 @@ const AdminProductsPage = () => {
                       color: "white",
                     }}
                   />
-                  {/* ADD IMAGE BUTTON */}
-                  <button
-                    type="button"
-                    className="ap-cat-add-btn"
-                    onClick={() =>
-                      setNewProduct({
-                        ...newProduct,
-                        images: [...newProduct.images, ""],
-                      })
-                    }
+
+                  {/* IMAGE PREVIEWS */}
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: "12px",
+                      flexWrap: "wrap",
+                      marginTop: "18px",
+                    }}
                   >
-                    + Add Image
-                  </button>
+                    {newProduct.images.map((img, index) => (
+                      <div
+                        key={index}
+                        style={{
+                          position: "relative",
+                        }}
+                      >
+                        <img
+                          src={`http://localhost:5000${img}`}
+                          alt=""
+                          style={{
+                            width: "90px",
+                            height: "90px",
+                            objectFit: "cover",
+                            borderRadius: "14px",
+                            border: "1px solid rgba(255,255,255,0.08)",
+                          }}
+                        />
+
+                        {/* REMOVE IMAGE */}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setNewProduct({
+                              ...newProduct,
+                              images: newProduct.images.filter(
+                                (_, i) => i !== index,
+                              ),
+                            });
+                          }}
+                          style={{
+                            position: "absolute",
+                            top: "-8px",
+                            right: "-8px",
+                            width: "24px",
+                            height: "24px",
+                            borderRadius: "50%",
+                            border: "none",
+                            background: "#ef4444",
+                            color: "white",
+                            cursor: "pointer",
+                            fontSize: "12px",
+                          }}
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
 
                 <div className="ap-input-row">
@@ -410,7 +407,6 @@ const AdminProductsPage = () => {
                     />
                   </div>
                 </div>
-
                 <div className="ap-input-wrap">
                   <label className="ap-input-label">Category</label>
                   <select
@@ -432,7 +428,6 @@ const AdminProductsPage = () => {
                     <option value="custom">+ Add New Category</option>
                   </select>
                 </div>
-
                 {newProduct.category === "custom" && (
                   <div className="ap-input-wrap">
                     <label className="ap-input-label">New Category Name</label>
@@ -460,7 +455,6 @@ const AdminProductsPage = () => {
                     </div>
                   </div>
                 )}
-
                 <div className="ap-input-wrap">
                   <label className="ap-input-label">Stock</label>
                   <input
@@ -473,7 +467,6 @@ const AdminProductsPage = () => {
                     }
                   />
                 </div>
-
                 <div className="ap-input-wrap">
                   <label className="ap-input-label">Description</label>
                   <textarea
@@ -489,7 +482,6 @@ const AdminProductsPage = () => {
                     style={{ minHeight: 100, resize: "none" }}
                   />
                 </div>
-
                 <button className="ap-submit-btn" onClick={addProductHandler}>
                   Add Product
                 </button>

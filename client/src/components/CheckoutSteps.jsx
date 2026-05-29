@@ -19,12 +19,12 @@ const CheckoutSteps = ({
     },
 
     {
-      label: "Payment",
+      label: "Place Order",
       active: step3,
     },
 
     {
-      label: "Place Order",
+      label: "Payment",
       active: step4,
     },
 

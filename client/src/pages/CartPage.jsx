@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import CheckoutSteps from "../components/CheckoutSteps";
+import getImageUrl from "../utils/getImageUrl";
 
 import "../css/CartPage.css";
 
@@ -122,7 +123,7 @@ const CartPage = () => {
             {cartItems.map((item) => (
               <div key={item.product} className="cart-item">
                 <img
-                  src={item.images?.[0] || item.image}
+                  src={getImageUrl(item.images?.[0] || item.image)}
                   alt={item.name}
                   className="cart-item-img"
                 />
@@ -138,8 +139,9 @@ const CartPage = () => {
                     {item.discount > 0 && (
                       <>
                         <span className="cart-item-original">
-                          ${item.originalPrice.toFixed(2)}
+                          ${(item.originalPrice || item.price).toFixed(2)}
                         </span>
+
                         <span className="cart-item-badge">
                           {item.discount}% OFF
                         </span>
@@ -240,7 +242,8 @@ const CartPage = () => {
             {showBreakdown && (
               <div className="breakdown-panel">
                 {cartItems.map((item) => {
-                  const origTotal = item.originalPrice * item.qty;
+                  const origPrice = item.originalPrice || item.price;
+                  const origTotal = origPrice * item.qty;
                   const finalTotal = item.price * item.qty;
                   const saved = origTotal - finalTotal;
 
@@ -250,8 +253,7 @@ const CartPage = () => {
 
                       <div className="breakdown-row">
                         <span className="breakdown-row-label">
-                          Original ({item.qty} × $
-                          {item.originalPrice.toFixed(2)})
+                          Original ({item.qty} × ${origPrice.toFixed(2)})
                         </span>
                         <span className="breakdown-row-value">
                           ${origTotal.toFixed(2)}

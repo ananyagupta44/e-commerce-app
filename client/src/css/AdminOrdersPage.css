@@ -24,6 +24,7 @@
         /* ——— SIDEBAR ——— */
         .ao-sidebar {
           min-height: 100vh;
+          margin-top: 30px;
           background: #080c17;
           border-right: 1px solid rgba(148,163,184,0.08);
           overflow: hidden;
@@ -45,7 +46,7 @@
           display: flex;
           align-items: center;
           gap: 12px;
-          padding: 0 8px 32px;
+          padding: 0 8px 12px;
           border-bottom: 1px solid rgba(148,163,184,0.08);
           margin-bottom: 12px;
         }
@@ -111,8 +112,8 @@
         /* ——— TOGGLE ——— */
         .ao-toggle {
           position: fixed;
-          top: 24px; left: 20px;
-          z-index: 200;
+          top: 80px; left: 20px;
+          z-index: 9999;
           background: #0d1424;
           border: 1px solid rgba(148,163,184,0.12);
           color: #94a3b8;
@@ -369,7 +370,7 @@
 
         @media (max-width: 640px) {
           .ao-main { padding: 28px 16px; }
-          .ao-main-header, .ao-order-list { padding-left: 56px; }
+          .ao-main-header, .ao-order-list { padding-left: 10px; }
           .ao-order-body { grid-template-columns: 1fr; }
           .ao-select-wrap { align-items: flex-start; }
           .ao-order-user, .ao-order-id { display: none; }

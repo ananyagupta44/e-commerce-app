@@ -57,7 +57,7 @@ const ShippingPage = () => {
     if (selectedAddressIndex !== null && !showNewForm) {
       const finalAddress = savedAddresses[selectedAddressIndex];
       localStorage.setItem("shipping", JSON.stringify(finalAddress));
-      navigate("/payment");
+      navigate("/placeorder");
       return;
     }
 
@@ -78,7 +78,7 @@ const ShippingPage = () => {
     const updatedAddresses = [...savedAddresses, finalAddress];
     localStorage.setItem("shippingAddresses", JSON.stringify(updatedAddresses));
     localStorage.setItem("shipping", JSON.stringify(finalAddress));
-    navigate("/payment");
+    navigate("/placeorder");
   };
 
   return (

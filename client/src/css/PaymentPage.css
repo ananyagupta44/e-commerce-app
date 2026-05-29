@@ -1,0 +1,255 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap');
+
+        .pay-root {
+          min-height: 100vh;
+          background: #050812;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding: 40px 20px 80px;
+          font-family: 'DM Sans', sans-serif;
+        }
+
+        .pay-card {
+          width: 100%;
+          max-width: 520px;
+          margin-top: 32px;
+        }
+
+        .pay-title {
+          font-family: 'Syne', sans-serif;
+          font-size: 36px;
+          font-weight: 800;
+          color: #fff;
+          letter-spacing: -1px;
+          margin-bottom: 6px;
+        }
+
+        .pay-subtitle {
+          font-size: 14px;
+          color: #475569;
+          margin-bottom: 36px;
+          font-weight: 300;
+        }
+
+        .method-option {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+          padding: 18px 20px;
+          border-radius: 16px;
+          margin-bottom: 12px;
+          cursor: pointer;
+          border: 1.5px solid transparent;
+          background: #0d1526;
+          transition: all 0.2s ease;
+          position: relative;
+          overflow: hidden;
+        }
+
+        .method-option::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(135deg, rgba(99,102,241,0.06), rgba(139,92,246,0.04));
+          opacity: 0;
+          transition: opacity 0.2s;
+        }
+
+        .method-option:hover::before {
+          opacity: 1;
+        }
+
+        .method-option.selected {
+          border-color: #6366f1;
+          background: #0d1526;
+        }
+
+        .method-option.selected::before {
+          opacity: 1;
+        }
+
+        .method-icon {
+          width: 46px;
+          height: 46px;
+          border-radius: 12px;
+          background: #111c35;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 20px;
+          flex-shrink: 0;
+          border: 1px solid #1e293b;
+        }
+
+        .method-text { flex: 1; }
+
+        .method-label {
+          font-size: 15px;
+          font-weight: 500;
+          color: #e2e8f0;
+          font-family: 'Syne', sans-serif;
+        }
+
+        .method-sub {
+          font-size: 12px;
+          color: #475569;
+          margin-top: 2px;
+          font-weight: 300;
+        }
+
+        .method-radio {
+          width: 18px;
+          height: 18px;
+          border-radius: 50%;
+          border: 2px solid #334155;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+          transition: border-color 0.2s;
+        }
+
+        .method-radio.checked {
+          border-color: #6366f1;
+        }
+
+        .method-radio-dot {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background: #6366f1;
+          transform: scale(0);
+          transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1);
+        }
+
+        .method-radio-dot.visible {
+          transform: scale(1);
+        }
+
+        .test-box {
+          background: #080f1e;
+          border: 1px solid #1a2540;
+          border-radius: 14px;
+          padding: 18px 20px;
+          margin: 24px 0;
+        }
+
+        .test-box-title {
+          font-size: 11px;
+          font-weight: 600;
+          color: #6366f1;
+          letter-spacing: 1.5px;
+          text-transform: uppercase;
+          margin-bottom: 14px;
+          font-family: 'Syne', sans-serif;
+        }
+
+        .test-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 8px 0;
+          border-bottom: 1px solid #0f1a2e;
+        }
+
+        .test-row:last-child { border-bottom: none; }
+
+        .test-key {
+          font-size: 12px;
+          color: #475569;
+          font-weight: 300;
+        }
+
+        .test-val {
+          font-size: 12px;
+          color: #94a3b8;
+          font-family: 'DM Mono', monospace;
+          letter-spacing: 0.5px;
+          font-weight: 400;
+        }
+
+        .pay-btn {
+          width: 100%;
+          padding: 17px;
+          border-radius: 14px;
+          border: none;
+          background: #6366f1;
+          color: white;
+          font-size: 15px;
+          font-weight: 600;
+          font-family: 'Syne', sans-serif;
+          cursor: pointer;
+          letter-spacing: 0.3px;
+          transition: all 0.2s ease;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+          position: relative;
+          overflow: hidden;
+        }
+
+        .pay-btn::after {
+          content: '';
+          position: absolute;
+          inset: 0;
+          background: rgba(255,255,255,0);
+          transition: background 0.2s;
+        }
+
+        .pay-btn:hover::after {
+          background: rgba(255,255,255,0.06);
+        }
+
+        .pay-btn:active {
+          transform: scale(0.99);
+        }
+
+        .pay-btn:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
+
+        .spinner {
+          width: 16px;
+          height: 16px;
+          border: 2px solid rgba(255,255,255,0.3);
+          border-top-color: white;
+          border-radius: 50%;
+          animation: spin 0.7s linear infinite;
+        }
+
+        @keyframes spin {
+          to { transform: rotate(360deg); }
+        }
+
+        .badge-test {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          background: rgba(99,102,241,0.12);
+          border: 1px solid rgba(99,102,241,0.25);
+          color: #818cf8;
+          font-size: 11px;
+          font-weight: 600;
+          padding: 5px 12px;
+          border-radius: 999px;
+          letter-spacing: 1px;
+          text-transform: uppercase;
+          font-family: 'Syne', sans-serif;
+          margin-bottom: 28px;
+        }
+
+        .badge-dot {
+          width: 5px;
+          height: 5px;
+          border-radius: 50%;
+          background: #6366f1;
+          animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.3; }
+        }

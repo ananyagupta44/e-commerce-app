@@ -51,7 +51,7 @@
           display: flex;
           align-items: center;
           gap: 12px;
-          padding: 0 8px 32px 8px;
+          padding: 0 8px 12px 8px;
           border-bottom: 1px solid rgba(148,163,184,0.08);
           margin-bottom: 12px;
         }
@@ -67,6 +67,7 @@
         .brand-name {
           font-size: 18px;
           font-weight: 800;
+          margin-top: 30px;
           letter-spacing: -0.02em;
           white-space: nowrap;
           background: linear-gradient(90deg, #e2e8f0, #94a3b8);
@@ -143,11 +144,11 @@
         /* ——— TOGGLE BTN ——— */
         .toggle-btn {
           position: fixed;
-          top: 24px;
+          top: 80px;
           left: 20px;
-          z-index: 200;
-          background: #0d1424;
-          border: 1px solid rgba(148,163,184,0.12);
+          z-index: 9999;
+          background: #121b33;
+          border: 1px solid #1a536b;
           color: #94a3b8;
           width: 44px;
           height: 44px;
@@ -182,7 +183,6 @@
           margin-bottom: 48px;
           padding-bottom: 24px;
           border-bottom: 1px solid rgba(148,163,184,0.07);
-          padding-left: 60px;
         }
 
         .main-title {
@@ -235,7 +235,7 @@
           display: grid;
           grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
           gap: 24px;
-          padding-left: 60px;
+          padding-left: 10px;
         }
 
         .stat-card {
@@ -359,7 +359,7 @@
 
         @media (max-width: 640px) {
           .main { padding: 28px 20px; }
-          .main-header { padding-left: 56px; flex-direction: column; align-items: flex-start; gap: 12px; }
+          .main-header { padding-left: 10px; flex-direction: column; align-items: flex-start; gap: 12px; }
           .stats-grid { padding-left: 0; }
           .main-title { font-size: 30px; }
         }

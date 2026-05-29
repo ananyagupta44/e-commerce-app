@@ -2,6 +2,7 @@ import axios from "axios";
 import { useMemo, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import CheckoutSteps from "../components/CheckoutSteps";
+import getImageUrl from "../utils/getImageUrl";
 
 import "../css/PlaceOrderPage.css";
 
@@ -27,7 +28,8 @@ const PlaceOrderPage = () => {
 
   // ── Route protection ──
   useEffect(() => {
-    if (!paymentMethod && !orderPlaced) navigate("/payment");
+    if (!paymentMethod && !orderPlaced)
+      navigate("/payment", { state: { orderId: data._id } });
     if (!cartLoading && cartItems.length === 0 && !orderPlaced)
       navigate("/cart");
   }, [navigate, cartItems, orderPlaced, paymentMethod, cartLoading]);
@@ -62,27 +64,21 @@ const PlaceOrderPage = () => {
   const placeOrderHandler = async () => {
     try {
       setLoading(true);
-      const { data } = await axios.post(
-        "http://localhost:5000/api/orders",
-        {
-          orderItems: cartItems,
-          shippingAddress,
-          paymentMethod,
-          itemsPrice,
-          shippingPrice,
-          taxPrice,
-          totalPrice,
-        },
-        { headers: { Authorization: `Bearer ${userInfo.token}` } },
-      );
-      localStorage.removeItem("paymentMethod");
-      localStorage.removeItem("shipping");
-      window.dispatchEvent(new Event("storage"));
-      setOrderPlaced(true);
-      navigate(`/success/${data._id}`);
+
+      // ✅ Don't hit the DB here — just save order data and move to payment
+      const orderData = {
+        orderItems: cartItems,
+        shippingAddress,
+        itemsPrice,
+        shippingPrice,
+        taxPrice,
+        totalPrice,
+      };
+
+      localStorage.setItem("pendingOrder", JSON.stringify(orderData));
+      navigate("/payment");
     } catch (error) {
       console.log(error);
-      alert(error.response?.data?.message || "Order failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -90,7 +86,7 @@ const PlaceOrderPage = () => {
 
   return (
     <div className="placeorder-page">
-      <CheckoutSteps step1 step2 step3 step4 />
+      <CheckoutSteps step1 step2 step3 />
 
       {/* ── Header ── */}
       <div className="placeorder-header">
@@ -123,9 +119,7 @@ const PlaceOrderPage = () => {
             <div className="po-info-row">
               <span className="po-info-key">Method</span>
               <span className="po-info-value">
-                <span className="payment-badge">
-                  {paymentMethod === "COD" ? "💵" : "💳"} {paymentMethod}
-                </span>
+                <span className="payment-badge">Select in next step</span>
               </span>
             </div>
           </div>
@@ -149,7 +143,7 @@ const PlaceOrderPage = () => {
                 {cartItems.map((item) => (
                   <div key={item.product} className="po-item">
                     <img
-                      src={item.image}
+                      src={getImageUrl(item.images?.[0] || item.image)}
                       alt={item.name}
                       className="po-item-img"
                     />

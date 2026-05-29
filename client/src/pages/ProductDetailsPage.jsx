@@ -1,8 +1,9 @@
 import axios from "axios";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import "../css/ProductDetailsPage.css";
 import getImageUrl from "../utils/getImageUrl";
+import ProductCard from "../components/ProductCard";
 
 /* ── Helper: render star icons ── */
 const Stars = ({ rating, max = 5, size = "sm" }) => {
@@ -27,7 +28,7 @@ const Stars = ({ rating, max = 5, size = "sm" }) => {
   );
 };
 
-/* ── Interactive star picker for review form ── */
+/* ── Interactive star picker ── */
 const StarPicker = ({ value, onChange }) => {
   const [hover, setHover] = useState(0);
   return (
@@ -77,6 +78,111 @@ const ReviewCard = ({ review }) => (
   </div>
 );
 
+/* ── Similar Products Section ── */
+const SimilarProducts = ({ currentProduct }) => {
+  const [similar, setSimilar] = useState([]);
+  const [page, setPage] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const CARDS_PER_PAGE = 5;
+
+  useEffect(() => {
+    if (!currentProduct) return;
+    const fetchSimilar = async () => {
+      try {
+        setLoading(true);
+        // Fetch by category
+        const { data } = await axios.get(
+          `http://localhost:5000/api/products?category=${encodeURIComponent(currentProduct.category)}&limit=20`,
+        );
+        const products = data.products || data || [];
+        // Filter out current product
+        const filtered = products.filter((p) => p._id !== currentProduct._id);
+        // Sort by keyword match in name/description
+        const keywords = currentProduct.name
+          .toLowerCase()
+          .split(" ")
+          .filter((w) => w.length > 3);
+        const scored = filtered.map((p) => {
+          const text = `${p.name} ${p.description || ""}`.toLowerCase();
+          const score = keywords.reduce(
+            (acc, kw) => acc + (text.includes(kw) ? 1 : 0),
+            0,
+          );
+          return { ...p, _score: score };
+        });
+        scored.sort((a, b) => b._score - a._score);
+        setSimilar(scored);
+        setPage(0);
+      } catch (err) {
+        console.error("Failed to fetch similar products", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchSimilar();
+  }, [currentProduct]);
+
+  if (loading)
+    return (
+      <div className="similar-section">
+        <div className="similar-loading">Loading similar products…</div>
+      </div>
+    );
+
+  if (similar.length === 0) return null;
+
+  const totalPages = Math.ceil(similar.length / CARDS_PER_PAGE);
+  const visible = similar.slice(
+    page * CARDS_PER_PAGE,
+    page * CARDS_PER_PAGE + CARDS_PER_PAGE,
+  );
+
+  return (
+    <div className="similar-section">
+      {/* Header */}
+      <div className="similar-header">
+        <div>
+          <div className="section-label">
+            <span>You May Also Like</span>
+          </div>
+          <h2 className="similar-title">Similar Products</h2>
+          <p className="similar-sub">Based on category &amp; keywords</p>
+        </div>
+        {totalPages > 1 && (
+          <div className="similar-nav">
+            <button
+              className="similar-nav-btn"
+              onClick={() => setPage((p) => Math.max(0, p - 1))}
+              disabled={page === 0}
+              aria-label="Previous"
+            >
+              ‹
+            </button>
+            <span className="similar-page-indicator">
+              {page + 1} / {totalPages}
+            </span>
+            <button
+              className="similar-nav-btn"
+              onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
+              disabled={page === totalPages - 1}
+              aria-label="Next"
+            >
+              ›
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Cards */}
+      <div className="similar-grid">
+        {visible.map((product) => (
+          <ProductCard key={product._id} product={product} />
+        ))}
+      </div>
+    </div>
+  );
+};
+
 /* ── Main component ── */
 const ProductDetailsPage = () => {
   const { id } = useParams();
@@ -91,10 +197,10 @@ const ProductDetailsPage = () => {
   const [comment, setComment] = useState("");
   const [imgIndex, setImgIndex] = useState(0);
   const [slideClass, setSlideClass] = useState("slide-in");
+  const [showFullDesc, setShowFullDesc] = useState(false);
 
   const images = product?.images || [];
 
-  /* Directional slide transition */
   const goTo = useCallback(
     (nextIdx, direction) => {
       if (!product || nextIdx === imgIndex) return;
@@ -117,7 +223,6 @@ const ProductDetailsPage = () => {
     goTo((imgIndex - 1 + images.length) % images.length, "left");
   }, [imgIndex, images.length, goTo]);
 
-  /* Thumbnail click — pick direction based on index delta */
   const switchImage = useCallback(
     (idx) => {
       const dir = idx > imgIndex ? "right" : "left";
@@ -126,7 +231,6 @@ const ProductDetailsPage = () => {
     [imgIndex, goTo],
   );
 
-  /* ── ADD TO CART ── */
   const addToCartHandler = async () => {
     try {
       const userInfo = JSON.parse(
@@ -152,7 +256,6 @@ const ProductDetailsPage = () => {
     }
   };
 
-  /* ── WISHLIST ── */
   const toggleWishlist = () => {
     let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
     const existItem = wishlist.find((x) => x._id === product._id);
@@ -167,7 +270,6 @@ const ProductDetailsPage = () => {
     window.dispatchEvent(new Event("storage"));
   };
 
-  /* ── SUBMIT REVIEW ── */
   const submitReview = async () => {
     if (!rating) return alert("Please select a rating.");
     if (!comment.trim()) return alert("Please write a comment.");
@@ -187,7 +289,6 @@ const ProductDetailsPage = () => {
     }
   };
 
-  /* ── FETCH PRODUCT ── */
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -222,12 +323,11 @@ const ProductDetailsPage = () => {
 
   return (
     <div className="product-page">
-      {/* BACK */}
       <button onClick={() => navigate(-1)} className="back-btn">
         ← Go Back
       </button>
 
-      {/* ── MAIN ── */}
+      {/* MAIN */}
       <div className="product-main">
         {/* IMAGE COLUMN */}
         <div className="product-image-section">
@@ -237,8 +337,6 @@ const ProductDetailsPage = () => {
               alt={product.name}
               className={`product-image ${slideClass}`}
             />
-
-            {/* Arrows — only show if more than 1 image */}
             {images.length > 1 && (
               <>
                 <button
@@ -255,8 +353,6 @@ const ProductDetailsPage = () => {
                 >
                   ›
                 </button>
-
-                {/* Dot indicators */}
                 <div className="img-dots">
                   {images.map((_, i) => (
                     <button
@@ -270,7 +366,6 @@ const ProductDetailsPage = () => {
               </>
             )}
           </div>
-
           {images.length > 1 && (
             <div className="product-thumbnails">
               {images.map((img, i) => (
@@ -289,16 +384,13 @@ const ProductDetailsPage = () => {
         {/* DETAILS COLUMN */}
         <div className="product-details-section">
           <span className="product-category">{product.category}</span>
-
           <h1 className="product-title">{product.name}</h1>
-
           <div className="product-rating-row">
             <Stars rating={product.rating} />
             <div className="product-review-count">
               {product.numReviews} Reviews
             </div>
           </div>
-
           <div className="product-price">
             <div className="final-price">₹{product.finalPrice.toFixed(2)}</div>
             {product.discount > 0 && (
@@ -308,9 +400,21 @@ const ProductDetailsPage = () => {
               </>
             )}
           </div>
-
-          <p className="product-description">{product.description}</p>
-
+          <div className="product-description-wrap">
+            <p
+              className={`product-description ${showFullDesc ? "expanded" : ""}`}
+            >
+              {product.description}
+            </p>
+            {product.description?.length > 260 && (
+              <button
+                className="show-more-btn"
+                onClick={() => setShowFullDesc(!showFullDesc)}
+              >
+                {showFullDesc ? "Show Less" : "Show More"}
+              </button>
+            )}
+          </div>
           <div className="product-stock">
             <span>Status</span>
             {product.stock > 0 ? (
@@ -319,7 +423,6 @@ const ProductDetailsPage = () => {
               <span className="out-stock">Out of Stock</span>
             )}
           </div>
-
           {product.stock > 0 && (
             <div className="quantity-box">
               <label>Quantity</label>
@@ -336,7 +439,6 @@ const ProductDetailsPage = () => {
               </select>
             </div>
           )}
-
           <div className="product-buttons">
             <button
               onClick={addToCartHandler}
@@ -355,12 +457,14 @@ const ProductDetailsPage = () => {
         </div>
       </div>
 
+      {/* ── SIMILAR PRODUCTS ── */}
+      <SimilarProducts currentProduct={product} />
+
       {/* ── REVIEWS ── */}
       <div className="reviews-section">
         <div className="section-label">
           <span>Customer Reviews</span>
         </div>
-
         <div className="reviews-header">
           <div>
             <h2 className="reviews-title">What People Say</h2>
@@ -368,7 +472,6 @@ const ProductDetailsPage = () => {
               Verified purchases · Honest opinions
             </p>
           </div>
-
           <div className="reviews-summary">
             <div className="summary-score-big">
               {product.rating?.toFixed(1) || "0.0"}
@@ -379,7 +482,6 @@ const ProductDetailsPage = () => {
             </div>
           </div>
         </div>
-
         {product.reviews.length === 0 ? (
           <p className="no-reviews">
             No reviews yet — be the first to share your experience.
@@ -391,24 +493,19 @@ const ProductDetailsPage = () => {
             ))}
           </div>
         )}
-
-        {/* REVIEW FORM */}
         <div className="review-form">
           <h3 className="review-form-title">Write a Review</h3>
           <p className="review-form-sub">
             Share your honest experience with this product
           </p>
-
           <div className="review-form-grid">
             <StarPicker value={rating} onChange={setRating} />
-
             <textarea
               value={comment}
               onChange={(e) => setComment(e.target.value)}
               placeholder="Tell others what you think — quality, fit, delivery, anything that matters…"
             />
           </div>
-
           <button onClick={submitReview} className="review-submit-btn">
             Submit Review
           </button>

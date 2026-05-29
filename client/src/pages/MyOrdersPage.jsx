@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import getImageUrl from "../utils/getImageUrl";
 
 import "../css/MyOrdersPage.css";
 
@@ -133,7 +134,7 @@ const MyOrdersPage = () => {
                 {order.orderItems.map((item) => (
                   <div key={item.product} className="order-item">
                     <div className="order-item-img-wrap">
-                      <img src={item.images} alt={item.name} />
+                      <img src={getImageUrl(item.images?.[0] || item.image)} />
                     </div>
 
                     <div className="order-item-content">

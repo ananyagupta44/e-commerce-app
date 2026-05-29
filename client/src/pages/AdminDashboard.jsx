@@ -11,8 +11,10 @@ const AdminDashboard = () => {
     totalOrders: 0,
     totalRevenue: 0,
   });
+
   const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+
   const location = useLocation();
 
   const navLinks = [
@@ -59,11 +61,18 @@ const AdminDashboard = () => {
         const raw =
           localStorage.getItem("userInfo") ||
           sessionStorage.getItem("userInfo");
+
         const userInfo = JSON.parse(raw);
+
         const { data } = await axios.get(
           "http://localhost:5000/api/admin/stats",
-          { headers: { Authorization: `Bearer ${userInfo.token}` } },
+          {
+            headers: {
+              Authorization: `Bearer ${userInfo.token}`,
+            },
+          },
         );
+
         setStats(data);
       } catch (error) {
         console.error(error);
@@ -71,6 +80,7 @@ const AdminDashboard = () => {
         setLoading(false);
       }
     };
+
     fetchStats();
   }, []);
 
@@ -98,7 +108,6 @@ const AdminDashboard = () => {
             style={{ width: sidebarOpen ? "260px" : "0px" }}
           >
             <div className="sidebar-inner">
-              {/* Brand */}
               <div className="sidebar-brand">
                 <span className="brand-name">Admin Panel</span>
               </div>
@@ -109,7 +118,9 @@ const AdminDashboard = () => {
                 <Link
                   key={link.to}
                   to={link.to}
-                  className={`nav-link ${location.pathname === link.to ? "active" : ""}`}
+                  className={`nav-link ${
+                    location.pathname === link.to ? "active" : ""
+                  }`}
                 >
                   <span className="nav-icon">{link.icon}</span>
                   {link.label}
@@ -130,13 +141,14 @@ const AdminDashboard = () => {
                 <p className="main-subtitle">Overview · May 2026</p>
                 <h1 className="main-title">Dashboard</h1>
               </div>
+
               <div className="live-badge">
                 <span className="live-dot" />
                 LIVE
               </div>
             </div>
 
-            {/* Stats */}
+            {/* STATS */}
             <div className="stats-grid">
               {statCards.map((card, i) => (
                 <div
@@ -149,12 +161,15 @@ const AdminDashboard = () => {
                 >
                   <div className="stat-card-top">
                     <span className="stat-label">{card.label}</span>
+
                     <div className="stat-icon-wrap">{card.icon}</div>
                   </div>
+
                   <p className="stat-value">
                     {card.prefix}
                     {stats[card.key].toLocaleString()}
                   </p>
+
                   <div className="stat-bar">
                     <div className="stat-bar-fill" />
                   </div>
@@ -162,6 +177,7 @@ const AdminDashboard = () => {
               ))}
             </div>
           </div>
+
           <FloatingAIButton />
         </div>
       )}

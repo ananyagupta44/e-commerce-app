@@ -72,23 +72,10 @@ const HomePage = () => {
     >
       {/* HERO SECTION */}
 
-      <section
-        style={{
-          width: "100%",
-          padding: "0px 60px 80px 60px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          flexWrap: "wrap",
-        }}
-      >
+      <section className="hero-section">
         {/* LEFT SIDE */}
 
-        <div
-          style={{
-            flex: "1 1 160px",
-          }}
-        >
+        <div className="hero-left">
           {/* BADGE */}
 
           <div
@@ -130,7 +117,7 @@ const HomePage = () => {
             style={{
               fontFamily: "Syne, sans-serif",
               fontWeight: 800,
-              fontSize: "70px",
+              fontSize: "clamp(42px, 8vw, 70px)",
               lineHeight: 1.1,
               marginBottom: 24,
             }}
@@ -156,7 +143,7 @@ const HomePage = () => {
             style={{
               fontFamily: "DM Mono, monospace",
               color: "#94a3b8",
-              fontSize: 18,
+              fontSize: "clamp(15px, 2vw, 18px)",
               lineHeight: 1.8,
               marginBottom: 36,
               maxWidth: 500,
@@ -266,7 +253,7 @@ const HomePage = () => {
       <section
         ref={dealsRef}
         style={{
-          padding: "40px 60px 80px",
+          padding: "40px",
         }}
       >
         {/* SECTION HEADER */}

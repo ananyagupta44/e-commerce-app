@@ -1,9 +1,10 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useLocation, useSearchParams } from "react-router-dom";
+import { useLocation, useSearchParams, Link } from "react-router-dom";
 
 import ProductCard from "../components/ProductCard";
 import FilterBar from "../components/FilterBar";
+
 import "../css/productsPage.css";
 
 const ProductsPage = () => {
@@ -22,8 +23,6 @@ const ProductsPage = () => {
   const category = queryParams.get("category");
 
   const keyword = searchParams.get("keyword") || "";
-
-  // FETCH PRODUCTS
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -57,71 +56,21 @@ const ProductsPage = () => {
   }, [keyword, category, page, sort]);
 
   return (
-    <main
-      style={{
-        width: "100%",
-        minHeight: "100vh",
-        background: "linear-gradient(to bottom,#020617,#0f172a)",
-        color: "white",
-        padding: "40px 50px 90px",
-        position: "relative",
-        overflow: "hidden",
-      }}
-    >
+    <main className="products-page">
       {/* BACKGROUND GLOW */}
+      <div className="products-glow" />
 
-      <div
-        style={{
-          position: "absolute",
-          top: "-200px",
-          right: "-200px",
-          width: "500px",
-          height: "500px",
-          background:
-            "radial-gradient(circle,rgba(99,102,241,0.18),transparent 70%)",
-          pointerEvents: "none",
-        }}
-      />
+      {/* BACK LINK */}
+      <Link to="/" className="products-back-link">
+        ← Back to Home
+      </Link>
 
       {/* HEADER */}
-
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "flex-end",
-          flexWrap: "wrap",
-          gap: "20px",
-          marginBottom: "40px",
-          borderBottom: "1px solid rgba(255,255,255,0.08)",
-          paddingBottom: "24px",
-        }}
-      >
+      <div className="products-header">
         <div>
-          <p
-            style={{
-              color: "#818cf8",
-              fontSize: "13px",
-              letterSpacing: "2px",
-              marginBottom: "10px",
-              fontFamily: "DM Mono, monospace",
-            }}
-          >
-            PREMIUM COLLECTIONS
-          </p>
+          <p className="products-tag">PREMIUM COLLECTIONS</p>
 
-          <h1
-            style={{
-              fontSize: "52px",
-              fontWeight: "800",
-              lineHeight: "1",
-              fontFamily: "Syne, sans-serif",
-              marginBottom: "14px",
-              background: "linear-gradient(135deg,#ffffff,#94a3b8)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-            }}
-          >
+          <h1 className="products-title">
             {category
               ? category
                   .split(" ")
@@ -132,60 +81,19 @@ const ProductsPage = () => {
                 : "All Products"}
           </h1>
 
-          <p
-            style={{
-              color: "#94a3b8",
-              fontSize: "16px",
-              fontFamily: "DM Mono, monospace",
-            }}
-          >
-            {products.length} items found
-          </p>
+          <p className="products-count">{products.length} items found</p>
         </div>
 
-        {/* SMALL INFO CARD */}
+        {/* INFO CARD */}
+        <div className="products-info-card">
+          <p className="products-info-label">SHOPPING EXPERIENCE</p>
 
-        <div
-          style={{
-            padding: "18px 24px",
-            borderRadius: "20px",
-            background: "rgba(255,255,255,0.04)",
-            border: "1px solid rgba(255,255,255,0.08)",
-            backdropFilter: "blur(14px)",
-          }}
-        >
-          <p
-            style={{
-              color: "#64748b",
-              fontSize: "13px",
-              marginBottom: "6px",
-              fontFamily: "DM Mono, monospace",
-            }}
-          >
-            SHOPPING EXPERIENCE
-          </p>
-
-          <h3
-            style={{
-              fontSize: "24px",
-              fontWeight: "700",
-            }}
-          >
-            Nova Store ✨
-          </h3>
+          <h3 className="products-info-title">Nova Store ✨</h3>
         </div>
       </div>
 
       {/* FILTER BAR */}
-
-      <div
-        style={{
-          width: "100%",
-          display: "flex",
-          justifyContent: "flex-end",
-          marginBottom: "45px",
-        }}
-      >
+      <div className="products-filter-wrap">
         <FilterBar
           activeCategory={activeCategory}
           setActiveCategory={setActiveCategory}
@@ -195,60 +103,20 @@ const ProductsPage = () => {
       </div>
 
       {/* EMPTY STATE */}
-
       {products.length === 0 ? (
-        <div
-          style={{
-            width: "100%",
-            minHeight: "400px",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            textAlign: "center",
-          }}
-        >
-          <div
-            style={{
-              fontSize: "90px",
-              marginBottom: "20px",
-            }}
-          >
-            😔
-          </div>
+        <div className="products-empty">
+          <div className="products-empty-icon">😔</div>
 
-          <h2
-            style={{
-              fontSize: "36px",
-              fontWeight: "800",
-              marginBottom: "10px",
-            }}
-          >
-            No Products Found
-          </h2>
+          <h2 className="products-empty-title">No Products Found</h2>
 
-          <p
-            style={{
-              color: "#94a3b8",
-              maxWidth: "500px",
-              lineHeight: "1.8",
-            }}
-          >
+          <p className="products-empty-text">
             Try searching with another keyword or browse different categories.
           </p>
         </div>
       ) : (
         <>
           {/* PRODUCTS GRID */}
-
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill,minmax(360px,1fr))",
-              justifyContent: "center",
-              gap: "18px",
-            }}
-          >
+          <div className="products-grid">
             {products.map((product) => (
               <div key={product._id} className="products-page-card">
                 <ProductCard product={product} />
@@ -257,43 +125,14 @@ const ProductsPage = () => {
           </div>
 
           {/* PAGINATION */}
-
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              gap: "14px",
-              marginTop: "70px",
-              flexWrap: "wrap",
-            }}
-          >
+          <div className="products-pagination">
             {[...Array(pages).keys()].map((x) => (
               <button
                 key={x + 1}
                 onClick={() => setPage(x + 1)}
-                style={{
-                  width: "52px",
-                  height: "52px",
-                  borderRadius: "16px",
-                  border:
-                    page === x + 1
-                      ? "1px solid #818cf8"
-                      : "1px solid rgba(255,255,255,0.08)",
-                  background:
-                    page === x + 1
-                      ? "linear-gradient(135deg,#6366f1,#8b5cf6)"
-                      : "rgba(255,255,255,0.03)",
-                  color: "white",
-                  fontWeight: "700",
-                  fontSize: "16px",
-                  cursor: "pointer",
-                  transition: "0.3s",
-                  backdropFilter: "blur(10px)",
-                  boxShadow:
-                    page === x + 1
-                      ? "0 10px 30px rgba(99,102,241,0.35)"
-                      : "none",
-                }}
+                className={`products-page-btn ${
+                  page === x + 1 ? "active" : ""
+                }`}
               >
                 {x + 1}
               </button>

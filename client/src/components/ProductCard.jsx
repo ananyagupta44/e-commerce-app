@@ -17,7 +17,8 @@ const ProductCard = ({ product }) => {
   const [wished, setWished] = useState(false);
   const [added, setAdded] = useState(false);
   const [currentImage, setCurrentImage] = useState(0);
-  const [fade, setFade] = useState(false);
+  const [nextImage, setNextImage] = useState(1);
+  const [transitioning, setTransitioning] = useState(false);
   const navigate = useNavigate();
   const intervalRef = useRef(null);
 
@@ -26,27 +27,32 @@ const ProductCard = ({ product }) => {
     product.price - (product.price * product.discount) / 100;
 
   const startImageLoop = () => {
-    if (intervalRef.current || product.images.length <= 1) return;
-    setFade(true);
-    setTimeout(() => {
-      setCurrentImage(1);
-      setFade(false);
-    }, 180);
+    if (intervalRef.current || product.images?.length <= 1) return;
+
     intervalRef.current = setInterval(() => {
-      setFade(true);
+      setTransitioning(true);
+
       setTimeout(() => {
-        setCurrentImage((prev) => (prev + 1) % product.images.length);
-        setFade(false);
-      }, 350);
-    }, 1500);
+        setCurrentImage(nextImage);
+
+        setNextImage((nextImage + 1) % product.images.length);
+
+        setTransitioning(false);
+      }, 600);
+    }, 2500);
   };
 
   const stopImageLoop = () => {
     clearInterval(intervalRef.current);
-    intervalRef.current = null;
-    setFade(false);
-  };
 
+    intervalRef.current = null;
+
+    setTransitioning(false);
+
+    setCurrentImage(0);
+
+    setNextImage(product.images?.length > 1 ? 1 : 0);
+  };
   const addToCartHandler = async () => {
     try {
       const userInfo = JSON.parse(
@@ -118,20 +124,28 @@ const ProductCard = ({ product }) => {
     <div className="pc-card">
       {/* IMAGE */}
       <Link to={`/product/${product._id}`} className="pc-img-wrap">
-        <img
-          src={getImageUrl(product.images?.[currentImage])}
-          alt={product.name}
-          className={`pc-img ${fade ? "fade-out" : "fade-in"}`}
+        <div
+          className="pc-image-stack"
           onMouseEnter={() => {
             if (!product.images?.length) return;
             startImageLoop();
           }}
           onMouseLeave={() => {
             stopImageLoop();
-            setFade(false);
-            setCurrentImage(0);
           }}
-        />
+        >
+          <img
+            src={getImageUrl(product.images?.[currentImage])}
+            alt={product.name}
+            className={`pc-img current ${transitioning ? "fade-out" : ""}`}
+          />
+
+          <img
+            src={getImageUrl(product.images?.[nextImage])}
+            alt={product.name}
+            className={`pc-img next ${transitioning ? "fade-in" : ""}`}
+          />
+        </div>
 
         {/* WISHLIST */}
         <button

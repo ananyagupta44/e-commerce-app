@@ -50,24 +50,49 @@
   background: #ffffff;
   transition:  transform 0.4s ease,  opacity 0.35s ease;
 }
-/* FADE STATES */
-.fade-in {
-  opacity: 1;
-   transform: scale(1);
+.pc-image-stack {
+  position: relative;
+  width: 100%;
+  height: 100%;
 }
 
-.fade-out {
+.pc-img {
+  position: absolute;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
+
+  background: #fff;
+
+  transition:
+    opacity 0.6s ease,
+    transform 0.6s ease;
+}
+
+/* CURRENT IMAGE */
+.pc-img.current {
+  opacity: 1;
+  z-index: 2;
+}
+
+/* NEXT IMAGE */
+.pc-img.next {
+  opacity: 0;
+  z-index: 1;
+}
+
+/* CROSSFADE */
+.pc-img.current.fade-out {
   opacity: 0;
   transform: scale(1.02);
 }
-@keyframes fadeImage {
-  from {
-    opacity: 0.75;
-  }
 
-  to {
-    opacity: 1;
-  }
+.pc-img.next.fade-in {
+  opacity: 1;
+  transform: scale(1.02);
 }
 .pc-card:hover .pc-img {
   transform: scale(1.02);

@@ -77,7 +77,7 @@ const ProductCard = ({ product }) => {
         {
           product: product._id,
           name: product.name,
-          images: product.images?.[0],
+          images: product.images,
           price: finalPrice,
           qty: 1,
           stock: product.stock,
@@ -134,6 +134,10 @@ const ProductCard = ({ product }) => {
 
   const nextImage =
     product.images?.length > 1 ? (currentImage + 1) % product.images.length : 0;
+
+  console.log("Product:", product.name);
+  console.log("Images:", product.images);
+  console.log("First image URL:", getImageUrl(product.images?.[0]));
 
   return (
     <div className="pc-card">

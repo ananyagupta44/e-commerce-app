@@ -6,6 +6,7 @@ import ProductCard from "../components/ProductCard";
 import FilterBar from "../components/FilterBar";
 
 import "../css/productsPage.css";
+import API_URL from "@/config/api";
 
 const ProductsPage = () => {
   const [products, setProducts] = useState([]);
@@ -27,12 +28,12 @@ const ProductsPage = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        let url = `http://localhost:5000/api/products?pageNumber=${page}&sort=${sort}`;
+        let url = `${API_URL}/api/products?pageNumber=${page}&sort=${sort}`;
 
         if (category) {
-          url = `http://localhost:5000/api/products/category/${category}?pageNumber=${page}&sort=${sort}`;
+          url = `${API_URL}/api/products/category/${category}?pageNumber=${page}&sort=${sort}`;
         } else if (keyword) {
-          url = `http://localhost:5000/api/products/search/${keyword}?pageNumber=${page}&sort=${sort}`;
+          url = `${API_URL}/api/products/search/${keyword}?pageNumber=${page}&sort=${sort}`;
         }
 
         const { data } = await axios.get(url);

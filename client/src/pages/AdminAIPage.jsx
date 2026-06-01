@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../css/AdminAIPage.css";
 import ReactMarkdown from "react-markdown";
+import API_URL from "@/config/api";
 
 const suggestions = [
   { icon: "📦", text: "Which products are low in stock?" },
@@ -57,10 +58,9 @@ const AdminAIPage = () => {
     if (textareaRef.current) textareaRef.current.style.height = "auto";
 
     try {
-      const { data } = await axios.post(
-        "http://localhost:5000/api/ai/assistant",
-        { message: finalMessage },
-      );
+      const { data } = await axios.post(`${API_URL}/api/ai/assistant`, {
+        message: finalMessage,
+      });
       setChat((prev) => [...prev, { role: "ai", text: data.reply }]);
     } catch (error) {
       setChat((prev) => [

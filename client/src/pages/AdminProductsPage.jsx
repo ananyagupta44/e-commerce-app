@@ -3,6 +3,7 @@ import axios from "axios";
 import { Link, useLocation } from "react-router-dom";
 import "../css/AdminProductsPage.css";
 import FloatingAIButton from "../components/FloatingAIButton";
+import API_URL from "@/config/api";
 
 const AdminProductsPage = () => {
   const [products, setProducts] = useState([]);
@@ -38,7 +39,7 @@ const AdminProductsPage = () => {
       const userInfo = getUserInfo();
       console.log(newProduct);
       const { data } = await axios.post(
-        "http://localhost:5000/api/admin/products",
+        `${API_URL}/api/admin/products`,
         newProduct,
         { headers: { Authorization: `Bearer ${userInfo.token}` } },
       );
@@ -72,7 +73,7 @@ const AdminProductsPage = () => {
         formData.append("image", file);
 
         const { data } = await axios.post(
-          "http://localhost:5000/api/admin/upload",
+          `${API_URL}/api/admin/upload`,
           formData,
           {
             headers: {
@@ -99,7 +100,7 @@ const AdminProductsPage = () => {
       const userInfo = getUserInfo();
       const updatedStock = Math.max(0, product.stock + amount);
       const { data } = await axios.put(
-        `http://localhost:5000/api/admin/products/${product._id}`,
+        `${API_URL}/api/admin/products/${product._id}`,
         { stock: updatedStock },
         { headers: { Authorization: `Bearer ${userInfo.token}` } },
       );
@@ -113,7 +114,7 @@ const AdminProductsPage = () => {
     if (!window.confirm("Delete this product?")) return;
     try {
       const userInfo = getUserInfo();
-      await axios.delete(`http://localhost:5000/api/admin/products/${id}`, {
+      await axios.delete(`${API_URL}/api/admin/products/${id}`, {
         headers: { Authorization: `Bearer ${userInfo.token}` },
       });
       setProducts((prev) => prev.filter((p) => p._id !== id));
@@ -128,8 +129,8 @@ const AdminProductsPage = () => {
         const userInfo = getUserInfo();
         const headers = { Authorization: `Bearer ${userInfo.token}` };
         const [prodRes, catRes] = await Promise.all([
-          axios.get("http://localhost:5000/api/admin/products", { headers }),
-          axios.get("http://localhost:5000/api/admin/categories", { headers }),
+          axios.get(`${API_URL}/api/admin/products`, { headers }),
+          axios.get(`${API_URL}/api/admin/categories`, { headers }),
         ]);
         setProducts(prodRes.data);
         setCategories(catRes.data);
@@ -208,7 +209,7 @@ const AdminProductsPage = () => {
                 >
                   {product.images?.[0] ? (
                     <img
-                      src={`http://localhost:5000${product.images[0]}`}
+                      src={`${API_URL}${product.images[0]}`}
                       alt={product.name}
                       className="ap-product-img"
                     />
@@ -343,7 +344,7 @@ const AdminProductsPage = () => {
                         }}
                       >
                         <img
-                          src={`http://localhost:5000${img}`}
+                          src={`${API_URL}${img}`}
                           alt=""
                           style={{
                             width: "90px",

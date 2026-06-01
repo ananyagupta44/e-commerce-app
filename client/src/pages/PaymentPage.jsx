@@ -4,6 +4,7 @@ import { useLocation } from "react-router";
 import CheckoutSteps from "../components/CheckoutSteps";
 import axios from "axios";
 import "../css/PaymentPage.css";
+import API_URL from "@/config/api";
 
 const loadRazorpayScript = () => {
   return new Promise((resolve) => {
@@ -38,7 +39,7 @@ const PaymentPage = () => {
         setLoading(true);
 
         const { data } = await axios.post(
-          "http://localhost:5000/api/orders",
+          `${API_URL}/api/orders`,
           { ...orderData, paymentMethod: "COD" },
           { headers: { Authorization: `Bearer ${userInfo.token}` } },
         );
@@ -66,10 +67,9 @@ const PaymentPage = () => {
 
         const token = userInfo?.token;
 
-        const { data: cartData } = await axios.get(
-          "http://localhost:5000/api/cart",
-          { headers: { Authorization: `Bearer ${token}` } },
-        );
+        const { data: cartData } = await axios.get(`${API_URL}/api/cart`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
 
         const cartItems =
           cartData.cartItems || cartData.items || cartData || [];
@@ -85,7 +85,7 @@ const PaymentPage = () => {
         }
 
         const { data } = await axios.post(
-          "http://localhost:5000/api/payments/create-order",
+          `${API_URL}/api/payments/create-order`,
           { amount: totalAmount },
         );
 
@@ -105,7 +105,7 @@ const PaymentPage = () => {
           handler: async (response) => {
             try {
               const { data: order } = await axios.post(
-                "http://localhost:5000/api/orders",
+                `${API_URL}/api/orders`,
                 {
                   ...orderData,
                   paymentMethod: paymentMethod,

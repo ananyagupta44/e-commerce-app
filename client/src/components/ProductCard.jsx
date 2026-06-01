@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../css/ProductCard.css";
 import getImageUrl from "../utils/getImageUrl";
+import API_URL from "@/config/api";
 
 // ✅ User-specific wishlist key
 const getWishlistKey = () => {
@@ -57,7 +58,7 @@ const ProductCard = ({ product }) => {
         return;
       }
       await axios.post(
-        "http://localhost:5000/api/cart",
+        `${API_URL}/api/cart`,
         {
           product: product._id,
           name: product.name,

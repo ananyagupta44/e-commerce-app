@@ -9,6 +9,7 @@ import { Menu, X } from "lucide-react";
 import "../css/Navbar.css";
 
 import logoImage from "../assets/logo.png";
+import API_URL from "@/config/api";
 
 const getStoredUser = () => {
   try {
@@ -67,7 +68,7 @@ const Navbar = () => {
         return;
       }
 
-      const { data } = await axios.get("http://localhost:5000/api/cart", {
+      const { data } = await axios.get(`${API_URL}/api/cart`, {
         headers: {
           Authorization: `Bearer ${storedUser.token}`,
         },
@@ -91,9 +92,7 @@ const Navbar = () => {
   // FETCH CATEGORIES
   const fetchCategories = async () => {
     try {
-      const { data } = await axios.get(
-        "http://localhost:5000/api/products/categories",
-      );
+      const { data } = await axios.get(`${API_URL}/api/products/categories`);
       setCategories(data);
     } catch (error) {
       console.log(error);

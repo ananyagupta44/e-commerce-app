@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import axios from "axios";
 import "../css/AdminUsersPage.css";
 import FloatingAIButton from "../components/FloatingAIButton";
+import API_URL from "@/config/api";
 
 const ROLE_CONFIG = {
   admin: {
@@ -61,12 +62,9 @@ const AdminUsersPage = () => {
     const fetchUsers = async () => {
       try {
         const userInfo = getUserInfo();
-        const { data } = await axios.get(
-          "http://localhost:5000/api/admin/users",
-          {
-            headers: { Authorization: `Bearer ${userInfo.token}` },
-          },
-        );
+        const { data } = await axios.get(`${API_URL}/api/admin/users`, {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        });
         setUsers(data);
       } catch (error) {
         console.error(error);

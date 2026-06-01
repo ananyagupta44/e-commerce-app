@@ -1,3 +1,5 @@
+import API_URL from "@/config/api";
+
 const getImageUrl = (img) => {
   if (!img) {
     return "/placeholder.jpg";
@@ -9,7 +11,7 @@ const getImageUrl = (img) => {
   }
 
   // Local uploaded image
-  return `http://localhost:5000${img}`;
+  return `${API_URL}${img}`;
 };
 
 export default getImageUrl;

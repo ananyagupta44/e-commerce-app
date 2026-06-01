@@ -5,6 +5,7 @@ import CheckoutSteps from "../components/CheckoutSteps";
 import getImageUrl from "../utils/getImageUrl";
 
 import "../css/PlaceOrderPage.css";
+import API_URL from "@/config/api";
 
 const PlaceOrderPage = () => {
   const navigate = useNavigate();
@@ -38,7 +39,7 @@ const PlaceOrderPage = () => {
   useEffect(() => {
     const fetchCart = async () => {
       try {
-        const { data } = await axios.get("http://localhost:5000/api/cart", {
+        const { data } = await axios.get(`${API_URL}/api/cart`, {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
         setCartItems(data);

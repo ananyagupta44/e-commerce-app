@@ -14,6 +14,7 @@ import shoesImage from "../assets/shoesCategory.png";
 import fashionImage from "../assets/fashionCategory.png";
 import kitchenImage from "../assets/kitchenCategory.png";
 import HeroImageCarousel from "../components/HeroImageCarousel";
+import API_URL from "@/config/api";
 
 /* ── Particle Canvas Background ── */
 const ParticleBackground = () => {
@@ -185,9 +186,7 @@ const HomePage = () => {
   useEffect(() => {
     const fetchBestDeals = async () => {
       try {
-        const { data } = await axios.get(
-          "http://localhost:5000/api/products/best-deals",
-        );
+        const { data } = await axios.get(`${API_URL}/api/products/best-deals`);
         setBestDeals(data);
       } catch (error) {
         console.log(error);
@@ -199,9 +198,7 @@ const HomePage = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const { data } = await axios.get(
-          "http://localhost:5000/api/products/categories",
-        );
+        const { data } = await axios.get(`${API_URL}/api/products/categories`);
         setCategories(data);
       } catch (error) {
         console.log(error);

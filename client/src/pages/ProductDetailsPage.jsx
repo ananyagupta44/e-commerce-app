@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import "../css/ProductDetailsPage.css";
 import getImageUrl from "../utils/getImageUrl";
 import ProductCard from "../components/ProductCard";
+import API_URL from "@/config/api";
 
 /* ── Helper: render star icons ── */
 const Stars = ({ rating, max = 5, size = "sm" }) => {
@@ -92,7 +93,7 @@ const SimilarProducts = ({ currentProduct }) => {
         setLoading(true);
         // Fetch by category
         const { data } = await axios.get(
-          `http://localhost:5000/api/products?category=${encodeURIComponent(currentProduct.category)}&limit=20`,
+          `${API_URL}/api/products?category=${encodeURIComponent(currentProduct.category)}&limit=20`,
         );
         const products = data.products || data || [];
         // Filter out current product
@@ -244,7 +245,7 @@ const ProductDetailsPage = () => {
         localStorage.getItem("userInfo") || sessionStorage.getItem("userInfo"),
       );
       await axios.post(
-        "http://localhost:5000/api/cart",
+        `${API_URL}/api/cart`,
         {
           product: product._id,
           name: product.name,
@@ -286,7 +287,7 @@ const ProductDetailsPage = () => {
       );
 
       await axios.post(
-        `http://localhost:5000/api/products/${product._id}/reviews`,
+        `${API_URL}/api/products/${product._id}/reviews`,
         { productId: product._id, rating, comment },
         { headers: { Authorization: `Bearer ${userInfo.token}` } },
       );
@@ -324,9 +325,7 @@ const ProductDetailsPage = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const { data } = await axios.get(
-          `http://localhost:5000/api/products/${id}`,
-        );
+        const { data } = await axios.get(`${API_URL}/api/products/${id}`);
         setProduct(data);
         setImgIndex(0);
         const wishlist =

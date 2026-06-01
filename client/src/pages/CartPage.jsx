@@ -5,6 +5,7 @@ import CheckoutSteps from "../components/CheckoutSteps";
 import getImageUrl from "../utils/getImageUrl";
 
 import "../css/CartPage.css";
+import API_URL from "@/config/api";
 
 const CartPage = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -22,7 +23,7 @@ const CartPage = () => {
     const fetchCart = async () => {
       try {
         const userInfo = getUserInfo();
-        const { data } = await axios.get("http://localhost:5000/api/cart", {
+        const { data } = await axios.get(`${API_URL}/api/cart`, {
           headers: { Authorization: `Bearer ${userInfo.token}` },
         });
         setCartItems(data);
@@ -37,10 +38,9 @@ const CartPage = () => {
   const removeFromCart = async (id) => {
     try {
       const userInfo = getUserInfo();
-      const { data } = await axios.delete(
-        `http://localhost:5000/api/cart/${id}`,
-        { headers: { Authorization: `Bearer ${userInfo.token}` } },
-      );
+      const { data } = await axios.delete(`${API_URL}/api/cart/${id}`, {
+        headers: { Authorization: `Bearer ${userInfo.token}` },
+      });
       setCartItems(data);
       window.dispatchEvent(new Event("storage"));
       window.dispatchEvent(new Event("cartUpdated"));
@@ -54,7 +54,7 @@ const CartPage = () => {
     try {
       const userInfo = getUserInfo();
       const { data } = await axios.post(
-        "http://localhost:5000/api/cart",
+        `${API_URL}/api/cart`,
         {
           product: item.product,
           name: item.name,

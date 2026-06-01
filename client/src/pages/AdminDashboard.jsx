@@ -3,6 +3,7 @@ import axios from "axios";
 import { Link, useLocation } from "react-router-dom";
 import "../css/AdminDashboard.css";
 import FloatingAIButton from "../components/FloatingAIButton";
+import API_URL from "@/config/api";
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState({
@@ -64,14 +65,11 @@ const AdminDashboard = () => {
 
         const userInfo = JSON.parse(raw);
 
-        const { data } = await axios.get(
-          "http://localhost:5000/api/admin/stats",
-          {
-            headers: {
-              Authorization: `Bearer ${userInfo.token}`,
-            },
+        const { data } = await axios.get(`${API_URL}/api/admin/stats`, {
+          headers: {
+            Authorization: `Bearer ${userInfo.token}`,
           },
-        );
+        });
 
         setStats(data);
       } catch (error) {

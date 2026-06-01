@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../css/ProfilePage.css";
+import API_URL from "@/config/api";
 
 const ProfilePage = () => {
   const navigate = useNavigate();
@@ -31,9 +32,9 @@ const ProfilePage = () => {
       try {
         const headers = { Authorization: `Bearer ${userInfo.token}` };
         const [profileRes, ordersRes, addrRes] = await Promise.all([
-          axios.get("http://localhost:5000/api/users/profile", { headers }),
-          axios.get("http://localhost:5000/api/orders/myorders", { headers }),
-          axios.get("http://localhost:5000/api/users/addresses", { headers }),
+          axios.get(`${API_URL}/api/users/profile`, { headers }),
+          axios.get(`${API_URL}/api/orders/myorders`, { headers }),
+          axios.get(`${API_URL}/api/users/addresses`, { headers }),
         ]);
         setProfile(profileRes.data);
         setEditName(profileRes.data.name || "");
@@ -60,7 +61,7 @@ const ProfilePage = () => {
       const payload = { name: editName, email: editEmail };
       if (editPassword) payload.password = editPassword;
       const { data } = await axios.put(
-        "http://localhost:5000/api/users/profile",
+        `${API_URL}/api/users/profile`,
         payload,
         { headers },
       );

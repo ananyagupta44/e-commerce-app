@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import axios from "axios";
 import "../css/AdminOrdersPage.css";
 import FloatingAIButton from "../components/FloatingAIButton";
+import API_URL from "@/config/api";
 
 const STATUS_CONFIG = {
   Pending: {
@@ -67,7 +68,7 @@ const AdminOrdersPage = () => {
     try {
       const userInfo = getUserInfo();
       const { data } = await axios.put(
-        `http://localhost:5000/api/admin/orders/${id}`,
+        `${API_URL}/api/admin/orders/${id}`,
         { orderStatus: status },
         { headers: { Authorization: `Bearer ${userInfo.token}` } },
       );
@@ -83,12 +84,9 @@ const AdminOrdersPage = () => {
     const fetchOrders = async () => {
       try {
         const userInfo = getUserInfo();
-        const { data } = await axios.get(
-          "http://localhost:5000/api/admin/orders",
-          {
-            headers: { Authorization: `Bearer ${userInfo.token}` },
-          },
-        );
+        const { data } = await axios.get(`${API_URL}/api/admin/orders`, {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        });
         setOrders(data);
       } catch (error) {
         console.error(error);

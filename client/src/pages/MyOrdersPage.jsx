@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import getImageUrl from "../utils/getImageUrl";
 
 import "../css/MyOrdersPage.css";
+import API_URL from "@/config/api";
 
 const MyOrdersPage = () => {
   const [orders, setOrders] = useState([]);
@@ -18,14 +19,11 @@ const MyOrdersPage = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const { data } = await axios.get(
-          "http://localhost:5000/api/orders/myorders",
-          {
-            headers: {
-              Authorization: `Bearer ${userInfo.token}`,
-            },
+        const { data } = await axios.get(`${API_URL}/api/orders/myorders`, {
+          headers: {
+            Authorization: `Bearer ${userInfo.token}`,
           },
-        );
+        });
         setOrders(data);
       } catch (error) {
         setError(error.response?.data?.message || "Failed to load orders");
@@ -54,7 +52,7 @@ const MyOrdersPage = () => {
     });
   };
 
-  console.log("ORDERS:", orders); 
+  console.log("ORDERS:", orders);
 
   return (
     <div className="orders-page">

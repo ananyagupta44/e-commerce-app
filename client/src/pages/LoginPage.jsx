@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 import "../css/LoginPage.css";
+import API_URL from "@/config/api";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -27,13 +28,10 @@ const LoginPage = () => {
     try {
       setLoading(true);
 
-      const { data } = await axios.post(
-        "http://localhost:5000/api/auth/login",
-        {
-          email,
-          password,
-        },
-      );
+      const { data } = await axios.post(`${API_URL}/api/auth/login`, {
+        email,
+        password,
+      });
 
       if (rememberMe) {
         localStorage.setItem("userInfo", JSON.stringify(data));

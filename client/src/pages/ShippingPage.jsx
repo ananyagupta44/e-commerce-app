@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import CheckoutSteps from "../components/CheckoutSteps";
 import axios from "axios";
 import "../css/ShippingPage.css";
+import API_URL from "@/config/api";
 
 const ShippingPage = () => {
   const navigate = useNavigate();
@@ -28,10 +29,9 @@ const ShippingPage = () => {
   useEffect(() => {
     const fetchAddresses = async () => {
       try {
-        const { data } = await axios.get(
-          "http://localhost:5000/api/users/addresses",
-          { headers: { Authorization: `Bearer ${userInfo.token}` } },
-        );
+        const { data } = await axios.get(`${API_URL}/api/users/addresses`, {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+        });
         setSavedAddresses(data);
         // If no saved addresses, show new form
         if (data.length === 0) setShowNewForm(true);
@@ -105,11 +105,9 @@ const ShippingPage = () => {
       setSaving(true);
 
       // ✅ Save to backend (user's own addresses in DB)
-      await axios.post(
-        "http://localhost:5000/api/users/addresses",
-        finalAddress,
-        { headers: { Authorization: `Bearer ${userInfo.token}` } },
-      );
+      await axios.post(`${API_URL}/api/users/addresses`, finalAddress, {
+        headers: { Authorization: `Bearer ${userInfo.token}` },
+      });
 
       localStorage.setItem("shipping", JSON.stringify(finalAddress));
       navigate("/placeorder");

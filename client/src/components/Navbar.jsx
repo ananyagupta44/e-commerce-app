@@ -64,6 +64,13 @@ const Navbar = () => {
       console.error("Failed to fetch cart count:", error);
     }
   };
+
+  const updateWishlistCount = () => {
+    const wishlist =
+      parseJSON(localStorage.getItem(getWishlistKey(userId))) ?? [];
+
+    setWishlistCount(Array.isArray(wishlist) ? wishlist.length : 0);
+  };
   // FETCH CATEGORIES
   const fetchCategories = async () => {
     try {

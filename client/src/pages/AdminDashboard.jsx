@@ -51,7 +51,7 @@ const AdminDashboard = () => {
       key: "totalRevenue",
       icon: "⬡",
       color: "#fb923c",
-      prefix: "$",
+      prefix: "₹",
     },
   ];
 

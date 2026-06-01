@@ -14,6 +14,168 @@ import shoesImage from "../assets/shoesCategory.png";
 import fashionImage from "../assets/fashionCategory.png";
 import kitchenImage from "../assets/kitchenCategory.png";
 import HeroImageCarousel from "../components/HeroImageCarousel";
+
+/* ── Particle Canvas Background ── */
+const ParticleBackground = () => {
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+    let animId;
+
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    resize();
+    window.addEventListener("resize", resize);
+
+    // Particle config
+    const PARTICLE_COUNT = 130;
+    const particles = Array.from({ length: PARTICLE_COUNT }, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 2.5 + 0.8,
+      dx: (Math.random() - 0.5) * 0.25,
+      dy: (Math.random() - 0.5) * 0.25,
+      opacity: Math.random() * 0.5 + 0.5,
+      // pulse phase offset
+      phase: Math.random() * Math.PI * 2,
+      // color: mix of purple/indigo/white
+      hue:
+        Math.random() < 0.5
+          ? `rgba(139,92,246,` // violet
+          : Math.random() < 0.5
+            ? `rgba(99,102,241,` // indigo
+            : `rgba(196,181,253,`, // lavender
+    }));
+
+    // A few larger "glow" orbs drifting slowly
+    const ORBS = [
+      {
+        x: canvas.width * 0.15,
+        y: canvas.height * 0.3,
+        r: 180,
+        dx: 0.08,
+        dy: 0.05,
+        color: "99,102,241",
+      },
+      {
+        x: canvas.width * 0.75,
+        y: canvas.height * 0.6,
+        r: 220,
+        dx: -0.06,
+        dy: -0.07,
+        color: "139,92,246",
+      },
+      {
+        x: canvas.width * 0.5,
+        y: canvas.height * 0.85,
+        r: 150,
+        dx: 0.05,
+        dy: -0.04,
+        color: "167,139,250",
+      },
+    ];
+
+    let t = 0;
+
+    const draw = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Background
+      ctx.fillStyle = "#0a0f1e";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Draw soft glow orbs
+      ORBS.forEach((orb) => {
+        orb.x += orb.dx;
+        orb.y += orb.dy;
+        if (orb.x < -orb.r) orb.x = canvas.width + orb.r;
+        if (orb.x > canvas.width + orb.r) orb.x = -orb.r;
+        if (orb.y < -orb.r) orb.y = canvas.height + orb.r;
+        if (orb.y > canvas.height + orb.r) orb.y = -orb.r;
+
+        const grad = ctx.createRadialGradient(
+          orb.x,
+          orb.y,
+          0,
+          orb.x,
+          orb.y,
+          orb.r,
+        );
+        grad.addColorStop(0, `rgba(${orb.color},0.18)`);
+        grad.addColorStop(1, `rgba(${orb.color},0)`);
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(orb.x, orb.y, orb.r, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      // Draw particles
+      t += 0.012;
+      particles.forEach((p) => {
+        p.x += p.dx;
+        p.y += p.dy;
+        if (p.x < 0) p.x = canvas.width;
+        if (p.x > canvas.width) p.x = 0;
+        if (p.y < 0) p.y = canvas.height;
+        if (p.y > canvas.height) p.y = 0;
+
+        // Pulse opacity
+        const pulse = p.opacity * (0.85 + 0.15 * Math.sin(t + p.phase));
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `${p.hue}${pulse})`;
+        ctx.fill();
+      });
+
+      // Draw connecting lines between close particles
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 90) {
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = `rgba(99,102,241,${0.18 * (1 - dist / 90)})`;
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+          }
+        }
+      }
+
+      animId = requestAnimationFrame(draw);
+    };
+
+    draw();
+
+    return () => {
+      cancelAnimationFrame(animId);
+      window.removeEventListener("resize", resize);
+    };
+  }, []);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: "100%",
+        zIndex: 0,
+        pointerEvents: "none",
+      }}
+    />
+  );
+};
+
 const HomePage = () => {
   const navigate = useNavigate();
   const [bestDeals, setBestDeals] = useState([]);
@@ -26,7 +188,6 @@ const HomePage = () => {
         const { data } = await axios.get(
           "http://localhost:5000/api/products/best-deals",
         );
-
         setBestDeals(data);
       } catch (error) {
         console.log(error);
@@ -41,13 +202,11 @@ const HomePage = () => {
         const { data } = await axios.get(
           "http://localhost:5000/api/products/categories",
         );
-
         setCategories(data);
       } catch (error) {
         console.log(error);
       }
     };
-
     fetchCategories();
   }, []);
 
@@ -66,111 +225,101 @@ const HomePage = () => {
       style={{
         width: "100%",
         minHeight: "100vh",
-        background: "dark-gray",
         color: "white",
+        position: "relative",
       }}
     >
-      {/* HERO SECTION */}
+      {/* ── PARTICLE BACKGROUND ── */}
+      <ParticleBackground />
 
-      <section className="hero-section">
-        {/* LEFT SIDE */}
-
-        <div className="hero-left">
-          {/* BADGE */}
-
-          <div
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 8,
-              background: "rgba(99,102,241,0.1)",
-              border: "1px solid rgba(99,102,241,0.25)",
-              borderRadius: 20,
-              padding: "6px 14px",
-              marginBottom: 24,
-            }}
-          >
-            <span
+      {/* All content sits above the canvas */}
+      <div style={{ position: "relative", zIndex: 1 }}>
+        {/* HERO SECTION */}
+        <section className="hero-section">
+          <div className="hero-left">
+            {/* BADGE */}
+            <div
               style={{
-                width: 8,
-                height: 8,
-                background: "#6366f1",
-                borderRadius: "50%",
-              }}
-            />
-
-            <span
-              style={{
-                fontSize: 12,
-                color: "#a5b4fc",
-                fontWeight: 600,
-                letterSpacing: 0.5,
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+                background: "rgba(99,102,241,0.1)",
+                border: "1px solid rgba(99,102,241,0.25)",
+                borderRadius: 20,
+                padding: "6px 14px",
+                marginBottom: 24,
               }}
             >
-              NEW SEASON ARRIVALS
-            </span>
-          </div>
-
-          {/* HEADING */}
-
-          <h1
-            style={{
-              fontFamily: "Syne, sans-serif",
-              fontWeight: 800,
-              fontSize: "clamp(42px, 8vw, 70px)",
-              lineHeight: 1.1,
-              marginBottom: 24,
-            }}
-          >
-            Discover
-            <br />
-            <span
-              style={{
-                background: "linear-gradient(135deg,#6366f1,#c4b5fd)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-              }}
-            >
-              Premium
-            </span>
-            <br />
-            Collections
-          </h1>
-
-          {/* DESCRIPTION */}
-
-          <p
-            style={{
-              fontFamily: "DM Mono, monospace",
-              color: "#94a3b8",
-              fontSize: "clamp(15px, 2vw, 18px)",
-              lineHeight: 1.8,
-              marginBottom: 36,
-              maxWidth: 500,
-            }}
-          >
-            Explore curated products across fashion, electronics, furniture, and
-            lifestyle — delivered fast, priced right.
-          </p>
-
-          {/* BUTTONS */}
-
-          <div
-            style={{
-              fontFamily: "DM Mono, monospace",
-              display: "flex",
-              gap: 16,
-              flexWrap: "wrap",
-            }}
-          >
-            {/* SHOP NOW BUTTON */}
-            <>
-              <Link
-                to="/products"
+              <span
                 style={{
-                  textDecoration: "none",
+                  width: 8,
+                  height: 8,
+                  background: "#6366f1",
+                  borderRadius: "50%",
+                }}
+              />
+              <span
+                style={{
+                  fontSize: 12,
+                  color: "#a5b4fc",
+                  fontWeight: 600,
+                  letterSpacing: 0.5,
                 }}
               >
+                NEW SEASON ARRIVALS
+              </span>
+            </div>
+
+            {/* HEADING */}
+            <h1
+              style={{
+                fontFamily: "Syne, sans-serif",
+                fontWeight: 800,
+                fontSize: "clamp(42px, 8vw, 70px)",
+                lineHeight: 1.1,
+                marginBottom: 24,
+              }}
+            >
+              Discover
+              <br />
+              <span
+                style={{
+                  background: "linear-gradient(135deg,#6366f1,#c4b5fd)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                }}
+              >
+                Premium
+              </span>
+              <br />
+              Collections
+            </h1>
+
+            {/* DESCRIPTION */}
+            <p
+              style={{
+                fontFamily: "DM Mono, monospace",
+                color: "#94a3b8",
+                fontSize: "clamp(15px, 2vw, 18px)",
+                lineHeight: 1.8,
+                marginBottom: 36,
+                maxWidth: 500,
+              }}
+            >
+              Explore curated products across fashion, electronics, furniture,
+              and lifestyle — delivered fast, priced right.
+            </p>
+
+            {/* BUTTONS */}
+            <div
+              style={{
+                fontFamily: "DM Mono, monospace",
+                display: "flex",
+                gap: 16,
+                flexWrap: "wrap",
+              }}
+            >
+              <Link to="/products" style={{ textDecoration: "none" }}>
                 <button className="cssbuttons-io-button">
                   Shop Now
                   <div className="icon">
@@ -190,204 +339,149 @@ const HomePage = () => {
                   </div>
                 </button>
               </Link>
-            </>
-            {/* VIEW DEALS BUTTON*/}
-            <>
               <button
-                onClick={() => {
-                  dealsRef.current?.scrollIntoView({
-                    behavior: "smooth",
-                  });
-                }}
+                onClick={() =>
+                  dealsRef.current?.scrollIntoView({ behavior: "smooth" })
+                }
                 className="view-deals-btn"
               >
                 View Deals
               </button>
-            </>
+            </div>
+
+            {/* STATS */}
+            <div
+              style={{
+                display: "flex",
+                gap: 40,
+                marginTop: 50,
+                flexWrap: "wrap",
+              }}
+            >
+              {[
+                ["10K+", "Products"],
+                ["4.8★", "Rating"],
+                ["Free", "Shipping"],
+              ].map(([value, label]) => (
+                <div key={label}>
+                  <div style={{ fontWeight: 800, fontSize: 28 }}>{value}</div>
+                  <div style={{ color: "#64748b", marginTop: 5 }}>{label}</div>
+                </div>
+              ))}
+            </div>
           </div>
 
-          {/* STATS */}
+          {/* RIGHT SIDE */}
+          <HeroImageCarousel />
+        </section>
 
+        {/* BEST DEALS */}
+        <section ref={dealsRef} style={{ padding: "40px" }}>
           <div
             style={{
+              fontFamily: "Syne, sans-serif",
               display: "flex",
-              gap: 40,
-              marginTop: 50,
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: "30px",
               flexWrap: "wrap",
+              gap: "20px",
             }}
           >
-            {[
-              ["10K+", "Products"],
-              ["4.8★", "Rating"],
-              ["Free", "Shipping"],
-            ].map(([value, label]) => (
-              <div key={label}>
-                <div
-                  style={{
-                    fontWeight: 800,
-                    fontSize: 28,
-                  }}
-                >
-                  {value}
-                </div>
-
-                <div
-                  style={{
-                    color: "#64748b",
-                    marginTop: 5,
-                  }}
-                >
-                  {label}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* RIGHT SIDE */}
-        <HeroImageCarousel />
-      </section>
-
-      {/* BEST DEALS */}
-
-      <section
-        ref={dealsRef}
-        style={{
-          padding: "40px",
-        }}
-      >
-        {/* SECTION HEADER */}
-
-        <div
-          style={{
-            fontFamily: "Syne, sans-serif",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: "30px",
-            flexWrap: "wrap",
-            gap: "20px",
-          }}
-        >
-          <div>
-            <h2
-              style={{
-                fontSize: "38px",
-                fontWeight: "800",
-                marginBottom: "10px",
-              }}
-            >
-              🔥 Best Deals
-            </h2>
-
-            <p
-              style={{
-                color: "#94a3b8",
-                fontSize: "16px",
-              }}
-            >
-              Top discounted products curated for you
-            </p>
-          </div>
-
-          <button
-            onClick={() => navigate("/products")}
-            style={{
-              background: "transparent",
-              border: "1px solid #334155",
-              color: "white",
-              padding: "12px 20px",
-              borderRadius: "12px",
-              cursor: "pointer",
-            }}
-          >
-            View All →
-          </button>
-        </div>
-
-        {/* PRODUCTS GRID */}
-
-        <div
-          style={{
-            overflow: "hidden",
-            width: "100%",
-            position: "relative",
-          }}
-        >
-          <motion.div
-            animate={{
-              x: ["0%", "-50%"],
-            }}
-            transition={{
-              repeat: Infinity,
-              duration: 60,
-              ease: "linear",
-            }}
-            style={{
-              display: "flex",
-              gap: "24px",
-              width: "max-content",
-              marginTop: "25px",
-            }}
-          >
-            {[...bestDeals, ...bestDeals].map((product, index) => (
-              <motion.div
-                key={`${product._id}-${index}`}
-                whileHover={{
-                  y: -8,
-                }}
-                transition={{
-                  duration: 0.35,
-                }}
+            <div>
+              <h2
                 style={{
-                  minWidth: "280px",
-                  maxWidth: "350px",
-                  flexShrink: 0,
+                  fontSize: "38px",
+                  fontWeight: "800",
+                  marginBottom: "10px",
                 }}
               >
-                <div className="homepage-product-wrapper">
-                  <ProductCard product={product} />
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-      <section className="category-section">
-        <div className="category-header">
-          <div>
-            <p className="category-subtitle">EXPLORE</p>
-
-            <h2 className="category-title">Shop by Category</h2>
-          </div>
-        </div>
-
-        <div className="category-grid">
-          {categories.map((category) => (
-            <div
-              key={category}
-              className="category-card"
-              onClick={() => navigate(`/products?category=${category}`)}
+                🔥 Best Deals
+              </h2>
+              <p style={{ color: "#94a3b8", fontSize: "16px" }}>
+                Top discounted products curated for you
+              </p>
+            </div>
+            <button
+              onClick={() => navigate("/products")}
               style={{
-                backgroundImage: `url(${categoryImages[category]})`,
+                background: "rgba(15,23,42,0.7)",
+                border: "1px solid #334155",
+                color: "white",
+                padding: "12px 20px",
+                borderRadius: "12px",
+                cursor: "pointer",
+                backdropFilter: "blur(10px)",
               }}
             >
-              <div className="category-overlay" />
+              View All →
+            </button>
+          </div>
 
-              <div className="category-content">
-                <h3 className="category-name">
-                  {category
-                    .split(" ")
-                    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-                    .join(" ")}
-                </h3>
+          <div
+            style={{ overflow: "hidden", width: "100%", position: "relative" }}
+          >
+            <motion.div
+              animate={{ x: ["0%", "-50%"] }}
+              transition={{ repeat: Infinity, duration: 60, ease: "linear" }}
+              style={{
+                display: "flex",
+                gap: "24px",
+                width: "max-content",
+                marginTop: "25px",
+              }}
+            >
+              {[...bestDeals, ...bestDeals].map((product, index) => (
+                <motion.div
+                  key={`${product._id}-${index}`}
+                  whileHover={{ y: -8 }}
+                  transition={{ duration: 0.35 }}
+                  style={{
+                    minWidth: "280px",
+                    maxWidth: "350px",
+                    flexShrink: 0,
+                  }}
+                >
+                  <div className="homepage-product-wrapper">
+                    <ProductCard product={product} />
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
+        </section>
 
-                <p className="category-link">Explore Collection →</p>
-              </div>
+        {/* CATEGORIES */}
+        <section className="category-section">
+          <div className="category-header">
+            <div>
+              <p className="category-subtitle">EXPLORE</p>
+              <h2 className="category-title">Shop by Category</h2>
             </div>
-          ))}
-        </div>
-      </section>
+          </div>
+          <div className="category-grid">
+            {categories.map((category) => (
+              <div
+                key={category}
+                className="category-card"
+                onClick={() => navigate(`/products?category=${category}`)}
+                style={{ backgroundImage: `url(${categoryImages[category]})` }}
+              >
+                <div className="category-overlay" />
+                <div className="category-content">
+                  <h3 className="category-name">
+                    {category
+                      .split(" ")
+                      .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+                      .join(" ")}
+                  </h3>
+                  <p className="category-link">Explore Collection →</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      </div>
     </div>
   );
 };

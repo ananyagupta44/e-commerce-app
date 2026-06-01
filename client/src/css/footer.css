@@ -1,14 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap');
 
 .footer {
-  background: #151e30;
-  padding: 70px 0 30px;
-  font-family: "Syne", sans-serif;
-  overflow: hidden;
+  position: relative;
+  z-index: 1;
+  /* background: rgba(5, 8, 20, 0.85); */
+  backdrop-filter: blur(10px);
+  /* border-top: 1px solid rgba(99, 102, 241, 0.1); */
 }
 
 .footer-container {
   max-width: 1400px;
+  margin-top: 30px !important;
   margin: 0 auto;
   padding: 0 40px;
 }

@@ -134,12 +134,12 @@ const CartPage = () => {
                   {/* Price row */}
                   <div className="cart-item-price-row">
                     <span className="cart-item-price">
-                      ${item.price.toFixed(2)}
+                      ₹{item.price.toFixed(2)}
                     </span>
                     {item.discount > 0 && (
                       <>
                         <span className="cart-item-original">
-                          ${(item.originalPrice || item.price).toFixed(2)}
+                          ₹{(item.originalPrice || item.price).toFixed(2)}
                         </span>
 
                         <span className="cart-item-badge">
@@ -185,7 +185,7 @@ const CartPage = () => {
                   </button>
                   <div className="cart-item-subtotal">
                     SUBTOTAL
-                    <span>${(item.price * item.qty).toFixed(2)}</span>
+                    <span>₹{(item.price * item.qty).toFixed(2)}</span>
                   </div>
                 </div>
               </div>
@@ -203,7 +203,7 @@ const CartPage = () => {
 
             <div className="summary-row">
               <span className="summary-label">Original Total</span>
-              <span className="summary-value">${originalTotal.toFixed(2)}</span>
+              <span className="summary-value">₹{originalTotal.toFixed(2)}</span>
             </div>
 
             <hr className="summary-divider" />
@@ -211,7 +211,7 @@ const CartPage = () => {
             <div className="summary-row">
               <span className="summary-total-label">Total</span>
               <span className="summary-total-value">
-                ${discountedTotal.toFixed(2)}
+                ₹{discountedTotal.toFixed(2)}
               </span>
             </div>
 
@@ -220,7 +220,7 @@ const CartPage = () => {
               <div className="savings-badge">
                 <span className="savings-badge-label">You Save</span>
                 <span className="savings-badge-value">
-                  −${totalSavings.toFixed(2)}
+                  −₹{totalSavings.toFixed(2)}
                 </span>
               </div>
             )}
@@ -253,10 +253,10 @@ const CartPage = () => {
 
                       <div className="breakdown-row">
                         <span className="breakdown-row-label">
-                          Original ({item.qty} × ${origPrice.toFixed(2)})
+                          Original ({item.qty} × ₹{origPrice.toFixed(2)})
                         </span>
                         <span className="breakdown-row-value">
-                          ${origTotal.toFixed(2)}
+                          ₹{origTotal.toFixed(2)}
                         </span>
                       </div>
 
@@ -266,17 +266,17 @@ const CartPage = () => {
                             Discount ({item.discount}% off)
                           </span>
                           <span className="breakdown-row-value savings">
-                            −${saved.toFixed(2)}
+                            −₹{saved.toFixed(2)}
                           </span>
                         </div>
                       )}
 
                       <div className="breakdown-row">
                         <span className="breakdown-row-label">
-                          Final ({item.qty} × ${item.price.toFixed(2)})
+                          Final ({item.qty} × ₹{item.price.toFixed(2)})
                         </span>
                         <span className="breakdown-row-value final">
-                          ${finalTotal.toFixed(2)}
+                          ₹{finalTotal.toFixed(2)}
                         </span>
                       </div>
                     </div>
@@ -288,14 +288,14 @@ const CartPage = () => {
                   <div className="breakdown-row">
                     <span className="breakdown-row-label">Original Total</span>
                     <span className="breakdown-row-value">
-                      ${originalTotal.toFixed(2)}
+                      ₹{originalTotal.toFixed(2)}
                     </span>
                   </div>
                   {totalSavings > 0 && (
                     <div className="breakdown-row">
                       <span className="breakdown-row-label">Total Savings</span>
                       <span className="breakdown-row-value savings">
-                        −${totalSavings.toFixed(2)}
+                        −₹{totalSavings.toFixed(2)}
                       </span>
                     </div>
                   )}
@@ -306,7 +306,7 @@ const CartPage = () => {
                   <div className="breakdown-row">
                     <span className="breakdown-grand-label">Final Total</span>
                     <span className="breakdown-grand-value">
-                      ${discountedTotal.toFixed(2)}
+                      ₹{discountedTotal.toFixed(2)}
                     </span>
                   </div>
                 </div>

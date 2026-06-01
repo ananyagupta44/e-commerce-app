@@ -32,7 +32,6 @@ export const addToCart = async (req, res) => {
       qty,
       stock,
     } = req.body;
-
     const user = await User.findById(req.user.id);
 
     if (!user) {
@@ -68,7 +67,7 @@ export const addToCart = async (req, res) => {
         stock,
       });
     }
-
+    console.log(user.cart[user.cart.length - 1]);
     await user.save();
 
     res.status(200).json(user.cart);

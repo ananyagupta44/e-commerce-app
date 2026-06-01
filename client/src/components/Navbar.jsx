@@ -21,6 +21,13 @@ const getStoredUser = () => {
   }
 };
 
+const getWishlistKey = () => {
+  const userInfo = JSON.parse(
+    localStorage.getItem("userInfo") || sessionStorage.getItem("userInfo"),
+  );
+  return userInfo?.user?.id ? `wishlist_${userInfo.user.id}` : "wishlist";
+};
+
 const Navbar = () => {
   const navigate = useNavigate();
 
@@ -76,7 +83,7 @@ const Navbar = () => {
 
   // WISHLIST
   const updateWishlistCount = () => {
-    const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+    const wishlist = JSON.parse(localStorage.getItem(getWishlistKey())) || [];
 
     setWishlistCount(wishlist.length);
   };
@@ -149,13 +156,10 @@ const Navbar = () => {
   // LOGOUT
   const logoutHandler = () => {
     localStorage.removeItem("userInfo");
-
     sessionStorage.removeItem("userInfo");
-
     setUserInfo(null);
-
     setCartCount(0);
-
+    setWishlistCount(0);
     navigate("/login");
   };
 

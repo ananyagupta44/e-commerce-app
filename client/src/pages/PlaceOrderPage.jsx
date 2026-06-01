@@ -154,9 +154,9 @@ const PlaceOrderPage = () => {
                       {item.name}
                     </Link>
                     <div className="po-item-calc">
-                      {item.qty} × ${item.price.toFixed(2)}
+                      {item.qty} × ₹{item.price.toFixed(2)}
                       <span className="po-item-total">
-                        ${(item.qty * item.price).toFixed(2)}
+                        ₹{(item.qty * item.price).toFixed(2)}
                       </span>
                     </div>
                   </div>
@@ -172,7 +172,7 @@ const PlaceOrderPage = () => {
 
           <div className="po-summary-row">
             <span className="po-summary-label">Items</span>
-            <span className="po-summary-value">${itemsPrice.toFixed(2)}</span>
+            <span className="po-summary-value">₹{itemsPrice.toFixed(2)}</span>
           </div>
 
           <div className="po-summary-row">
@@ -181,21 +181,21 @@ const PlaceOrderPage = () => {
               <span className="po-summary-free">Free</span>
             ) : (
               <span className="po-summary-value">
-                ${shippingPrice.toFixed(2)}
+                ₹{shippingPrice.toFixed(2)}
               </span>
             )}
           </div>
 
           <div className="po-summary-row">
             <span className="po-summary-label">Tax (18%)</span>
-            <span className="po-summary-value">${taxPrice.toFixed(2)}</span>
+            <span className="po-summary-value">₹{taxPrice.toFixed(2)}</span>
           </div>
 
           <hr className="po-summary-divider" />
 
           <div className="po-summary-row total">
             <span className="po-summary-label">Total</span>
-            <span className="po-summary-value">${totalPrice.toFixed(2)}</span>
+            <span className="po-summary-value">₹{totalPrice.toFixed(2)}</span>
           </div>
 
           {shippingPrice === 0 && (

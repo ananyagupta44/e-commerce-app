@@ -184,7 +184,7 @@ const AdminOrdersPage = () => {
                       </span>
 
                       <span className="ao-order-price">
-                        ${order.totalPrice}
+                        ₹{order.totalPrice}
                       </span>
 
                       <span
@@ -241,7 +241,7 @@ const AdminOrdersPage = () => {
                                 fontFamily: "'DM Mono',monospace",
                               }}
                             >
-                              ${order.totalPrice}
+                              ₹{order.totalPrice}
                             </span>
                           </div>
                           <div

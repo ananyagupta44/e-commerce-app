@@ -54,6 +54,8 @@ const MyOrdersPage = () => {
     });
   };
 
+  console.log("ORDERS:", orders); 
+
   return (
     <div className="orders-page">
       {/* ── Header ── */}
@@ -101,7 +103,7 @@ const MyOrdersPage = () => {
                 {/* Total */}
                 <div>
                   <p className="order-label">Total</p>
-                  <p className="order-total">${order.totalPrice.toFixed(2)}</p>
+                  <p className="order-total">₹{order.totalPrice.toFixed(2)}</p>
                 </div>
 
                 {/* Items count */}
@@ -143,7 +145,7 @@ const MyOrdersPage = () => {
                     </div>
 
                     <div className="order-item-price">
-                      ${(item.price * item.qty).toFixed(2)}
+                      ₹{(item.price * item.qty).toFixed(2)}
                     </div>
                   </div>
                 ))}

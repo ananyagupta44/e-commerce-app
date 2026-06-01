@@ -2,7 +2,6 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-console.log(process.env.GROQ_API_KEY);
 import express from "express";
 import mongoose from "mongoose";
 import path from "path";

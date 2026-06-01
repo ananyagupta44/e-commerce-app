@@ -22,6 +22,7 @@ import AdminOrdersPage from "./pages/AdminOrdersPage";
 import AdminProductsPage from "./pages/AdminProductsPage";
 import ScrollToTop from "./components/ScrollToTop";
 import AdminAIPage from "./pages/AdminAIPage";
+import ProfilePage from "./pages/ProfilePage";
 
 function App() {
   return (
@@ -140,6 +141,14 @@ function App() {
             <AdminRoute>
               <AdminOrdersPage />
             </AdminRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <ProfilePage />
+            </ProtectedRoute>
           }
         />
 

@@ -36,6 +36,7 @@ const PaymentPage = () => {
     if (paymentMethod === "COD") {
       try {
         setLoading(true);
+
         const { data } = await axios.post(
           "http://localhost:5000/api/orders",
           { ...orderData, paymentMethod: "COD" },

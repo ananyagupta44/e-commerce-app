@@ -1,17 +1,21 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import CheckoutSteps from "../components/CheckoutSteps";
-
+import axios from "axios";
 import "../css/ShippingPage.css";
 
 const ShippingPage = () => {
   const navigate = useNavigate();
 
-  const savedAddresses =
-    JSON.parse(localStorage.getItem("shippingAddresses")) || [];
+  const userInfo = JSON.parse(
+    localStorage.getItem("userInfo") || sessionStorage.getItem("userInfo"),
+  );
 
+  const [savedAddresses, setSavedAddresses] = useState([]);
+  const [loadingAddresses, setLoadingAddresses] = useState(true);
   const [selectedAddressIndex, setSelectedAddressIndex] = useState(null);
-  const [showNewForm, setShowNewForm] = useState(savedAddresses.length === 0);
+  const [showNewForm, setShowNewForm] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   const [fullName, setFullName] = useState("");
   const [address, setAddress] = useState("");
@@ -19,6 +23,27 @@ const ShippingPage = () => {
   const [postalCode, setPostalCode] = useState("");
   const [country, setCountry] = useState("");
   const [errors, setErrors] = useState({});
+
+  // ── Fetch addresses from backend ──
+  useEffect(() => {
+    const fetchAddresses = async () => {
+      try {
+        const { data } = await axios.get(
+          "http://localhost:5000/api/users/addresses",
+          { headers: { Authorization: `Bearer ${userInfo.token}` } },
+        );
+        setSavedAddresses(data);
+        // If no saved addresses, show new form
+        if (data.length === 0) setShowNewForm(true);
+      } catch (error) {
+        console.error("Failed to fetch addresses", error);
+        setShowNewForm(true);
+      } finally {
+        setLoadingAddresses(false);
+      }
+    };
+    fetchAddresses();
+  }, []);
 
   // ── Validation ──
   const validate = () => {
@@ -50,10 +75,10 @@ const ShippingPage = () => {
   };
 
   // ── Continue Handler ──
-  const continueHandler = (e) => {
+  const continueHandler = async (e) => {
     e.preventDefault();
 
-    // Use existing address
+    // Use existing saved address
     if (selectedAddressIndex !== null && !showNewForm) {
       const finalAddress = savedAddresses[selectedAddressIndex];
       localStorage.setItem("shipping", JSON.stringify(finalAddress));
@@ -61,6 +86,7 @@ const ShippingPage = () => {
       return;
     }
 
+    // Validate new address form
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
@@ -75,11 +101,42 @@ const ShippingPage = () => {
       country: country.trim(),
     };
 
-    const updatedAddresses = [...savedAddresses, finalAddress];
-    localStorage.setItem("shippingAddresses", JSON.stringify(updatedAddresses));
-    localStorage.setItem("shipping", JSON.stringify(finalAddress));
-    navigate("/placeorder");
+    try {
+      setSaving(true);
+
+      // ✅ Save to backend (user's own addresses in DB)
+      await axios.post(
+        "http://localhost:5000/api/users/addresses",
+        finalAddress,
+        { headers: { Authorization: `Bearer ${userInfo.token}` } },
+      );
+
+      localStorage.setItem("shipping", JSON.stringify(finalAddress));
+      navigate("/placeorder");
+    } catch (error) {
+      console.error("Failed to save address", error);
+      alert("Failed to save address. Please try again.");
+    } finally {
+      setSaving(false);
+    }
   };
+
+  if (loadingAddresses) {
+    return (
+      <>
+        <CheckoutSteps step1 step2 containerStyle={{ marginTop: "50px" }} />
+        <div className="shipping-page">
+          <div className="shipping-card">
+            <p
+              style={{ color: "#475569", fontFamily: "'DM Sans', sans-serif" }}
+            >
+              Loading addresses...
+            </p>
+          </div>
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
@@ -99,7 +156,11 @@ const ShippingPage = () => {
               {savedAddresses.map((item, index) => (
                 <div
                   key={index}
-                  className={`saved-address-card ${selectedAddressIndex === index && !showNewForm ? "selected" : ""}`}
+                  className={`saved-address-card ${
+                    selectedAddressIndex === index && !showNewForm
+                      ? "selected"
+                      : ""
+                  }`}
                   onClick={() => {
                     setSelectedAddressIndex(index);
                     setShowNewForm(false);
@@ -220,8 +281,13 @@ const ShippingPage = () => {
                   {errors.country && <FieldError msg={errors.country} />}
                 </div>
 
-                <button type="submit" className="continue-btn">
-                  Continue <span className="continue-btn-arrow">→</span>
+                <button
+                  type="submit"
+                  className="continue-btn"
+                  disabled={saving}
+                >
+                  {saving ? "Saving..." : "Continue"}
+                  {!saving && <span className="continue-btn-arrow">→</span>}
                 </button>
               </form>
             </>

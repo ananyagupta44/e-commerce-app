@@ -16,28 +16,11 @@ body,
 #root {
   width: 100%;
   min-height: 100%;
-  background: #020617;
+  background: transparent;
 }
 
 body {
-  margin: 0;
-
-  background:
-  radial-gradient(circle at top left,
-  rgba(99,102,241,0.16),
-  transparent 28%),
-
-  radial-gradient(circle at bottom right,
-  rgba(168,85,247,0.12),
-  transparent 30%),
-
-  linear-gradient(
-  to bottom,
-  #020617,
-  #0f172a,
-  #111827
-  );
-
+  background: #030712;
   color: white;
 }
 

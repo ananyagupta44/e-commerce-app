@@ -219,7 +219,7 @@ const AdminProductsPage = () => {
                   <div className="ap-product-info">
                     <p className="ap-product-name">{product.name}</p>
                     <div className="ap-product-meta">
-                      <span className="ap-product-price">${product.price}</span>
+                      <span className="ap-product-price">₹{product.price}</span>
                       {product.category && (
                         <span className="ap-product-cat">
                           {product.category}
@@ -307,16 +307,24 @@ const AdminProductsPage = () => {
                   <label className="ap-input-label">Product Images</label>
 
                   {/* FILE INPUT */}
-                  <input
-                    type="file"
-                    accept="image/*"
-                    multiple
-                    onChange={uploadFileHandler}
-                    style={{
-                      marginTop: "12px",
-                      color: "white",
-                    }}
-                  />
+                  <div className="ap-upload-wrapper">
+                    <label htmlFor="product-images" className="ap-upload-box">
+                      <div className="ap-upload-icon">📷</div>
+                      <div className="ap-upload-text">
+                        <strong>Upload Product Images</strong>
+                        <span>Click or drag images here</span>
+                      </div>
+                    </label>
+
+                    <input
+                      id="product-images"
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      onChange={uploadFileHandler}
+                      className="ap-upload-input"
+                    />
+                  </div>
 
                   {/* IMAGE PREVIEWS */}
                   <div
@@ -380,7 +388,7 @@ const AdminProductsPage = () => {
 
                 <div className="ap-input-row">
                   <div className="ap-input-wrap">
-                    <label className="ap-input-label">Price ($)</label>
+                    <label className="ap-input-label">Price (₹)</label>
                     <input
                       className="ap-input"
                       type="number"

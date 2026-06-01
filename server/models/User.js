@@ -23,6 +23,15 @@ const userSchema = new mongoose.Schema(
       enum: ["user", "admin"],
       default: "user",
     },
+    shippingAddresses: [
+  {
+    fullName: String,
+    address: String,
+    city: String,
+    postalCode: String,
+    country: String,
+  }
+],
     cart: [
       {
         product: {
@@ -49,6 +58,8 @@ const userSchema = new mongoose.Schema(
         qty: Number,
 
         stock: Number,
+
+        images: [String],
       },
     ],
   },

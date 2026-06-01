@@ -183,6 +183,13 @@ const SimilarProducts = ({ currentProduct }) => {
   );
 };
 
+const getWishlistKey = () => {
+  const userInfo = JSON.parse(
+    localStorage.getItem("userInfo") || sessionStorage.getItem("userInfo"),
+  );
+  return userInfo?.user?.id ? `wishlist_${userInfo.user.id}` : "wishlist";
+};
+
 /* ── Main component ── */
 const ProductDetailsPage = () => {
   const { id } = useParams();
@@ -241,7 +248,7 @@ const ProductDetailsPage = () => {
         {
           product: product._id,
           name: product.name,
-          image: product.images[0],
+          image: product.images,
           price: product.finalPrice,
           qty,
           stock: product.stock,
@@ -257,7 +264,7 @@ const ProductDetailsPage = () => {
   };
 
   const toggleWishlist = () => {
-    let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+    let wishlist = JSON.parse(localStorage.getItem(getWishlistKey())) || [];
     const existItem = wishlist.find((x) => x._id === product._id);
     if (existItem) {
       wishlist = wishlist.filter((x) => x._id !== product._id);
@@ -266,7 +273,7 @@ const ProductDetailsPage = () => {
       wishlist.push(product);
       setWished(true);
     }
-    localStorage.setItem("wishlist", JSON.stringify(wishlist));
+    localStorage.setItem(getWishlistKey(), JSON.stringify(wishlist));
     window.dispatchEvent(new Event("storage"));
   };
 
@@ -277,13 +284,38 @@ const ProductDetailsPage = () => {
       const userInfo = JSON.parse(
         localStorage.getItem("userInfo") || sessionStorage.getItem("userInfo"),
       );
+
       await axios.post(
         `http://localhost:5000/api/products/${product._id}/reviews`,
-        { rating, comment },
+        { productId: product._id, rating, comment },
         { headers: { Authorization: `Bearer ${userInfo.token}` } },
       );
-      alert("Review submitted!");
-      window.location.reload();
+
+      // ✅ Build the new review object locally
+      const newReview = {
+        _id: Date.now().toString(), // temp id until page refresh
+        name: userInfo.user?.name || "You",
+        rating,
+        comment,
+      };
+
+      // ✅ Update product state immediately
+      setProduct((prev) => ({
+        ...prev,
+        reviews: [...prev.reviews, newReview],
+        numReviews: prev.numReviews + 1,
+        // Recalculate rating average
+        rating: parseFloat(
+          (
+            (prev.rating * prev.numReviews + rating) /
+            (prev.numReviews + 1)
+          ).toFixed(1),
+        ),
+      }));
+
+      // ✅ Reset form
+      setRating(0);
+      setComment("");
     } catch (err) {
       alert(err.response?.data?.message || "Failed to submit review.");
     }
@@ -297,7 +329,8 @@ const ProductDetailsPage = () => {
         );
         setProduct(data);
         setImgIndex(0);
-        const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+        const wishlist =
+          JSON.parse(localStorage.getItem(getWishlistKey())) || [];
         setWished(!!wishlist.find((x) => x._id === data._id));
       } catch {
         setError("Failed to load product.");
@@ -388,7 +421,7 @@ const ProductDetailsPage = () => {
           <div className="product-rating-row">
             <Stars rating={product.rating} />
             <div className="product-review-count">
-              {product.numReviews} Reviews
+              {product.reviews.length} Reviews
             </div>
           </div>
           <div className="product-price">

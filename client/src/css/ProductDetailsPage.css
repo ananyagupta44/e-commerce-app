@@ -133,7 +133,7 @@
     opacity 0.4s var(--ease-out),
     transform 0.5s var(--ease-out);
   will-change: opacity, transform;
-  background: #050816;
+  background: #ffffff;
 }
 
 .product-image.slide-left-out  { opacity: 0; transform: translateX(-6%) scale(0.98); }

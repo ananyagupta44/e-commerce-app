@@ -1,10 +1,16 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-
 import "../css/ProductCard.css";
-
 import getImageUrl from "../utils/getImageUrl";
+
+// ✅ User-specific wishlist key
+const getWishlistKey = () => {
+  const userInfo = JSON.parse(
+    localStorage.getItem("userInfo") || sessionStorage.getItem("userInfo"),
+  );
+  return userInfo?.user?.id ? `wishlist_${userInfo.user.id}` : "wishlist";
+};
 
 const ProductCard = ({ product }) => {
   const [wished, setWished] = useState(false);
@@ -12,29 +18,23 @@ const ProductCard = ({ product }) => {
   const [currentImage, setCurrentImage] = useState(0);
   const [fade, setFade] = useState(false);
   const navigate = useNavigate();
-
   const intervalRef = useRef(null);
 
   const finalPrice =
     product.finalPrice ||
     product.price - (product.price * product.discount) / 100;
 
-  // IMAGE HOVER CHANGE
   const startImageLoop = () => {
     if (intervalRef.current || product.images.length <= 1) return;
-    // FIRST IMAGE CHANGE INSTANTLY
     setFade(true);
     setTimeout(() => {
       setCurrentImage(1);
       setFade(false);
     }, 180);
-    // THEN NORMAL LOOP
     intervalRef.current = setInterval(() => {
       setFade(true);
       setTimeout(() => {
-        setCurrentImage((prev) => {
-          return (prev + 1) % product.images.length;
-        });
+        setCurrentImage((prev) => (prev + 1) % product.images.length);
         setFade(false);
       }, 250);
     }, 1500);
@@ -51,8 +51,6 @@ const ProductCard = ({ product }) => {
       const userInfo = JSON.parse(
         localStorage.getItem("userInfo") || sessionStorage.getItem("userInfo"),
       );
-
-      // LOGIN CHECK
       if (!userInfo) {
         alert("Please login first");
         navigate("/login");
@@ -63,23 +61,17 @@ const ProductCard = ({ product }) => {
         {
           product: product._id,
           name: product.name,
-          image: product.images?.[0],
+          images: product.images?.[0],
           price: finalPrice,
           qty: 1,
           stock: product.stock,
           originalPrice: product.price,
           discount: product.discount,
         },
-        {
-          headers: {
-            Authorization: `Bearer ${userInfo.token}`,
-          },
-        },
+        { headers: { Authorization: `Bearer ${userInfo.token}` } },
       );
       setAdded(true);
-      setTimeout(() => {
-        setAdded(false);
-      }, 1500);
+      setTimeout(() => setAdded(false), 1500);
       window.dispatchEvent(new Event("cartUpdated"));
       navigate("/cart");
     } catch (error) {
@@ -88,8 +80,9 @@ const ProductCard = ({ product }) => {
     }
   };
 
+  // ✅ Use user-specific key
   const toggleWishlist = () => {
-    let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+    let wishlist = JSON.parse(localStorage.getItem(getWishlistKey())) || [];
     const existItem = wishlist.find((x) => x._id === product._id);
     if (existItem) {
       wishlist = wishlist.filter((x) => x._id !== product._id);
@@ -98,20 +91,19 @@ const ProductCard = ({ product }) => {
       wishlist.push(product);
       setWished(true);
     }
-    localStorage.setItem("wishlist", JSON.stringify(wishlist));
+    localStorage.setItem(getWishlistKey(), JSON.stringify(wishlist));
     window.dispatchEvent(new Event("storage"));
   };
 
+  // ✅ Use user-specific key
   useEffect(() => {
-    const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+    const wishlist = JSON.parse(localStorage.getItem(getWishlistKey())) || [];
     const exists = wishlist.find((x) => x._id === product._id);
     setWished(!!exists);
   }, [product._id]);
 
   useEffect(() => {
-    return () => {
-      clearInterval(intervalRef.current);
-    };
+    return () => clearInterval(intervalRef.current);
   }, []);
 
   return (
@@ -138,7 +130,6 @@ const ProductCard = ({ product }) => {
           className={`pc-wish ${wished ? "active" : ""}`}
           onClick={(e) => {
             e.preventDefault();
-
             toggleWishlist();
           }}
           aria-label={wished ? "Remove from wishlist" : "Add to wishlist"}
@@ -163,33 +154,30 @@ const ProductCard = ({ product }) => {
         </h2>
         <hr className="pc-divider" />
         <p className="pc-desc">{product.description}</p>
+
         {/* PRICE */}
         <div className="pc-price-row">
           <div>
             <p className="pc-price">
-              <span>$</span>
-
+              <span>₹</span>
               {finalPrice.toFixed(2)}
             </p>
-
-            {/* DISCOUNT */}
             {product.discount > 0 && (
               <div className="pc-discount-wrap">
                 <span className="pc-old-price">
-                  ${product.price.toFixed(2)}
+                  ₹{product.price.toFixed(2)}
                 </span>
-
                 <span className="pc-discount-badge">
                   {product.discount}% OFF
                 </span>
               </div>
             )}
           </div>
-
           <Link to={`/product/${product._id}`} className="pc-view-link">
             View details →
           </Link>
         </div>
+
         {/* BUTTON */}
         <button
           className={`pc-btn ${added ? "added" : ""}`}

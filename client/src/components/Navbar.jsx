@@ -41,27 +41,29 @@ const Navbar = () => {
 
   // FETCH CART
   const fetchCartCount = async () => {
-  try {
-    const currentUser = getStoredUser();
+    try {
+      const currentUser = getStoredUser();
 
-    if (!currentUser?.token) {
-      setCartCount(0);
-      return;
+      if (!currentUser?.token) {
+        setCartCount(0);
+        return;
+      }
+
+      const { data } = await axios.get(`${API_URL}/api/cart`, {
+        headers: {
+          Authorization: `Bearer ${currentUser.token}`,
+        },
+      });
+
+      const totalItems = Array.isArray(data)
+        ? data.reduce((acc, item) => acc + (item.qty || 0), 0)
+        : 0;
+
+      setCartCount(totalItems);
+    } catch (error) {
+      console.error("Failed to fetch cart count:", error);
     }
-
-    const { data } = await axios.get(`${API_URL}/api/cart`, {
-      headers: {
-        Authorization: `Bearer ${currentUser.token}`,
-      },
-    });
-
-  // WISHLIST
-  const updateWishlistCount = () => {
-    const wishlist =
-      parseJSON(localStorage.getItem(getWishlistKey(userId))) ?? [];
-    setWishlistCount(Array.isArray(wishlist) ? wishlist.length : 0);
   };
-
   // FETCH CATEGORIES
   const fetchCategories = async () => {
     try {
@@ -79,15 +81,20 @@ const Navbar = () => {
     const syncAuth = () => setUserInfo(getStoredUser());
     window.addEventListener("storage", syncAuth);
     window.addEventListener("storage", fetchCartCount);
-    window.addEventListener("storage", updateWishlistCount);
+    window.addEventListener("storage", wishlistCount);
     window.addEventListener("cartUpdated", fetchCartCount);
+    window.addEventListener("cartUpdated", () => {
+      console.log("cartUpdated received");
+      fetchCartCount();
+    });
+
     return () => {
       window.removeEventListener("storage", syncAuth);
       window.removeEventListener("storage", fetchCartCount);
-      window.removeEventListener("storage", updateWishlistCount);
+      window.removeEventListener("storage", wishlistCount);
       window.removeEventListener("cartUpdated", fetchCartCount);
     };
-  }, [userInfo]);
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (e) => {

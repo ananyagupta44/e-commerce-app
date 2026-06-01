@@ -155,10 +155,8 @@ const PlaceOrderPage = () => {
                       {item.name}
                     </Link>
                     <div className="po-item-calc">
-                      {item.qty} × ₹{item.price.toFixed(2)}
-                      <span className="po-item-total">
-                        ₹{(item.qty * item.price).toFixed(2)}
-                      </span>
+                      ( {item.qty} × ₹{item.price.toFixed(2)} = ₹
+                      {(item.qty * item.price).toFixed(2)} )
                     </div>
                   </div>
                 ))}

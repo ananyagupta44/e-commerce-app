@@ -249,12 +249,18 @@ const ProductDetailsPage = () => {
         {
           product: product._id,
           name: product.name,
-          image: product.images,
+          images: product.images,
           price: product.finalPrice,
           qty,
           stock: product.stock,
+          originalPrice: product.price,
+          discount: product.discount,
         },
-        { headers: { Authorization: `Bearer ${userInfo.token}` } },
+        {
+          headers: {
+            Authorization: `Bearer ${userInfo.token}`,
+          },
+        },
       );
       window.dispatchEvent(new Event("storage"));
       navigate("/cart");

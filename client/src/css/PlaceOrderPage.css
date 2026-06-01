@@ -210,6 +210,11 @@
   margin-bottom: 2px;
 }
 
+.po-item-calc{
+  font-size: 14px;
+  font-family: "DM Mono", monospace;
+}
+
 /* ─── Summary Panel ──────────────────────────────────────── */
 .po-summary {
   background: #18181b;

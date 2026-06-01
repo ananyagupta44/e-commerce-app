@@ -1,92 +1,73 @@
-import { Link, useNavigate, useLocation } from "react-router-dom";
-
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-
 import { useState, useEffect, useRef } from "react";
-
 import { Menu, X } from "lucide-react";
 
 import "../css/Navbar.css";
-
 import logoImage from "../assets/logo.png";
 import API_URL from "@/config/api";
 
-const getStoredUser = () => {
+const parseJSON = (value) => {
   try {
-    return (
-      JSON.parse(localStorage.getItem("userInfo")) ||
-      JSON.parse(sessionStorage.getItem("userInfo"))
-    );
+    return JSON.parse(value);
   } catch {
     return null;
   }
 };
 
-const getWishlistKey = () => {
-  const userInfo = JSON.parse(
-    localStorage.getItem("userInfo") || sessionStorage.getItem("userInfo"),
-  );
-  return userInfo?.user?.id ? `wishlist_${userInfo.user.id}` : "wishlist";
-};
+const getStoredUser = () =>
+  parseJSON(localStorage.getItem("userInfo")) ??
+  parseJSON(sessionStorage.getItem("userInfo"));
+
+const getWishlistKey = (userId) => (userId ? `wishlist_${userId}` : "wishlist");
 
 const Navbar = () => {
   const navigate = useNavigate();
 
-  const location = useLocation();
-
   const [mobileMenu, setMobileMenu] = useState(false);
-
   const [searchQuery, setSearchQuery] = useState("");
-
   const [cartCount, setCartCount] = useState(0);
-
   const [wishlistCount, setWishlistCount] = useState(0);
-
   const [showDropdown, setShowDropdown] = useState(false);
-
   const [showCategories, setShowCategories] = useState(false);
-
   const [userInfo, setUserInfo] = useState(() => getStoredUser());
-
   const [categories, setCategories] = useState([]);
 
-  const dropdownRef = useRef();
+  const dropdownRef = useRef(null);
+  const categoryRef = useRef(null);
 
-  const categoryRef = useRef();
-
-  const queryParams = new URLSearchParams(location.search);
-
-  const category = queryParams.get("category");
+  const userId = userInfo?.user?.id;
+  const userLabel = userInfo?.user?.name || userInfo?.user?.email || "Account";
 
   // FETCH CART
   const fetchCartCount = async () => {
     try {
-      const storedUser = getStoredUser();
-
-      if (!storedUser) {
+      if (!userId) {
         setCartCount(0);
         return;
       }
 
       const { data } = await axios.get(`${API_URL}/api/cart`, {
         headers: {
-          Authorization: `Bearer ${storedUser.token}`,
+          Authorization: `Bearer ${userInfo.token}`,
         },
       });
 
-      const totalItems = data.reduce((acc, item) => acc + item.qty, 0);
+      const totalItems = Array.isArray(data)
+        ? data.reduce((acc, item) => acc + (item.qty || 0), 0)
+        : 0;
 
       setCartCount(totalItems);
     } catch (error) {
-      console.log(error);
+      console.error("Failed to fetch cart count:", error);
     }
   };
 
   // WISHLIST
   const updateWishlistCount = () => {
-    const wishlist = JSON.parse(localStorage.getItem(getWishlistKey())) || [];
-
-    setWishlistCount(wishlist.length);
+    const wishlist =
+      parseJSON(localStorage.getItem(getWishlistKey(userId))) ?? [];
+    setWishlistCount(Array.isArray(wishlist) ? wishlist.length : 0);
   };
 
   // FETCH CATEGORIES
@@ -243,7 +224,7 @@ const Navbar = () => {
                 className="user-btn"
                 onClick={() => setShowDropdown((prev) => !prev)}
               >
-                {userInfo.user?.name || userInfo.user?.email || "Account"} ▼
+                {userLabel} ▼
               </button>
 
               {showDropdown && (

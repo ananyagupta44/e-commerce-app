@@ -41,27 +41,19 @@ const Navbar = () => {
 
   // FETCH CART
   const fetchCartCount = async () => {
-    try {
-      if (!userId) {
-        setCartCount(0);
-        return;
-      }
+  try {
+    const currentUser = getStoredUser();
 
-      const { data } = await axios.get(`${API_URL}/api/cart`, {
-        headers: {
-          Authorization: `Bearer ${userInfo.token}`,
-        },
-      });
-
-      const totalItems = Array.isArray(data)
-        ? data.reduce((acc, item) => acc + (item.qty || 0), 0)
-        : 0;
-
-      setCartCount(totalItems);
-    } catch (error) {
-      console.error("Failed to fetch cart count:", error);
+    if (!currentUser?.token) {
+      setCartCount(0);
+      return;
     }
-  };
+
+    const { data } = await axios.get(`${API_URL}/api/cart`, {
+      headers: {
+        Authorization: `Bearer ${currentUser.token}`,
+      },
+    });
 
   // WISHLIST
   const updateWishlistCount = () => {
@@ -95,7 +87,7 @@ const Navbar = () => {
       window.removeEventListener("storage", updateWishlistCount);
       window.removeEventListener("cartUpdated", fetchCartCount);
     };
-  }, []);
+  }, [userInfo]);
 
   useEffect(() => {
     const handleClickOutside = (e) => {

@@ -1,4 +1,5 @@
 import Order from "../models/Order.js";
+import User from "../models/User.js";
 
 // CREATE ORDER
 export const addOrderItems = async (req, res) => {
@@ -31,6 +32,14 @@ export const addOrderItems = async (req, res) => {
     });
 
     const createdOrder = await order.save();
+
+    // Clear user's cart after successful order creation
+    const user = await User.findById(req.user._id);
+
+    if (user) {
+      user.cart = [];
+      await user.save();
+    }
 
     res.status(201).json(createdOrder);
   } catch (error) {

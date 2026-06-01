@@ -25,8 +25,9 @@ const PaymentPage = () => {
     e.preventDefault();
 
     // ✅ Read these once at the top, shared by both COD and Razorpay
-    const userInfo = JSON.parse(localStorage.getItem("userInfo") ||
-sessionStorage.getItem("userInfo"));
+    const userInfo = JSON.parse(
+      localStorage.getItem("userInfo") || sessionStorage.getItem("userInfo"),
+    );
     const orderData = JSON.parse(localStorage.getItem("pendingOrder"));
 
     if (!orderData) {
@@ -44,9 +45,17 @@ sessionStorage.getItem("userInfo"));
           { ...orderData, paymentMethod: "COD" },
           { headers: { Authorization: `Bearer ${userInfo.token}` } },
         );
+
         localStorage.removeItem("pendingOrder");
         localStorage.removeItem("shipping");
+
         window.dispatchEvent(new Event("storage"));
+        window.dispatchEvent(new Event("cartUpdated"));
+
+        setTimeout(() => {
+          navigate(`/success/${data._id}`);
+        }, 100);
+
         navigate(`/success/${data._id}`);
       } catch (error) {
         console.error(error);
@@ -115,9 +124,17 @@ sessionStorage.getItem("userInfo"));
                 },
                 { headers: { Authorization: `Bearer ${token}` } },
               );
+
               localStorage.removeItem("pendingOrder");
               localStorage.removeItem("shipping");
+
               window.dispatchEvent(new Event("storage"));
+              window.dispatchEvent(new Event("cartUpdated"));
+
+              setTimeout(() => {
+                navigate(`/success/${data._id}`);
+              }, 100);
+
               navigate(`/success/${order._id}`);
             } catch (error) {
               console.error(error);

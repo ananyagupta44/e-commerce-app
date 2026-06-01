@@ -81,7 +81,7 @@ const Navbar = () => {
     const syncAuth = () => setUserInfo(getStoredUser());
     window.addEventListener("storage", syncAuth);
     window.addEventListener("storage", fetchCartCount);
-    window.addEventListener("storage", wishlistCount);
+    window.addEventListener("storage", updateWishlistCount);
     window.addEventListener("cartUpdated", fetchCartCount);
     window.addEventListener("cartUpdated", () => {
       console.log("cartUpdated received");
@@ -91,7 +91,7 @@ const Navbar = () => {
     return () => {
       window.removeEventListener("storage", syncAuth);
       window.removeEventListener("storage", fetchCartCount);
-      window.removeEventListener("storage", wishlistCount);
+      window.removeEventListener("storage", updateWishlistCount);
       window.removeEventListener("cartUpdated", fetchCartCount);
     };
   }, []);

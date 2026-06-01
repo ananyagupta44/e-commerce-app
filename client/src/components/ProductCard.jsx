@@ -37,7 +37,7 @@ const ProductCard = ({ product }) => {
       setTimeout(() => {
         setCurrentImage((prev) => (prev + 1) % product.images.length);
         setFade(false);
-      }, 250);
+      }, 350);
     }, 1500);
   };
 
@@ -106,6 +106,13 @@ const ProductCard = ({ product }) => {
   useEffect(() => {
     return () => clearInterval(intervalRef.current);
   }, []);
+
+  useEffect(() => {
+    product.images?.forEach((img) => {
+      const image = new Image();
+      image.src = getImageUrl(img);
+    });
+  }, [product.images]);
 
   return (
     <div className="pc-card">

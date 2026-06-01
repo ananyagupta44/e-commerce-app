@@ -41,7 +41,7 @@ router.put("/orders/:id", protect, admin, updateOrderStatus);
 
 router.post("/upload", protect, admin, upload.single("image"), (req, res) => {
   res.json({
-    image: `/uploads/products/${req.file.filename}`,
+    image: req.file.path,
   });
 });
 

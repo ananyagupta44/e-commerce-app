@@ -5,67 +5,73 @@ import "../css/ProductCard.css";
 import getImageUrl from "../utils/getImageUrl";
 import API_URL from "@/config/api";
 
-const parseJSON = (value) => {
-  try {
-    return JSON.parse(value);
-  } catch {
-    return null;
-  }
+// ✅ User-specific wishlist key
+const getWishlistKey = () => {
+  const userInfo = JSON.parse(
+    localStorage.getItem("userInfo") || sessionStorage.getItem("userInfo"),
+  );
+  return userInfo?.user?.id ? `wishlist_${userInfo.user.id}` : "wishlist";
 };
-
-const getStoredUser = () =>
-  parseJSON(localStorage.getItem("userInfo")) ??
-  parseJSON(sessionStorage.getItem("userInfo"));
-
-const getWishlistKey = (userId) => (userId ? `wishlist_${userId}` : "wishlist");
 
 const ProductCard = ({ product }) => {
   const [wished, setWished] = useState(false);
   const [added, setAdded] = useState(false);
   const [currentImage, setCurrentImage] = useState(0);
-  const [transitioning, setTransitioning] = useState(false);
-  const navigate = useNavigate();
+  const [fade, setFade] = useState(false);
+
   const intervalRef = useRef(null);
   const timeoutRef = useRef(null);
-
-  const imageCount = product.images?.length ?? 0;
-  const nextImage = (currentImage + 1) % Math.max(imageCount, 1);
+  const navigate = useNavigate();
 
   const finalPrice =
-    product.finalPrice ??
+    product.finalPrice ||
     product.price - (product.price * product.discount) / 100;
 
   const startImageLoop = () => {
-    if (intervalRef.current || imageCount <= 1) return;
+    if (intervalRef.current || product.images?.length <= 1) return;
 
-    intervalRef.current = window.setInterval(() => {
-      setTransitioning(true);
+    // Show second image immediately
+    setFade(true);
 
-      timeoutRef.current = window.setTimeout(() => {
-        setCurrentImage((current) => (current + 1) % imageCount);
-        setTransitioning(false);
-      }, 600);
-    }, 2500);
+    timeoutRef.current = setTimeout(() => {
+      setCurrentImage(1);
+      setFade(false);
+    }, 300);
+
+    // Then continue looping
+    intervalRef.current = setInterval(() => {
+      setFade(true);
+
+      timeoutRef.current = setTimeout(() => {
+        setCurrentImage((prev) => (prev + 1) % product.images.length);
+
+        setFade(false);
+      }, 300);
+    }, 2000);
   };
 
   const stopImageLoop = () => {
-    window.clearInterval(intervalRef.current);
-    window.clearTimeout(timeoutRef.current);
+    clearInterval(intervalRef.current);
+    clearTimeout(timeoutRef.current);
+
     intervalRef.current = null;
     timeoutRef.current = null;
-    setTransitioning(false);
+
+    setFade(false);
+
     setCurrentImage(0);
   };
 
   const addToCartHandler = async () => {
     try {
-      const userInfo = getStoredUser();
+      const userInfo = JSON.parse(
+        localStorage.getItem("userInfo") || sessionStorage.getItem("userInfo"),
+      );
       if (!userInfo) {
         alert("Please login first");
         navigate("/login");
         return;
       }
-
       await axios.post(
         `${API_URL}/api/cart`,
         {
@@ -80,45 +86,42 @@ const ProductCard = ({ product }) => {
         },
         { headers: { Authorization: `Bearer ${userInfo.token}` } },
       );
-
       setAdded(true);
       setTimeout(() => setAdded(false), 1500);
       window.dispatchEvent(new Event("cartUpdated"));
       navigate("/cart");
     } catch (error) {
-      console.error("Failed to add to cart:", error);
+      console.log(error);
       alert("Failed to add to cart");
     }
   };
 
+  // ✅ Use user-specific key
   const toggleWishlist = () => {
-    const userId = getStoredUser()?.user?.id;
-    const key = getWishlistKey(userId);
-    const storedValue = parseJSON(localStorage.getItem(key)) ?? [];
-    const wishlist = Array.isArray(storedValue) ? storedValue : [];
-    const exists = wishlist.some((item) => item._id === product._id);
-    const updatedWishlist = exists
-      ? wishlist.filter((item) => item._id !== product._id)
-      : [...wishlist, product];
-
-    localStorage.setItem(key, JSON.stringify(updatedWishlist));
-    setWished(!exists);
+    let wishlist = JSON.parse(localStorage.getItem(getWishlistKey())) || [];
+    const existItem = wishlist.find((x) => x._id === product._id);
+    if (existItem) {
+      wishlist = wishlist.filter((x) => x._id !== product._id);
+      setWished(false);
+    } else {
+      wishlist.push(product);
+      setWished(true);
+    }
+    localStorage.setItem(getWishlistKey(), JSON.stringify(wishlist));
     window.dispatchEvent(new Event("storage"));
   };
 
   // ✅ Use user-specific key
   useEffect(() => {
-    const userId = getStoredUser()?.user?.id;
-    const key = getWishlistKey(userId);
-    const storedValue = parseJSON(localStorage.getItem(key)) ?? [];
-    const wishlist = Array.isArray(storedValue) ? storedValue : [];
-    setWished(wishlist.some((item) => item._id === product._id));
+    const wishlist = JSON.parse(localStorage.getItem(getWishlistKey())) || [];
+    const exists = wishlist.find((x) => x._id === product._id);
+    setWished(!!exists);
   }, [product._id]);
 
   useEffect(() => {
     return () => {
-      window.clearInterval(intervalRef.current);
-      window.clearTimeout(timeoutRef.current);
+      clearInterval(intervalRef.current);
+      clearTimeout(timeoutRef.current);
     };
   }, []);
 
@@ -129,34 +132,25 @@ const ProductCard = ({ product }) => {
     });
   }, [product.images]);
 
+  const nextImage =
+    product.images?.length > 1 ? (currentImage + 1) % product.images.length : 0;
+
   return (
     <div className="pc-card">
       {/* IMAGE */}
       <Link to={`/product/${product._id}`} className="pc-img-wrap">
         <div
-          className="pc-image-stack"
-          onMouseEnter={() => {
-            if (!product.images?.length) return;
-            startImageLoop();
-          }}
-          onMouseLeave={() => {
-            stopImageLoop();
-          }}
+          className="pc-image-wrap"
+          onMouseEnter={startImageLoop}
+          onMouseLeave={stopImageLoop}
         >
           <img
             src={getImageUrl(product.images?.[currentImage])}
             alt={product.name}
-            className={`pc-img current ${transitioning ? "fade-out" : ""}`}
-          />
-
-          <img
-            src={getImageUrl(product.images?.[nextImage])}
-            alt={product.name}
-            className={`pc-img next ${transitioning ? "fade-in" : ""}`}
+            className={`pc-img ${fade ? "fade-out" : "fade-in"}`}
           />
         </div>
 
-        {/* WISHLIST */}
         <button
           className={`pc-wish ${wished ? "active" : ""}`}
           onClick={(e) => {

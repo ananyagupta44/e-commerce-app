@@ -25,7 +25,8 @@ const PaymentPage = () => {
     e.preventDefault();
 
     // ✅ Read these once at the top, shared by both COD and Razorpay
-    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    const userInfo = JSON.parse(localStorage.getItem("userInfo") ||
+sessionStorage.getItem("userInfo"));
     const orderData = JSON.parse(localStorage.getItem("pendingOrder"));
 
     if (!orderData) {

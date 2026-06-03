@@ -147,8 +147,6 @@ const Navbar = () => {
           `${API_URL}/api/products/search-suggestions?q=${searchQuery}`,
         );
 
-        console.log("Suggestions API Response:", data);
-
         setSuggestions(data);
         setShowSuggestions(true);
       } catch (err) {

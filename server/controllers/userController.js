@@ -1,4 +1,6 @@
 import User from "../models/User.js";
+import crypto from "crypto";
+import sendResetEmail from "../utils/sendResetEmail.js";
 
 // GET USER PROFILE
 export const getUserProfile = async (req, res) => {
@@ -81,4 +83,95 @@ export const updateUserProfile = async (req, res) => {
     email: updated.email,
     role: updated.role,
   });
+};
+
+// FORGOT PASSWORD
+export const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    const user = await User.findOne({
+      email,
+    });
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    const resetToken = crypto.randomBytes(32).toString("hex");
+
+    const hashedToken = crypto
+      .createHash("sha256")
+      .update(resetToken)
+      .digest("hex");
+
+    user.resetPasswordToken = hashedToken;
+
+    user.resetPasswordExpire = Date.now() + 15 * 60 * 1000;
+
+    await user.save();
+
+    const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+
+    await sendResetEmail(user.email, resetUrl);
+
+    res.status(200).json({
+      message: "Reset email sent",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+// RESET PASSWORD
+export const resetPassword = async (req, res) => {
+  try {
+    const hashedToken = crypto
+      .createHash("sha256")
+      .update(req.params.token)
+      .digest("hex");
+
+    const user = await User.findOne({
+      resetPasswordToken: hashedToken,
+
+      resetPasswordExpire: {
+        $gt: Date.now(),
+      },
+    });
+
+    if (!user) {
+      return res.status(400).json({
+        message: "Token invalid or expired",
+      });
+    }
+
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+
+    if (!passwordRegex.test(password)) {
+      return res.status(400).json({
+        message:
+          "Password must contain at least 8 characters, one uppercase letter, one lowercase letter, and one number.",
+      });
+    }
+
+    user.password = req.body.password;
+
+    user.resetPasswordToken = undefined;
+
+    user.resetPasswordExpire = undefined;
+
+    await user.save();
+
+    res.status(200).json({
+      message: "Password updated successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
 };

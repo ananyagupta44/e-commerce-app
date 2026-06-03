@@ -144,7 +144,7 @@ const LoginPage = () => {
                 Remember Me
               </label>
 
-              <Link to="/forgot-password" className="login-forgot">
+              <Link to="/forgot-password" className="forgot-link">
                 Forgot Password?
               </Link>
             </div>

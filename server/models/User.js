@@ -24,14 +24,14 @@ const userSchema = new mongoose.Schema(
       default: "user",
     },
     shippingAddresses: [
-  {
-    fullName: String,
-    address: String,
-    city: String,
-    postalCode: String,
-    country: String,
-  }
-],
+      {
+        fullName: String,
+        address: String,
+        city: String,
+        postalCode: String,
+        country: String,
+      },
+    ],
     cart: [
       {
         product: {
@@ -62,6 +62,13 @@ const userSchema = new mongoose.Schema(
         images: [String],
       },
     ],
+    resetPasswordToken: {
+      type: String,
+    },
+
+    resetPasswordExpire: {
+      type: Date,
+    },
   },
   {
     timestamps: true,

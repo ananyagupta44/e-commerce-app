@@ -23,6 +23,8 @@ import AdminProductsPage from "./pages/AdminProductsPage";
 import ScrollToTop from "./components/ScrollToTop";
 import AdminAIPage from "./pages/AdminAIPage";
 import ProfilePage from "./pages/ProfilePage";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 function App() {
   return (
@@ -161,6 +163,10 @@ function App() {
           }
         />
         <Route path="/admin/ai" element={<AdminAIPage />} />
+
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
       </Routes>
       <Footer />
     </BrowserRouter>

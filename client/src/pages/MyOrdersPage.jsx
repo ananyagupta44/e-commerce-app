@@ -59,7 +59,7 @@ const MyOrdersPage = () => {
       {/* ── Header ── */}
       <div className="orders-header">
         <div>
-          <p className="orders-eyebrow">Purchase History</p>
+          <p className="orders-eyebrow">ORDER HISTORY</p>
           <h1 className="orders-title">My Orders</h1>
           <p className="orders-meta">
             <span>

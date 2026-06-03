@@ -4,6 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 import "../css/AdminProductsPage.css";
 import FloatingAIButton from "../components/FloatingAIButton";
 import API_URL from "@/config/api";
+import getImageUrl from "@/utils/getImageUrl";
 
 const AdminProductsPage = () => {
   const [products, setProducts] = useState([]);
@@ -201,70 +202,77 @@ const AdminProductsPage = () => {
             {products.length === 0 ? (
               <div className="ap-empty">NO PRODUCTS FOUND</div>
             ) : (
-              products.map((product, i) => (
-                <div
-                  className="ap-product-card"
-                  key={product._id}
-                  style={{ animationDelay: `${i * 0.05}s` }}
-                >
-                  {product.images?.[0] ? (
-                    <img
-                      src={`${API_URL}${product.images[0]}`}
-                      alt={product.name}
-                      className="ap-product-img"
-                    />
-                  ) : (
-                    <div className="ap-product-img-placeholder">◈</div>
-                  )}
-
-                  <div className="ap-product-info">
-                    <p className="ap-product-name">{product.name}</p>
-                    <div className="ap-product-meta">
-                      <span className="ap-product-price">₹{product.price}</span>
-                      {product.category && (
-                        <span className="ap-product-cat">
-                          {product.category}
-                        </span>
+              products.map(
+                (product, i) => (
+                  console.log(product.images),
+                  (
+                    <div
+                      className="ap-product-card"
+                      key={product._id}
+                      style={{ animationDelay: `${i * 0.05}s` }}
+                    >
+                      {product.images?.[0] ? (
+                        <img
+                          src={getImageUrl(product.images[0])}
+                          alt={product.name}
+                          className="ap-product-img"
+                        />
+                      ) : (
+                        <div className="ap-product-img-placeholder">◈</div>
                       )}
-                      {product.discount > 0 && (
-                        <span
-                          style={{
-                            fontFamily: "'DM Mono',monospace",
-                            fontSize: 10,
-                            color: "#fb923c",
-                          }}
+
+                      <div className="ap-product-info">
+                        <p className="ap-product-name">{product.name}</p>
+                        <div className="ap-product-meta">
+                          <span className="ap-product-price">
+                            ₹{product.price}
+                          </span>
+                          {product.category && (
+                            <span className="ap-product-cat">
+                              {product.category}
+                            </span>
+                          )}
+                          {product.discount > 0 && (
+                            <span
+                              style={{
+                                fontFamily: "'DM Mono',monospace",
+                                fontSize: 10,
+                                color: "#fb923c",
+                              }}
+                            >
+                              -{product.discount}% OFF
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Stock Control */}
+                      <div className="ap-stock-control">
+                        <button
+                          className="ap-stock-btn"
+                          onClick={() => updateStock(product, -1)}
                         >
-                          -{product.discount}% OFF
-                        </span>
-                      )}
+                          −
+                        </button>
+                        <span className="ap-stock-val">{product.stock}</span>
+                        <button
+                          className="ap-stock-btn"
+                          onClick={() => updateStock(product, 1)}
+                        >
+                          +
+                        </button>
+                      </div>
+
+                      <button
+                        className="ap-delete-btn"
+                        onClick={() => deleteHandler(product._id)}
+                      >
+                        Delete
+                      </button>
                     </div>
-                  </div>
-
-                  {/* Stock Control */}
-                  <div className="ap-stock-control">
-                    <button
-                      className="ap-stock-btn"
-                      onClick={() => updateStock(product, -1)}
-                    >
-                      −
-                    </button>
-                    <span className="ap-stock-val">{product.stock}</span>
-                    <button
-                      className="ap-stock-btn"
-                      onClick={() => updateStock(product, 1)}
-                    >
-                      +
-                    </button>
-                  </div>
-
-                  <button
-                    className="ap-delete-btn"
-                    onClick={() => deleteHandler(product._id)}
-                  >
-                    Delete
-                  </button>
-                </div>
-              ))
+                  )
+                ),
+              )
             )}
           </div>
         </div>

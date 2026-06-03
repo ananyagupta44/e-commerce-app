@@ -64,6 +64,16 @@
   color: #fafafa;
   letter-spacing: -1px;
   margin: 0 0 14px;
+  .orders-title {
+  background: linear-gradient(
+    135deg,
+    #ffffff,
+    #c4b5fd
+  );
+
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
 }
 
 .orders-meta {
@@ -92,7 +102,7 @@
 
 /* ─── Order Card ─────────────────────────────────────────── */
 .order-card {
-  background: #111113;
+  background: rgba(112, 130, 169, 0.3);
   border: 1px solid rgba(255,255,255,0.07);
   border-radius: 20px;
   overflow: hidden;
@@ -120,7 +130,7 @@
   font-size: 10px;
   letter-spacing: 2.5px;
   text-transform: uppercase;
-  color: #52525b;
+  color: #6a6a78;
   font-family: "DM Mono", monospace;
   margin-bottom: 8px;
   font-weight: 500;
@@ -254,7 +264,7 @@
 
 .order-item-meta {
   font-size: 12px;
-  color: #52525b;
+  color: #afafbc;
   font-family: "DM Mono", monospace;
   letter-spacing: 0.5px;
 }
@@ -375,4 +385,133 @@
   }
   .order-top > div:first-child { grid-column: 1 / -1; }
   .orders-header { margin-bottom: 40px; padding-bottom: 28px; }
+}
+
+/* ==========================
+   TABLET
+========================== */
+
+@media (max-width: 768px) {
+  .orders-page {
+    padding: 32px 16px 60px;
+  }
+
+  .orders-title {
+    font-size: 34px;
+  }
+
+  .order-top {
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    padding: 22px;
+  }
+
+  .order-items {
+    padding: 18px 22px;
+  }
+
+  .order-item img {
+    width: 64px;
+    height: 80px;
+  }
+}
+
+/* ==========================
+   MOBILE
+========================== */
+
+@media (max-width: 576px) {
+  .orders-page {
+    padding: 24px 12px 50px;
+  }
+
+  .orders-header {
+    margin-bottom: 28px;
+    padding-bottom: 20px;
+  }
+
+  .orders-title {
+    font-size: 28px;
+  }
+
+  .orders-meta {
+    font-size: 11px;
+  }
+
+  .order-card {
+    border-radius: 16px;
+  }
+
+  .order-top {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    padding: 18px;
+  }
+
+  .order-items {
+    padding: 12px 18px 18px;
+  }
+
+  .order-item {
+    gap: 12px;
+  }
+
+  .order-item img {
+    width: 58px;
+    height: 72px;
+  }
+
+  .order-item-name {
+    font-size: 14px;
+  }
+
+  .order-item-price {
+    font-size: 14px;
+  }
+
+  .order-total {
+    font-size: 22px;
+  }
+
+  .order-status {
+    width: fit-content;
+  }
+}
+
+/* ==========================
+   SMALL PHONES
+========================== */
+
+@media (max-width: 420px) {
+  .orders-page {
+    padding: 18px 8px 40px;
+  }
+
+  .orders-title {
+    font-size: 24px;
+  }
+
+  .order-item {
+    flex-wrap: wrap;
+  }
+
+  .order-item-content {
+    width: calc(100% - 80px);
+  }
+
+  .order-item-price {
+    width: 100%;
+    text-align: right;
+    margin-top: 8px;
+  }
+
+  .order-item img {
+    width: 52px;
+    height: 65px;
+  }
+
+  .order-status{
+    width: fit-content;
+    font-size: 8px;
+  }
 }

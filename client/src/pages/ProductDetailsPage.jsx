@@ -206,6 +206,7 @@ const ProductDetailsPage = () => {
   const [imgIndex, setImgIndex] = useState(0);
   const [slideClass, setSlideClass] = useState("slide-in");
   const [showFullDesc, setShowFullDesc] = useState(false);
+  const touchStartX = useRef(null);
 
   const images = product?.images || [];
 
@@ -359,6 +360,27 @@ const ProductDetailsPage = () => {
       </div>
     );
 
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e) => {
+    if (!touchStartX.current) return;
+
+    const touchEndX = e.changedTouches[0].clientX;
+    const diff = touchStartX.current - touchEndX;
+
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) {
+        goNext();
+      } else {
+        goPrev();
+      }
+    }
+
+    touchStartX.current = null;
+  };
+
   return (
     <div className="product-page">
       <button onClick={() => navigate(-1)} className="back-btn">
@@ -369,7 +391,11 @@ const ProductDetailsPage = () => {
       <div className="product-main">
         {/* IMAGE COLUMN */}
         <div className="product-image-section">
-          <div className="product-image-wrapper">
+          <div
+            className="product-image-wrapper"
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+          >
             <img
               src={getImageUrl(images[imgIndex])}
               alt={product.name}

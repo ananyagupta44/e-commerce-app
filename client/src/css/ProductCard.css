@@ -13,6 +13,13 @@
   position: relative;
 }
 
+.pc-card,
+.pc-body,
+.pc-price-row,
+.pc-name {
+  min-width: 0;
+}
+
 .pc-card:hover {
   border-color: #3a3a3a;
 
@@ -115,6 +122,8 @@
 
 /* ✅ Replace your .pc-name with this */
 .pc-name {
+  width: 100%;
+  min-width: 0;
   font-family: 'Playfair Display', serif;
   font-size: 18px;
   font-weight: 600;

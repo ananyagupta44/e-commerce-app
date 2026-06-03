@@ -97,7 +97,7 @@ const PlaceOrderPage = () => {
 
       <div className="placeorder-layout">
         {/* ── Left Column ── */}
-        <div>
+        <div className="placeorder-left">
           {/* Shipping */}
           <div className="po-section">
             <p className="po-section-label">Shipping</p>

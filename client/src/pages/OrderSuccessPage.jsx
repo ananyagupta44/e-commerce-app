@@ -1,6 +1,8 @@
-import CheckoutSteps from "../components/CheckoutSteps";
 import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
+import CheckoutSteps from "../components/CheckoutSteps";
+
+import "../css/OrderSuccessPage.css";
 
 const OrderSuccessPage = () => {
   const { id } = useParams();
@@ -8,187 +10,59 @@ const OrderSuccessPage = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
   return (
-    <>
-      <CheckoutSteps
-        step1
-        step2
-        step3
-        step4
-        step5
-        containerStyle={{
-          marginTop: "50px",
-        }}
-      />
-      <div
-        style={{
-          minHeight: "100vh",
-          background: "linear-gradient(to bottom,#020617,#0f172a)",
-          color: "white",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          padding: "40px",
-        }}
-      >
-        {/* CARD */}
+    <div className="success-page">
+      <CheckoutSteps step1 step2 step3 step4 step5 />
 
-        <div
-          style={{
-            width: "100%",
-            maxWidth: "700px",
-            background: "#0f172a",
-            border: "1px solid #1e293b",
-            borderRadius: "30px",
-            padding: "60px 40px",
-            textAlign: "center",
-          }}
-        >
-          {/* SUCCESS ICON */}
-
-          <div
-            style={{
-              width: "120px",
-              height: "120px",
-              margin: "0 auto 30px",
-              borderRadius: "50%",
-              background: "linear-gradient(135deg,#22c55e,#16a34a)",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              fontSize: "60px",
-            }}
-          >
-            ✓
+      <div className="success-container">
+        <div className="success-card">
+          <div className="success-icon">
+            <span>✓</span>
           </div>
 
-          {/* TITLE */}
+          <p className="success-tag">ORDER CONFIRMED</p>
 
-          <h1
-            style={{
-              fontSize: "52px",
-              fontWeight: "800",
-              marginBottom: "20px",
-            }}
-          >
-            Order Placed!
-          </h1>
+          <h1 className="success-title">Your Order Has Been Placed</h1>
 
-          <p
-            style={{
-              color: "#94a3b8",
-              fontSize: "18px",
-              marginBottom: "30px",
-            }}
-          >
-            Order ID: <strong>{id}</strong>
+          <p className="success-subtitle">
+            Thank you for shopping with NOVA. Your order is now being processed.
           </p>
 
-          {/* MESSAGE */}
+          <div className="success-info-grid">
+            <div className="success-order-id">
+              <p className="success-card-label">Order ID</p>
+              <span>{id}</span>
+            </div>
 
-          <p
-            style={{
-              fontSize: "20px",
-              color: "#94a3b8",
-              lineHeight: "1.8",
-              marginBottom: "40px",
-            }}
-          >
-            Thank you for shopping with NOVA.
-            <br />
-            Your order has been placed successfully and is being processed.
-          </p>
+            <div className="success-delivery-card">
+              <div className="delivery-icon">🚚</div>
 
-          {/* INFO BOX */}
+              <div>
+                <p className="success-card-label">Estimated Delivery</p>
 
-          <div
-            style={{
-              background: "#1e293b",
-              borderRadius: "18px",
-              padding: "25px",
-              marginBottom: "40px",
-            }}
-          >
-            <h3
-              style={{
-                fontSize: "24px",
-                marginBottom: "12px",
-              }}
-            >
-              Estimated Delivery
-            </h3>
-
-            <p
-              style={{
-                color: "#cbd5e1",
-                fontSize: "18px",
-              }}
-            >
-              3 - 5 Business Days 🚚
-            </p>
+                <h3>3 - 5 Business Days</h3>
+              </div>
+            </div>
           </div>
 
-          {/* BUTTONS */}
+          <div className="success-info">
+            You will receive updates about your order status and shipping
+            progress through your account.
+          </div>
 
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              gap: "20px",
-              flexWrap: "wrap",
-            }}
-          >
-            {/* CONTINUE SHOPPING */}
-
-            <Link
-              to="/products"
-              style={{
-                textDecoration: "none",
-              }}
-            >
-              <button
-                style={{
-                  padding: "18px 32px",
-                  borderRadius: "14px",
-                  border: "none",
-                  background: "linear-gradient(135deg,#6366f1,#8b5cf6)",
-                  color: "white",
-                  fontSize: "18px",
-                  fontWeight: "700",
-                  cursor: "pointer",
-                }}
-              >
-                Continue Shopping
-              </button>
+          <div className="success-actions">
+            <Link to="/products">
+              <button className="success-primary-btn">Continue Shopping</button>
             </Link>
 
-            {/* VIEW ORDERS */}
-
-            <Link
-              to="/myorders"
-              style={{
-                textDecoration: "none",
-              }}
-            >
-              <button
-                style={{
-                  padding: "18px 32px",
-                  borderRadius: "14px",
-                  border: "1px solid #334155",
-                  background: "transparent",
-                  color: "white",
-                  fontSize: "18px",
-                  fontWeight: "700",
-                  cursor: "pointer",
-                }}
-              >
-                View Orders
-              </button>
+            <Link to="/myorders">
+              <button className="success-secondary-btn">View Orders</button>
             </Link>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

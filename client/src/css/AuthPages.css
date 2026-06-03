@@ -58,6 +58,7 @@
   padding: 0 16px;
   margin-bottom: 20px;
   transition: all 0.25s ease;
+  color: black
 }
 
 .input-group:focus-within {
@@ -84,7 +85,7 @@
   font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
-  color: white;
+  color: rgb(255, 254, 254);
   background: linear-gradient(
     135deg,
     #6366f1,

@@ -402,6 +402,51 @@
   display: none;
 }
 
+.mobile-search-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.mobile-search-suggestions {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  width: 100%;
+
+  background: rgba(15,23,42,0.98);
+  backdrop-filter: blur(20px);
+
+  border: 1px solid rgba(148,163,184,0.15);
+  border-radius: 16px;
+
+  overflow: hidden;
+
+  max-height: 320px;
+  overflow-y: auto;
+
+  z-index: 9999;
+
+  box-shadow:
+    0 15px 40px rgba(0,0,0,0.35);
+}
+
+.mobile-search-suggestions .suggestion-item {
+  padding: 14px 16px;
+  cursor: pointer;
+
+  transition:
+    background 0.25s ease,
+    transform 0.25s ease;
+}
+
+.mobile-search-suggestions .suggestion-item:hover {
+  background: rgba(99,102,241,0.12);
+  transform: translateX(4px);
+}
+
+.mobile-search-suggestions .suggestion-item small {
+  color: #94a3b8;
+}
 
 /* ==========================================
    TABLET

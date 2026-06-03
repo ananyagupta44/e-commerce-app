@@ -36,7 +36,8 @@ const Navbar = () => {
   const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [loadingSuggestions, setLoadingSuggestions] = useState(false);
-
+  const desktopSearchRef = useRef(null);
+  const mobileSearchRef = useRef(null);
   const dropdownRef = useRef(null);
   const categoryRef = useRef(null);
 
@@ -117,10 +118,18 @@ const Navbar = () => {
       if (categoryRef.current && !categoryRef.current.contains(e.target)) {
         setShowCategories(false);
       }
+      //SEARCH DROPDOWN
+      const clickedDesktop = desktopSearchRef.current?.contains(e.target);
+
+      const clickedMobile = mobileSearchRef.current?.contains(e.target);
+
+      if (!clickedDesktop && !clickedMobile) {
+        setShowSuggestions(false);
+      }
     };
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("click", handleClickOutside);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("click", handleClickOutside);
     };
   }, []);
 
@@ -240,7 +249,7 @@ const Navbar = () => {
           {/* RIGHT */}
           <div className="navbar-right">
             {/* SEARCH */}
-            <div className="navbar-search">
+            <div className="navbar-search" ref={desktopSearchRef}>
               <input
                 type="text"
                 placeholder="Search products..."
@@ -351,14 +360,43 @@ const Navbar = () => {
           </div>
         </div>
       </header>
-      <div className="mobile-search">
-        <input
-          type="text"
-          placeholder="Search products..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          onKeyDown={handleSearch}
-        />
+
+      <div className="mobile-search" ref={mobileSearchRef}>
+        <div className="mobile-search-wrapper">
+          <input
+            type="text"
+            placeholder="Search products..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={handleSearch}
+            onFocus={() => suggestions.length && setShowSuggestions(true)}
+          />
+
+          {showSuggestions && (
+            <div className="mobile-search-suggestions">
+              {loadingSuggestions && (
+                <div className="suggestion-item">Searching...</div>
+              )}
+
+              {!loadingSuggestions &&
+                suggestions.map((item) => (
+                  <div
+                    key={item._id}
+                    className="suggestion-item"
+                    onClick={() => {
+                      navigate(`/product/${item._id}`);
+                      setShowSuggestions(false);
+                    }}
+                  >
+                    <div>
+                      <div>{item.name}</div>
+                      <small>{item.category}</small>
+                    </div>
+                  </div>
+                ))}
+            </div>
+          )}
+        </div>
       </div>
     </>
   );

@@ -154,14 +154,6 @@ const LoginPage = () => {
             </button>
           </form>
 
-          <div className="login-divider">OR CONTINUE WITH</div>
-
-          <div className="login-socials">
-            <button className="social-btn">Google</button>
-
-            <button className="social-btn">Phone OTP</button>
-          </div>
-
           <p className="login-register">
             Don't have an account? <Link to="/register">Register</Link>
           </p>

@@ -1,0 +1,153 @@
+.checkout-steps {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "DM Mono", monospace;
+  margin-bottom: 50px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.checkout-step-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.checkout-step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.checkout-circle {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #1e293b;
+  border: 1px solid #334155;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: white;
+  font-size: 18px;
+  font-weight: 700;
+
+  transition: 0.3s ease;
+}
+
+.checkout-circle.active {
+  background: linear-gradient(
+    135deg,
+    #6366f1,
+    #8b5cf6
+  );
+  border: none;
+}
+
+.checkout-label {
+  color: #94a3b8;
+  font-size: 16px;
+  font-weight: 500;
+  transition: 0.3s ease;
+}
+
+.checkout-label.active {
+  color: white;
+  font-weight: 700;
+}
+
+.checkout-line {
+  width: 60px;
+  height: 2px;
+  background: #334155;
+  margin: 0 14px;
+  transition: 0.3s ease;
+}
+
+.checkout-line.active {
+  background: #6366f1;
+}
+
+/* =========================
+   TABLET
+========================= */
+
+@media (max-width: 768px) {
+  .checkout-steps {
+    gap: 8px;
+    margin-bottom: 35px;
+  }
+
+  .checkout-circle {
+    width: 36px;
+    height: 36px;
+    font-size: 15px;
+  }
+
+  .checkout-label {
+    font-size: 13px;
+  }
+
+  .checkout-line {
+    width: 35px;
+    margin: 0 8px;
+  }
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 576px) {
+  .checkout-steps {
+    justify-content: flex-start;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 8px;
+
+    scrollbar-width: none;
+  }
+
+  .checkout-steps::-webkit-scrollbar {
+    display: none;
+  }
+
+  .checkout-circle {
+    width: 32px;
+    height: 32px;
+    font-size: 13px;
+  }
+
+  .checkout-label {
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+  .checkout-line {
+    width: 24px;
+    margin: 0 6px;
+  }
+}
+
+/* =========================
+   VERY SMALL PHONES
+========================= */
+
+@media (max-width: 400px) {
+  .checkout-circle {
+    width: 28px;
+    height: 28px;
+    font-size: 12px;
+  }
+
+  .checkout-label {
+    font-size: 11px;
+  }
+
+  .checkout-line {
+    width: 18px;
+  }
+}

@@ -161,20 +161,7 @@ const ParticleBackground = () => {
     };
   }, []);
 
-  return (
-    <canvas
-      ref={canvasRef}
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        width: "100%",
-        height: "100%",
-        zIndex: 0,
-        pointerEvents: "none",
-      }}
-    />
-  );
+  return <canvas ref={canvasRef} className="particle-canvas" />;
 };
 
 const HomePage = () => {
@@ -218,104 +205,38 @@ const HomePage = () => {
   };
 
   return (
-    <div
-      style={{
-        width: "100%",
-        minHeight: "100vh",
-        color: "white",
-        position: "relative",
-      }}
-    >
+    <div className="homepage">
       {/* ── PARTICLE BACKGROUND ── */}
       <ParticleBackground />
 
       {/* All content sits above the canvas */}
-      <div style={{ position: "relative", zIndex: 1 }}>
+      <div className="homepage-content">
         {/* HERO SECTION */}
         <section className="hero-section">
           <div className="hero-left">
             {/* BADGE */}
-            <div
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 8,
-                background: "rgba(99,102,241,0.1)",
-                border: "1px solid rgba(99,102,241,0.25)",
-                borderRadius: 20,
-                padding: "6px 14px",
-                marginBottom: 24,
-              }}
-            >
-              <span
-                style={{
-                  width: 8,
-                  height: 8,
-                  background: "#6366f1",
-                  borderRadius: "50%",
-                }}
-              />
-              <span
-                style={{
-                  fontSize: 12,
-                  color: "#a5b4fc",
-                  fontWeight: 600,
-                  letterSpacing: 0.5,
-                }}
-              >
-                NEW SEASON ARRIVALS
-              </span>
+            <div className="hero-badge">
+              <span className="hero-badge-dot" />
+              <span className="hero-badge-text">NEW SEASON ARRIVALS</span>
             </div>
 
             {/* HEADING */}
-            <h1
-              style={{
-                fontFamily: "Syne, sans-serif",
-                fontWeight: 800,
-                fontSize: "clamp(42px, 8vw, 70px)",
-                lineHeight: 1.1,
-                marginBottom: 24,
-              }}
-            >
+            <h1 className="hero-heading">
               Discover
               <br />
-              <span
-                style={{
-                  background: "linear-gradient(135deg,#6366f1,#c4b5fd)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                }}
-              >
-                Premium
-              </span>
+              <span className="hero-heading-gradient">Premium</span>
               <br />
               Collections
             </h1>
 
             {/* DESCRIPTION */}
-            <p
-              style={{
-                fontFamily: "DM Mono, monospace",
-                color: "#94a3b8",
-                fontSize: "clamp(15px, 2vw, 18px)",
-                lineHeight: 1.8,
-                marginBottom: 36,
-                maxWidth: 500,
-              }}
-            >
+            <p className="hero-description">
               Explore curated products across fashion, electronics, furniture,
               and lifestyle — delivered fast, priced right.
             </p>
 
             {/* BUTTONS */}
-            <div
-              style={{
-                fontFamily: "DM Mono, monospace",
-                display: "flex",
-                gap: 16,
-                flexWrap: "wrap",
-              }}
-            >
+            <div className="hero-actions">
               <Link to="/products" style={{ textDecoration: "none" }}>
                 <button className="cssbuttons-io-button">
                   Shop Now
@@ -347,22 +268,15 @@ const HomePage = () => {
             </div>
 
             {/* STATS */}
-            <div
-              style={{
-                display: "flex",
-                gap: 40,
-                marginTop: 50,
-                flexWrap: "wrap",
-              }}
-            >
+            <div className="hero-stats">
               {[
                 ["10K+", "Products"],
                 ["4.8★", "Rating"],
                 ["Free", "Shipping"],
               ].map(([value, label]) => (
                 <div key={label}>
-                  <div style={{ fontWeight: 800, fontSize: 28 }}>{value}</div>
-                  <div style={{ color: "#64748b", marginTop: 5 }}>{label}</div>
+                  <div className="hero-stat-value">{value}</div>
+                  <div className="hero-stat-label">{label}</div>
                 </div>
               ))}
             </div>
@@ -373,71 +287,34 @@ const HomePage = () => {
         </section>
 
         {/* BEST DEALS */}
-        <section ref={dealsRef} style={{ padding: "40px" }}>
-          <div
-            style={{
-              fontFamily: "Syne, sans-serif",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginBottom: "30px",
-              flexWrap: "wrap",
-              gap: "20px",
-            }}
-          >
+        <section ref={dealsRef} className="deals-section">
+          <div className="deals-header">
             <div>
-              <h2
-                style={{
-                  fontSize: "38px",
-                  fontWeight: "800",
-                  marginBottom: "10px",
-                }}
-              >
-                🔥 Best Deals
-              </h2>
-              <p style={{ color: "#94a3b8", fontSize: "16px" }}>
+              <h2 className="deals-title">🔥 Best Deals</h2>
+              <p className="deals-subtitle">
                 Top discounted products curated for you
               </p>
             </div>
             <button
               onClick={() => navigate("/products")}
-              style={{
-                background: "rgba(15,23,42,0.7)",
-                border: "1px solid #334155",
-                color: "white",
-                padding: "12px 20px",
-                borderRadius: "12px",
-                cursor: "pointer",
-                backdropFilter: "blur(10px)",
-              }}
+              className="view-all-btn"
             >
               View All →
             </button>
           </div>
 
-          <div
-            style={{ overflow: "hidden", width: "100%", position: "relative" }}
-          >
+          <div className="deals-slider">
             <motion.div
               animate={{ x: ["0%", "-50%"] }}
               transition={{ repeat: Infinity, duration: 60, ease: "linear" }}
-              style={{
-                display: "flex",
-                gap: "24px",
-                width: "max-content",
-                marginTop: "25px",
-              }}
+              className="deals-track"
             >
               {[...bestDeals, ...bestDeals].map((product, index) => (
                 <motion.div
                   key={`${product._id}-${index}`}
                   whileHover={{ y: -8 }}
                   transition={{ duration: 0.35 }}
-                  style={{
-                    minWidth: "280px",
-                    maxWidth: "350px",
-                    flexShrink: 0,
-                  }}
+                  className="deal-card-wrapper"
                 >
                   <div className="homepage-product-wrapper">
                     <ProductCard product={product} />

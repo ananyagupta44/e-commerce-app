@@ -1,118 +1,33 @@
-const CheckoutSteps = ({
-  step1,
-  step2,
-  step3,
-  step4,
-  step5,
-  containerStyle = {},
-  stepStyle = {},
-}) => {
+import "../css/checkoutSteps.css";
+
+const CheckoutSteps = ({ step1, step2, step3, step4, step5 }) => {
   const steps = [
-    {
-      label: "Cart",
-      active: step1,
-    },
-
-    {
-      label: "Shipping",
-      active: step2,
-    },
-
-    {
-      label: "Place Order",
-      active: step3,
-    },
-
-    {
-      label: "Payment",
-      active: step4,
-    },
-
-    {
-      label: "Success",
-      active: step5,
-    },
+    { label: "Cart", active: step1 },
+    { label: "Shipping", active: step2 },
+    { label: "Place Order", active: step3 },
+    { label: "Payment", active: step4 },
+    { label: "Success", active: step5 },
   ];
 
   return (
-    <div
-      style={{
-        fontFamily: "monospace",
-        width: "100%",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        flexWrap: "wrap",
-        gap: "10px",
-        marginBottom: "50px",
-
-        ...containerStyle,
-      }}
-    >
+    <div className="checkout-steps">
       {steps.map((step, index) => (
-        <div
-          key={index}
-          style={{
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
-          {/* STEP */}
-
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "10px",
-            }}
-          >
-            {/* CIRCLE */}
-
-            <div
-              style={{
-                width: "42px",
-                height: "42px",
-                borderRadius: "50%",
-                background: step.active
-                  ? "linear-gradient(135deg,#6366f1,#8b5cf6)"
-                  : "#1e293b",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                color: "white",
-                fontWeight: "700",
-                fontSize: "18px",
-                border: step.active ? "none" : "1px solid #334155",
-
-                ...stepStyle,
-              }}
-            >
+        <div key={index} className="checkout-step-wrapper">
+          <div className="checkout-step">
+            <div className={`checkout-circle ${step.active ? "active" : ""}`}>
               {index + 1}
             </div>
 
-            {/* LABEL */}
-
-            <span
-              style={{
-                color: step.active ? "white" : "#94a3b8",
-                fontWeight: step.active ? "700" : "500",
-                fontSize: "16px",
-              }}
-            >
+            <span className={`checkout-label ${step.active ? "active" : ""}`}>
               {step.label}
             </span>
           </div>
 
-          {/* LINE */}
-
           {index !== steps.length - 1 && (
             <div
-              style={{
-                width: "60px",
-                height: "2px",
-                background: steps[index + 1].active ? "#6366f1" : "#334155",
-                margin: "0 14px",
-              }}
+              className={`checkout-line ${
+                steps[index + 1].active ? "active" : ""
+              }`}
             />
           )}
         </div>

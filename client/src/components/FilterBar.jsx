@@ -45,10 +45,10 @@ function Dropdown({ options, value, onChange }) {
 
   return (
     <div
-      ref={ref}
       style={{
         position: "relative",
-        margin: "5px",
+        width: "220px",
+        flexShrink: 0,
       }}
     >
       <button
@@ -59,27 +59,17 @@ function Dropdown({ options, value, onChange }) {
           gap: "10px",
           padding: "10px 16px",
           background: "rgba(255,255,255,0.04)",
-
           border: "1px solid rgba(255,255,255,0.08)",
-
           borderRadius: "14px",
-
           cursor: "pointer",
-
           fontSize: "15px",
-
           color: "white",
-
           whiteSpace: "nowrap",
-
-          minWidth: "220px",
-
+          width: "220px",
+          maxWidth: "100%",
           justifyContent: "space-between",
-
           fontFamily: "DM Mono, monospace",
-
           backdropFilter: "blur(12px)",
-
           transition: "0.25s",
         }}
       >
@@ -112,7 +102,8 @@ function Dropdown({ options, value, onChange }) {
 
             top: "calc(100% + 8px)",
 
-            left: 0,
+            right: 0,
+            left: "auto",
 
             minWidth: "100%",
 
@@ -124,7 +115,7 @@ function Dropdown({ options, value, onChange }) {
 
             overflow: "hidden",
 
-            zIndex: 100,
+            zIndex: 9999,
 
             padding: "6px",
 

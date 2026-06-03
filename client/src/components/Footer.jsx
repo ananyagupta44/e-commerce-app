@@ -49,24 +49,6 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* INFO */}
-
-          <div>
-            <h2 className="footer-title">MORE INFO</h2>
-
-            <div className="footer-links">
-              <p className="footer-link">Privacy Policy</p>
-
-              <p className="footer-link">Terms & Conditions</p>
-
-              <p className="footer-link">Blogs</p>
-
-              <p className="footer-link">Sitemap</p>
-
-              <p className="footer-link">Get Notified</p>
-            </div>
-          </div>
-
           {/* STORES */}
 
           <div>

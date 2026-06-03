@@ -3,18 +3,13 @@
 
 .pc-card {
   background: #0f172a;
-
   border: 1px solid rgba(255,255,255,0.06);
-
   overflow: hidden;
-
  font-family: "Syne", sans-serif;;
-
   transition:
     border-color 0.25s ease,
     transform 0.3s ease,
     box-shadow 0.3s ease;
-
   position: relative;
 }
 
@@ -313,4 +308,127 @@
   color: #0f172a;
 
   border-color: #f8fafc;
+}
+
+/* ===========================
+   TABLET
+=========================== */
+
+@media (max-width: 992px) {
+  .pc-body {
+    padding: 0.9rem 1rem 1rem;
+  }
+
+  .pc-name {
+    font-size: 16px;
+  }
+
+  .pc-desc {
+    font-size: 12px;
+  }
+
+  .pc-price {
+    font-size: 18px;
+  }
+
+  .pc-btn {
+    padding: 10px;
+    font-size: 10px;
+  }
+
+  .pc-view-link {
+    font-size: 10px;
+  }
+}
+
+/* ===========================
+   MOBILE
+=========================== */
+
+@media (max-width: 768px) {
+  .pc-img-wrap {
+    aspect-ratio: 1 / 1;
+  }
+
+  .pc-body {
+    padding: 0.8rem;
+  }
+
+  .pc-name {
+    font-size: 15px;
+    margin-bottom: 6px;
+  }
+
+  .pc-desc {
+    font-size: 11px;
+    line-height: 1.5;
+    margin-bottom: 10px;
+  }
+
+  .pc-price {
+    font-size: 16px;
+  }
+
+  .pc-old-price {
+    font-size: 11px;
+  }
+
+  .pc-discount-badge {
+    font-size: 10px;
+  }
+
+  .pc-btn {
+    padding: 9px;
+    font-size: 9.5px;
+  }
+
+  .pc-view-link {
+    font-size: 9px;
+  }
+
+  .pc-wish {
+    width: 30px;
+    height: 30px;
+    font-size: 14px;
+  }
+
+  
+}
+
+/* ===========================
+   SMALL MOBILE
+=========================== */
+
+@media (max-width: 480px) {
+  .pc-body {
+    padding: 0.7rem;
+  }
+
+  .pc-name {
+    font-size: 14px;
+  }
+
+  .pc-desc {
+    display: none;
+  }
+
+  .pc-price {
+    font-size: 15px;
+  }
+
+  .pc-price span {
+    font-size: 11px;
+  }
+
+  .pc-btn {
+    padding: 8px;
+    font-size: 9px;
+  }
+
+  .pc-wish {
+    width: 28px;
+    height: 28px;
+    top: 8px;
+    right: 8px;
+  }
 }

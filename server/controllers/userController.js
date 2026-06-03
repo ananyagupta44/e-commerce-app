@@ -128,6 +128,8 @@ export const forgotPassword = async (req, res) => {
     res.status(200).json({
       message: "Reset email sent",
     });
+
+    console.log("EMAIL RECEIVED:", email);
   } catch (error) {
     console.error(
       "FORGOT PASSWORD ERROR:",

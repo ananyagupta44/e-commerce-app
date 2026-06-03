@@ -90,17 +90,15 @@ export const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body;
 
-    const user = await User.findOne({
-      email,
-    });
+    console.log("EMAIL:", email);
 
-    if (!user) {
-      return res.status(404).json({
-        message: "User not found",
-      });
-    }
+    const user = await User.findOne({ email });
+
+    console.log("USER:", user);
 
     const resetToken = crypto.randomBytes(32).toString("hex");
+
+    console.log("TOKEN GENERATED");
 
     const hashedToken = crypto
       .createHash("sha256")
@@ -108,25 +106,39 @@ export const forgotPassword = async (req, res) => {
       .digest("hex");
 
     user.resetPasswordToken = hashedToken;
-
-    user.resetPasswordExpire = Date.now() + 15 * 60 * 1000;
+    user.resetPasswordExpire =
+      Date.now() + 15 * 60 * 1000;
 
     await user.save();
 
-    const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+    console.log("USER SAVED");
 
-    await sendResetEmail(user.email, resetUrl);
+    const resetUrl =
+      `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+
+    console.log("RESET URL:", resetUrl);
+
+    await sendResetEmail(
+      user.email,
+      resetUrl
+    );
+
+    console.log("EMAIL SENT");
 
     res.status(200).json({
       message: "Reset email sent",
     });
   } catch (error) {
+    console.error(
+      "FORGOT PASSWORD ERROR:",
+      error
+    );
+
     res.status(500).json({
       message: error.message,
     });
   }
 };
-
 // RESET PASSWORD
 export const resetPassword = async (req, res) => {
   console.log("RESET PASSWORD ROUTE HIT");
@@ -149,6 +161,7 @@ export const resetPassword = async (req, res) => {
         message: "Token invalid or expired",
       });
     }
+    const { password } = req.body;
 
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
 

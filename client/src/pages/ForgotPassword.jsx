@@ -8,9 +8,20 @@ function ForgotPassword() {
   const submitHandler = async (e) => {
     e.preventDefault();
 
-    await axios.post(`${API_URL}/api/users/forgot-password`, { email });
+    try {
+      const response = await axios.post(
+        `${API_URL}/api/users/forgot-password`,
+        { email },
+      );
 
-    alert("Reset email sent successfully");
+      console.log("SUCCESS:", response.data);
+
+      alert("Reset email sent successfully");
+    } catch (error) {
+      console.log("SERVER ERROR:", error.response?.data);
+
+      alert(error.response?.data?.message || error.message);
+    }
   };
 
   return (

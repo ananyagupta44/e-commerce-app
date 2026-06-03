@@ -1,101 +1,81 @@
 import { useState } from "react";
-
 import { Link, useNavigate } from "react-router-dom";
-
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import axios from "axios";
 import API_URL from "@/config/api";
+import "../css/RegisterPage.css";
 
 const RegisterPage = () => {
   const navigate = useNavigate();
 
   const [name, setName] = useState("");
-
   const [email, setEmail] = useState("");
-
   const [password, setPassword] = useState("");
-
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // SUBMIT
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     setError("");
 
-    // PASSWORD MATCH
     if (password !== confirmPassword) {
       setError("Passwords do not match");
-
       return;
     }
 
     try {
       setLoading(true);
-      // TRIM VALUES
+
       const trimmedName = name.trim();
       const trimmedEmail = email.trim();
 
-      // NAME VALIDATION
       if (!trimmedName) {
-        alert("Name is required");
+        setError("Name is required");
         return;
       }
 
       if (trimmedName.length < 2) {
-        alert("Name must be at least 2 characters");
+        setError("Name must be at least 2 characters");
         return;
       }
 
-      // ONLY LETTERS/SPACES
       const nameRegex = /^[A-Za-z ]+$/;
 
       if (!nameRegex.test(trimmedName)) {
-        alert("Name can contain only letters");
+        setError("Name can contain only letters");
         return;
       }
 
-      // EMAIL VALIDATION
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
       if (!emailRegex.test(trimmedEmail)) {
-        alert("Invalid email format");
+        setError("Invalid email format");
         return;
       }
 
-      // PASSWORD VALIDATION
       const passwordRegex =
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
 
       if (!passwordRegex.test(password)) {
-        alert(
-          "Password must contain:\n\n" +
-            "• 8+ characters\n" +
-            "• uppercase letter\n" +
-            "• lowercase letter\n" +
-            "• number\n" +
-            "• special character",
+        setError(
+          "Password must contain uppercase, lowercase, number and special character"
         );
-
         return;
       }
 
-      await axios.post(
-        `${API_URL}/api/auth/register`,
+      await axios.post(`${API_URL}/api/auth/register`, {
+        name: trimmedName,
+        email: trimmedEmail,
+        password,
+      });
 
-        {
-          name: trimmedName,
-          email: trimmedEmail,
-          password: password,
-        },
-      );
-
-      // REDIRECT TO LOGIN
       navigate("/login");
-
       window.dispatchEvent(new Event("storage"));
     } catch (error) {
       setError(error.response?.data?.message || "Registration failed");
@@ -105,261 +85,135 @@ const RegisterPage = () => {
   };
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        background: "linear-gradient(to bottom,#020617,#0f172a)",
-        padding: 20,
-      }}
-    >
-      <div
-        style={{
-          width: "100%",
-          maxWidth: 450,
-          background: "#0f172a",
-          border: "1px solid #1e293b",
-          borderRadius: 20,
-          padding: 40,
-          color: "white",
-        }}
-      >
-        {/* TITLE */}
+    <div className="register-page">
+      <div className="register-card">
+        <h1 className="register-title">Create Account</h1>
 
-        <h1
-          style={{
-            textAlign: "center",
-            fontSize: 36,
-            fontWeight: 800,
-            marginBottom: 10,
-          }}
-        >
-          Create Account
-        </h1>
-
-        <p
-          style={{
-            textAlign: "center",
-            color: "#94a3b8",
-            marginBottom: 30,
-          }}
-        >
+        <p className="register-subtitle">
           Register to continue shopping
         </p>
 
-        {/* ERROR */}
-
         {error && (
-          <div
-            style={{
-              background: "rgba(248,113,113,0.1)",
-              border: "1px solid rgba(248,113,113,0.2)",
-              padding: 12,
-              borderRadius: 10,
-              marginBottom: 20,
-              color: "#f87171",
-            }}
-          >
+          <div className="register-error">
             {error}
           </div>
         )}
 
-        {/* FORM */}
-
         <form onSubmit={handleSubmit}>
-          {/* NAME */}
-
-          <div style={{ marginBottom: 20 }}>
-            <label
-              style={{
-                display: "block",
-                marginBottom: 8,
-                color: "#cbd5e1",
-              }}
-            >
+          <div className="register-group">
+            <label className="register-label">
               Full Name
             </label>
 
             <input
               type="text"
+              className="register-input"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              required
               placeholder="Enter your name"
-              style={{
-                width: "100%",
-                padding: 14,
-                borderRadius: 10,
-                border: "1px solid #334155",
-                background: "#020617",
-                color: "white",
-                outline: "none",
-              }}
+              required
             />
           </div>
 
-          {/* EMAIL */}
-
-          <div style={{ marginBottom: 20 }}>
-            <label
-              style={{
-                display: "block",
-                marginBottom: 8,
-                color: "#cbd5e1",
-              }}
-            >
+          <div className="register-group">
+            <label className="register-label">
               Email
             </label>
 
             <input
               type="email"
+              className="register-input"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter your email"
               required
-              placeholder="Enter email"
-              style={{
-                width: "100%",
-                padding: 14,
-                borderRadius: 10,
-                border: "1px solid #334155",
-                background: "#020617",
-                color: "white",
-                outline: "none",
-              }}
             />
           </div>
 
-          {/* PASSWORD */}
-
-          <div style={{ marginBottom: 20 }}>
-            <label
-              style={{
-                display: "block",
-                marginBottom: 8,
-                color: "#cbd5e1",
-              }}
-            >
+          <div className="register-group">
+            <label className="register-label">
               Password
             </label>
 
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              placeholder="Enter password"
-              style={{
-                width: "100%",
+            <div className="password-wrapper">
+              <input
+                type={showPassword ? "text" : "password"}
+                className="register-input"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter password"
+                required
+              />
 
-                padding: 14,
-
-                borderRadius: 10,
-
-                border: "1px solid #334155",
-
-                background: "#020617",
-
-                color: "white",
-
-                outline: "none",
-              }}
-            />
+              <button
+                type="button"
+                className="password-toggle"
+                onClick={() =>
+                  setShowPassword(!showPassword)
+                }
+              >
+                {showPassword ? (
+                  <FaEyeSlash />
+                ) : (
+                  <FaEye />
+                )}
+              </button>
+            </div>
           </div>
 
-          {/* CONFIRM PASSWORD */}
-
-          <div style={{ marginBottom: 30 }}>
-            <label
-              style={{
-                display: "block",
-                marginBottom: 8,
-                color: "#cbd5e1",
-              }}
-            >
+          <div className="register-group">
+            <label className="register-label">
               Confirm Password
             </label>
 
-            <input
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-              placeholder="Confirm password"
-              style={{
-                width: "100%",
+            <div className="password-wrapper">
+              <input
+                type={
+                  showConfirmPassword
+                    ? "text"
+                    : "password"
+                }
+                className="register-input"
+                value={confirmPassword}
+                onChange={(e) =>
+                  setConfirmPassword(e.target.value)
+                }
+                placeholder="Confirm password"
+                required
+              />
 
-                padding: 14,
-
-                borderRadius: 10,
-
-                border: "1px solid #334155",
-
-                background: "#020617",
-
-                color: "white",
-
-                outline: "none",
-              }}
-            />
+              <button
+                type="button"
+                className="password-toggle"
+                onClick={() =>
+                  setShowConfirmPassword(
+                    !showConfirmPassword
+                  )
+                }
+              >
+                {showConfirmPassword ? (
+                  <FaEyeSlash />
+                ) : (
+                  <FaEye />
+                )}
+              </button>
+            </div>
           </div>
-
-          {/* BUTTON */}
 
           <button
             type="submit"
+            className="register-btn"
             disabled={loading}
-            style={{
-              width: "100%",
-
-              padding: 14,
-
-              borderRadius: 12,
-
-              border: "none",
-
-              background: "linear-gradient(135deg,#6366f1,#8b5cf6)",
-
-              color: "white",
-
-              fontSize: 16,
-
-              fontWeight: 700,
-
-              cursor: "pointer",
-
-              opacity: loading ? 0.7 : 1,
-            }}
           >
-            {loading ? "Creating Account..." : "Register"}
+            {loading
+              ? "Creating Account..."
+              : "Register"}
           </button>
         </form>
 
-        {/* LOGIN LINK */}
-
-        <p
-          style={{
-            textAlign: "center",
-
-            marginTop: 25,
-
-            color: "#94a3b8",
-          }}
-        >
+        <p className="register-login">
           Already have an account?{" "}
-          <Link
-            to="/login"
-            style={{
-              color: "#a5b4fc",
-
-              textDecoration: "none",
-
-              fontWeight: 700,
-            }}
-          >
-            Login
-          </Link>
+          <Link to="/login">Login</Link>
         </p>
       </div>
     </div>

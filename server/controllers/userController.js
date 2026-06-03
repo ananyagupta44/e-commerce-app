@@ -1,6 +1,7 @@
 import User from "../models/User.js";
 import crypto from "crypto";
 import sendResetEmail from "../utils/sendResetEmail.js";
+import bcrypt from "bcryptjs";
 
 // GET USER PROFILE
 export const getUserProfile = async (req, res) => {
@@ -93,6 +94,11 @@ export const forgotPassword = async (req, res) => {
     console.log("EMAIL:", email);
 
     const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
 
     console.log("USER:", user);
 
@@ -168,10 +174,11 @@ export const resetPassword = async (req, res) => {
       });
     }
 
-    user.password = req.body.password;
+    const salt = await bcrypt.genSalt(10);
+
+    user.password = await bcrypt.hash(password, salt);
 
     user.resetPasswordToken = undefined;
-
     user.resetPasswordExpire = undefined;
 
     await user.save();

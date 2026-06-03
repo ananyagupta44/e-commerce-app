@@ -1,4 +1,4 @@
-import "../css/checkoutSteps.css";
+import "../css/CheckoutSteps.css";
 
 const CheckoutSteps = ({ step1, step2, step3, step4, step5 }) => {
   const steps = [

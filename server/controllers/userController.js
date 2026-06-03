@@ -106,22 +106,17 @@ export const forgotPassword = async (req, res) => {
       .digest("hex");
 
     user.resetPasswordToken = hashedToken;
-    user.resetPasswordExpire =
-      Date.now() + 15 * 60 * 1000;
+    user.resetPasswordExpire = Date.now() + 15 * 60 * 1000;
 
     await user.save();
 
     console.log("USER SAVED");
 
-    const resetUrl =
-      `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
+    const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
 
     console.log("RESET URL:", resetUrl);
 
-    await sendResetEmail(
-      user.email,
-      resetUrl
-    );
+    await sendResetEmail(user.email, resetUrl);
 
     console.log("EMAIL SENT");
 
@@ -130,11 +125,10 @@ export const forgotPassword = async (req, res) => {
     });
 
     console.log("EMAIL RECEIVED:", email);
+
+    console.log("FRONTEND_URL:", process.env.FRONTEND_URL);
   } catch (error) {
-    console.error(
-      "FORGOT PASSWORD ERROR:",
-      error
-    );
+    console.error("FORGOT PASSWORD ERROR:", error);
 
     res.status(500).json({
       message: error.message,

@@ -10,6 +10,7 @@ import {
   searchProducts,
   getBestDeals,
   createProductReview,
+  getSearchSuggestions,
 } from "../controllers/productController.js";
 
 import { protect, admin } from "../middleware/authMiddleware.js";
@@ -27,6 +28,8 @@ router.get("/category/:category", getProductsByCategory);
 router.get("/search/:keyword", searchProducts);
 
 router.get("/best-deals", getBestDeals);
+
+router.get("/search-suggestions", getSearchSuggestions);
 
 router.get("/:id", getProductById);
 

@@ -6,6 +6,7 @@ import { Menu, X } from "lucide-react";
 import "../css/Navbar.css";
 import logoImage from "../assets/logo.png";
 import API_URL from "@/config/api";
+import getImageUrl from "@/utils/getImageUrl";
 
 const parseJSON = (value) => {
   try {
@@ -32,6 +33,9 @@ const Navbar = () => {
   const [showCategories, setShowCategories] = useState(false);
   const [userInfo, setUserInfo] = useState(() => getStoredUser());
   const [categories, setCategories] = useState([]);
+  const [suggestions, setSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [loadingSuggestions, setLoadingSuggestions] = useState(false);
 
   const dropdownRef = useRef(null);
   const categoryRef = useRef(null);
@@ -120,6 +124,34 @@ const Navbar = () => {
     };
   }, []);
 
+  useEffect(() => {
+    const timer = setTimeout(async () => {
+      if (searchQuery.trim().length < 2) {
+        setSuggestions([]);
+        return;
+      }
+
+      try {
+        setLoadingSuggestions(true);
+
+        const { data } = await axios.get(
+          `${API_URL}/api/products/search-suggestions?q=${searchQuery}`,
+        );
+
+        console.log("Suggestions API Response:", data);
+
+        setSuggestions(data);
+        setShowSuggestions(true);
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setLoadingSuggestions(false);
+      }
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
   // SEARCH
   const handleSearch = (e) => {
     if (e.key === "Enter" && searchQuery.trim()) {
@@ -150,139 +182,185 @@ const Navbar = () => {
   };
 
   return (
-    <header className="navbar">
-      <div className="navbar-container">
-        {/* LEFT */}
-        <div className="navbar-left">
-          {/* MOBILE MENU BTN */}
-          <button
-            className="mobile-menu-btn"
-            onClick={() => setMobileMenu(!mobileMenu)}
-          >
-            {mobileMenu ? <X size={24} /> : <Menu size={24} />}
-          </button>
+    <>
+      <header className="navbar">
+        <div className="navbar-container">
+          {/* LEFT */}
+          <div className="navbar-left">
+            {/* MOBILE MENU BTN */}
+            <button
+              className="mobile-menu-btn"
+              onClick={() => setMobileMenu(!mobileMenu)}
+            >
+              {mobileMenu ? <X size={24} /> : <Menu size={24} />}
+            </button>
 
-          {/* LINKS */}
-          <nav className={`navbar-links ${mobileMenu ? "active" : ""}`}>
-            <Link to="/">Home</Link>
+            {/* LINKS */}
+            <nav className={`navbar-links ${mobileMenu ? "active" : ""}`}>
+              <Link to="/">Home</Link>
 
-            <Link to="/products">Products</Link>
+              <Link to="/products">Products</Link>
 
-            {/* CATEGORIES */}
-            <div className="category-dropdown" ref={categoryRef}>
-              <button
-                className="category-btn"
-                onClick={() => setShowCategories(!showCategories)}
-              >
-                Categories ▼
-              </button>
+              {/* CATEGORIES */}
+              <div className="category-dropdown" ref={categoryRef}>
+                <button
+                  className="category-btn"
+                  onClick={() => setShowCategories(!showCategories)}
+                >
+                  Categories ▼
+                </button>
 
-              {showCategories && (
-                <div className="category-menu">
-                  {categories.map((cat) => (
-                    <button
-                      key={cat}
-                      onClick={() => {
-                        navigate(`/products?category=${cat}`);
+                {showCategories && (
+                  <div className="category-menu">
+                    {categories.map((cat) => (
+                      <button
+                        key={cat}
+                        onClick={() => {
+                          navigate(`/products?category=${cat}`);
 
-                        setShowCategories(false);
+                          setShowCategories(false);
 
-                        setMobileMenu(false);
-                      }}
-                    >
-                      {cat}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          </nav>
-        </div>
-
-        {/* LOGO */}
-        <Link to="/" className="navbar-logo-center">
-          <img src={logoImage} alt="Logo" />
-        </Link>
-
-        {/* RIGHT */}
-        <div className="navbar-right">
-          {/* SEARCH */}
-          <div className="navbar-search">
-            <input
-              type="text"
-              placeholder="Search products..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyDown={handleSearch}
-            />
+                          setMobileMenu(false);
+                        }}
+                      >
+                        {cat.charAt(0).toUpperCase() + cat.slice(1)}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </nav>
           </div>
 
-          {/* WISHLIST */}
-          <Link to="/wishlist">❤️ {wishlistCount}</Link>
+          {/* LOGO */}
+          <Link to="/" className="navbar-logo-center">
+            <img src={logoImage} alt="Logo" />
+          </Link>
 
-          {/* CART */}
-          <Link to="/cart">🛒 {cartCount}</Link>
+          {/* RIGHT */}
+          <div className="navbar-right">
+            {/* SEARCH */}
+            <div className="navbar-search">
+              <input
+                type="text"
+                placeholder="Search products..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={handleSearch}
+                onFocus={() => suggestions.length && setShowSuggestions(true)}
+              />
 
-          {/* USER */}
-          {userInfo ? (
-            <div className="user-dropdown" ref={dropdownRef}>
-              <button
-                className="user-btn"
-                onClick={() => setShowDropdown((prev) => !prev)}
-              >
-                {userLabel} ▼
-              </button>
-
-              {showDropdown && (
-                <div className="dropdown-menu">
-                  {/* USER INFO */}
-                  <div className="dropdown-user-info">
-                    <h3 className="dropdown-user-name">
-                      {userInfo.user?.name || "User"}
-                    </h3>
-
-                    <p className="dropdown-user-email">
-                      {userInfo.user?.email || ""}
-                    </p>
-                  </div>
-
-                  <hr className="dropdown-divider" />
-
-                  {/* ADMIN */}
-                  {userInfo?.user?.role === "admin" && (
-                    <Link to="/admin" className="dropdown-link">
-                      Admin Dashboard
-                    </Link>
+              {showSuggestions && (
+                <div className="search-suggestions">
+                  {loadingSuggestions && (
+                    <div className="suggestion-item">Searching...</div>
                   )}
 
-                  <Link to="/myorders" className="dropdown-link">
-                    My Orders
-                  </Link>
+                  {!loadingSuggestions &&
+                    suggestions.map((item) => (
+                      <div
+                        key={item._id}
+                        className="suggestion-item"
+                        onClick={() => {
+                          navigate(`/product/${item._id}`);
+                          setShowSuggestions(false);
+                        }}
+                      >
+                        <img
+                          src={getImageUrl(item.images?.[0] || item.image)}
+                          alt={item.name}
+                        />
 
-                  <Link to="/profile" className="dropdown-link">
-                    Profile
-                  </Link>
-
-                  <button onClick={logoutHandler} className="logout-btn">
-                    Logout
-                  </button>
+                        <div>
+                          <div>{item.name}</div>
+                          <small>{item.category}</small>
+                        </div>
+                      </div>
+                    ))}
                 </div>
               )}
             </div>
-          ) : (
-            <div className="auth-buttons">
-              <Link to="/login">
-                <button className="login-btn">Login</button>
-              </Link>
 
-              <Link to="/register">
-                <button className="register-btn">Register</button>
-              </Link>
-            </div>
-          )}
+            <Link to="/wishlist" className="navbar-icon">
+              ❤️
+              {wishlistCount > 0 && <span>{wishlistCount}</span>}
+            </Link>
+
+            <Link to="/cart" className="navbar-icon">
+              🛒
+              {cartCount > 0 && <span>{cartCount}</span>}
+            </Link>
+
+            {/* USER */}
+            {userInfo ? (
+              <div className="user-dropdown" ref={dropdownRef}>
+                <button
+                  className="user-btn"
+                  onClick={() => setShowDropdown((prev) => !prev)}
+                >
+                  {userLabel} ▼
+                </button>
+
+                {showDropdown && (
+                  <div className="dropdown-menu">
+                    {/* USER INFO */}
+                    <div className="dropdown-user-info">
+                      <h3 className="dropdown-user-name">
+                        {userInfo.user?.name || "User"}
+                      </h3>
+
+                      <p className="dropdown-user-email">
+                        {userInfo.user?.email || ""}
+                      </p>
+                    </div>
+
+                    <hr className="dropdown-divider" />
+
+                    {/* ADMIN */}
+                    {userInfo?.user?.role === "admin" && (
+                      <Link to="/admin" className="dropdown-link">
+                        Admin Dashboard
+                      </Link>
+                    )}
+
+                    <Link to="/myorders" className="dropdown-link">
+                      My Orders
+                    </Link>
+
+                    <Link to="/profile" className="dropdown-link">
+                      Profile
+                    </Link>
+
+                    <button onClick={logoutHandler} className="logout-btn">
+                      Logout
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="auth-buttons">
+                <Link to="/login">
+                  <button className="login-btn">Login</button>
+                </Link>
+
+                <Link to="/register">
+                  <button className="register-btn">Register</button>
+                </Link>
+              </div>
+            )}
+          </div>
         </div>
+      </header>
+      <div className="mobile-search">
+        <input
+          type="text"
+          placeholder="Search products..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          onKeyDown={handleSearch}
+        />
       </div>
-    </header>
+    </>
   );
 };
 

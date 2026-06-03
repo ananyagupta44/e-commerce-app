@@ -379,3 +379,29 @@ export const createProductReview = async (req, res) => {
     throw new Error("Product not found");
   }
 };
+
+export const getSearchSuggestions = async (req, res) => {
+  try {
+    const query = req.query.q;
+
+    if (!query || query.trim().length < 2) {
+      return res.json([]);
+    }
+
+    const products = await Product.find({
+      name: {
+        $regex: query,
+        $options: "i",
+      },
+    })
+      .select("_id name images category")
+      .limit(8);
+
+    res.json(products);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "Failed to fetch suggestions",
+    });
+  }
+};

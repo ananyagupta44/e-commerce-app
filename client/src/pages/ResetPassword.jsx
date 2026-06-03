@@ -11,11 +11,20 @@ function ResetPassword() {
   const submitHandler = async (e) => {
     e.preventDefault();
 
-    await axios.put(`${API_URL}/api/users/reset-password/${token}`, {
-      password,
-    });
+    try {
+      const response = await axios.put(
+        `${API_URL}/api/users/reset-password/${token}`,
+        { password },
+      );
 
-    alert("Password changed successfully");
+      console.log(response.data);
+      alert("Password changed successfully");
+    } catch (error) {
+      console.log("STATUS:", error.response?.status);
+      console.log("DATA:", error.response?.data);
+
+      alert(error.response?.data?.message || error.message);
+    }
   };
 
   return (

@@ -129,6 +129,7 @@ export const forgotPassword = async (req, res) => {
 
 // RESET PASSWORD
 export const resetPassword = async (req, res) => {
+  console.log("RESET PASSWORD ROUTE HIT");
   try {
     const hashedToken = crypto
       .createHash("sha256")

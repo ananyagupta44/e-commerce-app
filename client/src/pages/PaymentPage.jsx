@@ -5,6 +5,7 @@ import CheckoutSteps from "../components/CheckoutSteps";
 import axios from "axios";
 import "../css/PaymentPage.css";
 import API_URL from "@/config/api";
+import ParticleBackground from "@/components/ParticleBackground";
 
 const loadRazorpayScript = () => {
   return new Promise((resolve) => {
@@ -182,6 +183,7 @@ const PaymentPage = () => {
 
   return (
     <>
+      <ParticleBackground />
       <div className="pay-root">
         <CheckoutSteps
           step1

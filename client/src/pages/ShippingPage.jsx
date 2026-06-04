@@ -4,6 +4,7 @@ import CheckoutSteps from "../components/CheckoutSteps";
 import axios from "axios";
 import "../css/ShippingPage.css";
 import API_URL from "@/config/api";
+import ParticleBackground from "@/components/ParticleBackground";
 
 const ShippingPage = () => {
   const navigate = useNavigate();
@@ -138,6 +139,7 @@ const ShippingPage = () => {
 
   return (
     <>
+      <ParticleBackground />
       <CheckoutSteps step1 step2 containerStyle={{ marginTop: "50px" }} />
 
       <div className="shipping-page">

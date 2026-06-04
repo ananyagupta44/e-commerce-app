@@ -5,6 +5,7 @@ import "../css/ProductDetailsPage.css";
 import getImageUrl from "../utils/getImageUrl";
 import ProductCard from "../components/ProductCard";
 import API_URL from "@/config/api";
+import ParticleBackground from "@/components/ParticleBackground";
 
 /* ── Helper: render star icons ── */
 const Stars = ({ rating, max = 5, size = "sm" }) => {
@@ -382,200 +383,205 @@ const ProductDetailsPage = () => {
   };
 
   return (
-    <div className="product-page">
-      <button onClick={() => navigate(-1)} className="back-btn">
-        ← Go Back
-      </button>
+    <>
+      <ParticleBackground />
+      <div className="product-page">
+        <button onClick={() => navigate(-1)} className="back-btn">
+          ← Go Back
+        </button>
 
-      {/* MAIN */}
-      <div className="product-main">
-        {/* IMAGE COLUMN */}
-        <div className="product-image-section">
-          <div
-            className="product-image-wrapper"
-            onTouchStart={handleTouchStart}
-            onTouchEnd={handleTouchEnd}
-          >
-            <img
-              src={getImageUrl(images[imgIndex])}
-              alt={product.name}
-              className={`product-image ${slideClass}`}
-            />
+        {/* MAIN */}
+        <div className="product-main">
+          {/* IMAGE COLUMN */}
+          <div className="product-image-section">
+            <div
+              className="product-image-wrapper"
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
+            >
+              <img
+                src={getImageUrl(images[imgIndex])}
+                alt={product.name}
+                className={`product-image ${slideClass}`}
+              />
+              {images.length > 1 && (
+                <>
+                  <button
+                    className="img-arrow img-arrow-left"
+                    onClick={goPrev}
+                    aria-label="Previous image"
+                  >
+                    ‹
+                  </button>
+                  <button
+                    className="img-arrow img-arrow-right"
+                    onClick={goNext}
+                    aria-label="Next image"
+                  >
+                    ›
+                  </button>
+                  <div className="img-dots">
+                    {images.map((_, i) => (
+                      <button
+                        key={i}
+                        className={`img-dot${i === imgIndex ? " active" : ""}`}
+                        onClick={() => switchImage(i)}
+                        aria-label={`Go to image ${i + 1}`}
+                      />
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
             {images.length > 1 && (
-              <>
-                <button
-                  className="img-arrow img-arrow-left"
-                  onClick={goPrev}
-                  aria-label="Previous image"
-                >
-                  ‹
-                </button>
-                <button
-                  className="img-arrow img-arrow-right"
-                  onClick={goNext}
-                  aria-label="Next image"
-                >
-                  ›
-                </button>
-                <div className="img-dots">
-                  {images.map((_, i) => (
-                    <button
-                      key={i}
-                      className={`img-dot${i === imgIndex ? " active" : ""}`}
-                      onClick={() => switchImage(i)}
-                      aria-label={`Go to image ${i + 1}`}
-                    />
-                  ))}
-                </div>
-              </>
+              <div className="product-thumbnails">
+                {images.map((img, i) => (
+                  <img
+                    key={i}
+                    src={getImageUrl(img)}
+                    alt=""
+                    onClick={() => switchImage(i)}
+                    className={`thumbnail-image${i === imgIndex ? " active-thumbnail" : ""}`}
+                  />
+                ))}
+              </div>
             )}
           </div>
-          {images.length > 1 && (
-            <div className="product-thumbnails">
-              {images.map((img, i) => (
-                <img
-                  key={i}
-                  src={getImageUrl(img)}
-                  alt=""
-                  onClick={() => switchImage(i)}
-                  className={`thumbnail-image${i === imgIndex ? " active-thumbnail" : ""}`}
-                />
+
+          {/* DETAILS COLUMN */}
+          <div className="product-details-section">
+            <span className="product-category">{product.category}</span>
+            <h1 className="product-title">{product.name}</h1>
+            <div className="product-rating-row">
+              <Stars rating={product.rating} />
+              <div className="product-review-count">
+                {product.reviews.length} Reviews
+              </div>
+            </div>
+            <div className="product-price">
+              <div className="final-price">
+                ₹{product.finalPrice.toFixed(2)}
+              </div>
+              {product.discount > 0 && (
+                <>
+                  <div className="old-price">₹{product.price.toFixed(2)}</div>
+                  <div className="discount-badge">{product.discount}% OFF</div>
+                </>
+              )}
+            </div>
+            <div className="product-description-wrap">
+              <p
+                className={`product-description ${showFullDesc ? "expanded" : ""}`}
+              >
+                {product.description}
+              </p>
+              {product.description?.length > 260 && (
+                <button
+                  className="show-more-btn"
+                  onClick={() => setShowFullDesc(!showFullDesc)}
+                >
+                  {showFullDesc ? "Show Less" : "Show More"}
+                </button>
+              )}
+            </div>
+            <div className="product-stock">
+              <span>Status</span>
+              {product.stock > 0 ? (
+                <span className="in-stock">In Stock</span>
+              ) : (
+                <span className="out-stock">Out of Stock</span>
+              )}
+            </div>
+            {product.stock > 0 && (
+              <div className="quantity-box">
+                <label>Quantity</label>
+                <select
+                  value={qty}
+                  onChange={(e) => setQty(Number(e.target.value))}
+                  className="quantity-select"
+                >
+                  {[...Array(product.stock).keys()].map((x) => (
+                    <option key={x + 1} value={x + 1}>
+                      {x + 1}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+            <div className="product-buttons">
+              <button
+                onClick={addToCartHandler}
+                className="cart-btn"
+                disabled={product.stock === 0}
+              >
+                Add to Cart
+              </button>
+              <button
+                onClick={toggleWishlist}
+                className={`wishlist-btn${wished ? " wished" : ""}`}
+              >
+                {wished ? "❤️ Wishlisted" : "🤍 Wishlist"}
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* ── SIMILAR PRODUCTS ── */}
+        <SimilarProducts currentProduct={product} />
+
+        {/* ── REVIEWS ── */}
+        <div className="reviews-section">
+          <div className="section-label">
+            <span>Customer Reviews</span>
+          </div>
+          <div className="reviews-header">
+            <div>
+              <h2 className="reviews-title">What People Say</h2>
+              <p className="reviews-subtitle">
+                Verified purchases · Honest opinions
+              </p>
+            </div>
+            <div className="reviews-summary">
+              <div className="summary-score-big">
+                {product.rating?.toFixed(1) || "0.0"}
+              </div>
+              <div className="summary-right">
+                <Stars rating={product.rating} size="summary" />
+                <div className="summary-text">{product.numReviews} reviews</div>
+              </div>
+            </div>
+          </div>
+          {product.reviews.length === 0 ? (
+            <p className="no-reviews">
+              No reviews yet — be the first to share your experience.
+            </p>
+          ) : (
+            <div className="review-grid">
+              {product.reviews.map((review) => (
+                <ReviewCard key={review._id} review={review} />
               ))}
             </div>
           )}
-        </div>
-
-        {/* DETAILS COLUMN */}
-        <div className="product-details-section">
-          <span className="product-category">{product.category}</span>
-          <h1 className="product-title">{product.name}</h1>
-          <div className="product-rating-row">
-            <Stars rating={product.rating} />
-            <div className="product-review-count">
-              {product.reviews.length} Reviews
-            </div>
-          </div>
-          <div className="product-price">
-            <div className="final-price">₹{product.finalPrice.toFixed(2)}</div>
-            {product.discount > 0 && (
-              <>
-                <div className="old-price">₹{product.price.toFixed(2)}</div>
-                <div className="discount-badge">{product.discount}% OFF</div>
-              </>
-            )}
-          </div>
-          <div className="product-description-wrap">
-            <p
-              className={`product-description ${showFullDesc ? "expanded" : ""}`}
-            >
-              {product.description}
+          <div className="review-form">
+            <h3 className="review-form-title">Write a Review</h3>
+            <p className="review-form-sub">
+              Share your honest experience with this product
             </p>
-            {product.description?.length > 260 && (
-              <button
-                className="show-more-btn"
-                onClick={() => setShowFullDesc(!showFullDesc)}
-              >
-                {showFullDesc ? "Show Less" : "Show More"}
-              </button>
-            )}
-          </div>
-          <div className="product-stock">
-            <span>Status</span>
-            {product.stock > 0 ? (
-              <span className="in-stock">In Stock</span>
-            ) : (
-              <span className="out-stock">Out of Stock</span>
-            )}
-          </div>
-          {product.stock > 0 && (
-            <div className="quantity-box">
-              <label>Quantity</label>
-              <select
-                value={qty}
-                onChange={(e) => setQty(Number(e.target.value))}
-                className="quantity-select"
-              >
-                {[...Array(product.stock).keys()].map((x) => (
-                  <option key={x + 1} value={x + 1}>
-                    {x + 1}
-                  </option>
-                ))}
-              </select>
+            <div className="review-form-grid">
+              <StarPicker value={rating} onChange={setRating} />
+              <textarea
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                placeholder="Tell others what you think — quality, fit, delivery, anything that matters…"
+              />
             </div>
-          )}
-          <div className="product-buttons">
-            <button
-              onClick={addToCartHandler}
-              className="cart-btn"
-              disabled={product.stock === 0}
-            >
-              Add to Cart
-            </button>
-            <button
-              onClick={toggleWishlist}
-              className={`wishlist-btn${wished ? " wished" : ""}`}
-            >
-              {wished ? "❤️ Wishlisted" : "🤍 Wishlist"}
+            <button onClick={submitReview} className="review-submit-btn">
+              Submit Review
             </button>
           </div>
         </div>
       </div>
-
-      {/* ── SIMILAR PRODUCTS ── */}
-      <SimilarProducts currentProduct={product} />
-
-      {/* ── REVIEWS ── */}
-      <div className="reviews-section">
-        <div className="section-label">
-          <span>Customer Reviews</span>
-        </div>
-        <div className="reviews-header">
-          <div>
-            <h2 className="reviews-title">What People Say</h2>
-            <p className="reviews-subtitle">
-              Verified purchases · Honest opinions
-            </p>
-          </div>
-          <div className="reviews-summary">
-            <div className="summary-score-big">
-              {product.rating?.toFixed(1) || "0.0"}
-            </div>
-            <div className="summary-right">
-              <Stars rating={product.rating} size="summary" />
-              <div className="summary-text">{product.numReviews} reviews</div>
-            </div>
-          </div>
-        </div>
-        {product.reviews.length === 0 ? (
-          <p className="no-reviews">
-            No reviews yet — be the first to share your experience.
-          </p>
-        ) : (
-          <div className="review-grid">
-            {product.reviews.map((review) => (
-              <ReviewCard key={review._id} review={review} />
-            ))}
-          </div>
-        )}
-        <div className="review-form">
-          <h3 className="review-form-title">Write a Review</h3>
-          <p className="review-form-sub">
-            Share your honest experience with this product
-          </p>
-          <div className="review-form-grid">
-            <StarPicker value={rating} onChange={setRating} />
-            <textarea
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              placeholder="Tell others what you think — quality, fit, delivery, anything that matters…"
-            />
-          </div>
-          <button onClick={submitReview} className="review-submit-btn">
-            Submit Review
-          </button>
-        </div>
-      </div>
-    </div>
+    </>
   );
 };
 

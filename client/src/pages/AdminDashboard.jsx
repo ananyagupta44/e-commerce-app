@@ -4,6 +4,7 @@ import { Link, useLocation } from "react-router-dom";
 import "../css/AdminDashboard.css";
 import FloatingAIButton from "../components/FloatingAIButton";
 import API_URL from "@/config/api";
+import ParticleBackground from "@/components/ParticleBackground";
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState({
@@ -84,6 +85,7 @@ const AdminDashboard = () => {
 
   return (
     <>
+      <ParticleBackground />
       {loading ? (
         <div className="loading-screen">
           <div className="loader-ring" />

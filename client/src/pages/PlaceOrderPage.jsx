@@ -6,6 +6,7 @@ import getImageUrl from "../utils/getImageUrl";
 
 import "../css/PlaceOrderPage.css";
 import API_URL from "@/config/api";
+import ParticleBackground from "@/components/ParticleBackground";
 
 const PlaceOrderPage = () => {
   const navigate = useNavigate();
@@ -86,141 +87,148 @@ const PlaceOrderPage = () => {
   };
 
   return (
-    <div className="placeorder-page">
-      <CheckoutSteps step1 step2 step3 />
+    <>
+      <ParticleBackground />
+      <div className="placeorder-page">
+        <CheckoutSteps step1 step2 step3 />
 
-      {/* ── Header ── */}
-      <div className="placeorder-header">
-        <p className="placeorder-eyebrow">Final Step</p>
-        <h1 className="placeorder-title">Place Order</h1>
-      </div>
+        {/* ── Header ── */}
+        <div className="placeorder-header">
+          <p className="placeorder-eyebrow">Final Step</p>
+          <h1 className="placeorder-title">Place Order</h1>
+        </div>
 
-      <div className="placeorder-layout">
-        {/* ── Left Column ── */}
-        <div className="placeorder-left">
-          {/* Shipping */}
-          <div className="po-section">
-            <p className="po-section-label">Shipping</p>
-            <div className="po-info-row">
-              <span className="po-info-key">Name</span>
-              <span className="po-info-value">{shippingAddress.fullName}</span>
-            </div>
-            <div className="po-info-row">
-              <span className="po-info-key">Address</span>
-              <span className="po-info-value">
-                {shippingAddress.address}, {shippingAddress.city},{" "}
-                {shippingAddress.postalCode}, {shippingAddress.country}
-              </span>
-            </div>
-          </div>
-
-          {/* Payment */}
-          <div className="po-section">
-            <p className="po-section-label">Payment</p>
-            <div className="po-info-row">
-              <span className="po-info-key">Method</span>
-              <span className="po-info-value">
-                <span className="payment-badge">Select in next step</span>
-              </span>
-            </div>
-          </div>
-
-          {/* Order Items */}
-          <div className="po-section">
-            <p className="po-section-label">Order Items ({cartItems.length})</p>
-
-            {cartItems.length === 0 ? (
-              <p
-                style={{
-                  color: "#71717a",
-                  fontFamily: "'DM Mono',monospace",
-                  fontSize: "13px",
-                }}
-              >
-                Cart is empty
-              </p>
-            ) : (
-              <div className="po-items-list">
-                {cartItems.map((item) => (
-                  <div key={item.product} className="po-item">
-                    <img
-                      src={getImageUrl(item.images?.[0] || item.image)}
-                      alt={item.name}
-                      className="po-item-img"
-                    />
-                    <Link
-                      to={`/product/${item.product}`}
-                      className="po-item-name"
-                    >
-                      {item.name}
-                    </Link>
-                    <div className="po-item-calc">
-                      ( {item.qty} × ₹{item.price.toFixed(2)} = ₹
-                      {(item.qty * item.price).toFixed(2)} )
-                    </div>
-                  </div>
-                ))}
+        <div className="placeorder-layout">
+          {/* ── Left Column ── */}
+          <div className="placeorder-left">
+            {/* Shipping */}
+            <div className="po-section">
+              <p className="po-section-label">Shipping</p>
+              <div className="po-info-row">
+                <span className="po-info-key">Name</span>
+                <span className="po-info-value">
+                  {shippingAddress.fullName}
+                </span>
               </div>
+              <div className="po-info-row">
+                <span className="po-info-key">Address</span>
+                <span className="po-info-value">
+                  {shippingAddress.address}, {shippingAddress.city},{" "}
+                  {shippingAddress.postalCode}, {shippingAddress.country}
+                </span>
+              </div>
+            </div>
+
+            {/* Payment */}
+            <div className="po-section">
+              <p className="po-section-label">Payment</p>
+              <div className="po-info-row">
+                <span className="po-info-key">Method</span>
+                <span className="po-info-value">
+                  <span className="payment-badge">Select in next step</span>
+                </span>
+              </div>
+            </div>
+
+            {/* Order Items */}
+            <div className="po-section">
+              <p className="po-section-label">
+                Order Items ({cartItems.length})
+              </p>
+
+              {cartItems.length === 0 ? (
+                <p
+                  style={{
+                    color: "#71717a",
+                    fontFamily: "'DM Mono',monospace",
+                    fontSize: "13px",
+                  }}
+                >
+                  Cart is empty
+                </p>
+              ) : (
+                <div className="po-items-list">
+                  {cartItems.map((item) => (
+                    <div key={item.product} className="po-item">
+                      <img
+                        src={getImageUrl(item.images?.[0] || item.image)}
+                        alt={item.name}
+                        className="po-item-img"
+                      />
+                      <Link
+                        to={`/product/${item.product}`}
+                        className="po-item-name"
+                      >
+                        {item.name}
+                      </Link>
+                      <div className="po-item-calc">
+                        ( {item.qty} × ₹{item.price.toFixed(2)} = ₹
+                        {(item.qty * item.price).toFixed(2)} )
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* ── Right: Summary ── */}
+          <div className="po-summary">
+            <h2 className="po-summary-title">Order Summary</h2>
+
+            <div className="po-summary-row">
+              <span className="po-summary-label">Items</span>
+              <span className="po-summary-value">₹{itemsPrice.toFixed(2)}</span>
+            </div>
+
+            <div className="po-summary-row">
+              <span className="po-summary-label">Shipping</span>
+              {shippingPrice === 0 ? (
+                <span className="po-summary-free">Free</span>
+              ) : (
+                <span className="po-summary-value">
+                  ₹{shippingPrice.toFixed(2)}
+                </span>
+              )}
+            </div>
+
+            <div className="po-summary-row">
+              <span className="po-summary-label">Tax (18%)</span>
+              <span className="po-summary-value">₹{taxPrice.toFixed(2)}</span>
+            </div>
+
+            <hr className="po-summary-divider" />
+
+            <div className="po-summary-row total">
+              <span className="po-summary-label">Total</span>
+              <span className="po-summary-value">₹{totalPrice.toFixed(2)}</span>
+            </div>
+
+            {shippingPrice === 0 && (
+              <p className="free-shipping-note">✓ Free shipping applied</p>
             )}
+
+            <button
+              className="place-order-btn"
+              onClick={placeOrderHandler}
+              disabled={cartItems.length === 0 || loading}
+            >
+              {loading ? (
+                <>
+                  <span className="btn-spinner" />
+                  Placing Order...
+                </>
+              ) : (
+                <>
+                  Place Order
+                  <span className="place-order-btn-arrow">→</span>
+                </>
+              )}
+            </button>
           </div>
-        </div>
-
-        {/* ── Right: Summary ── */}
-        <div className="po-summary">
-          <h2 className="po-summary-title">Order Summary</h2>
-
-          <div className="po-summary-row">
-            <span className="po-summary-label">Items</span>
-            <span className="po-summary-value">₹{itemsPrice.toFixed(2)}</span>
-          </div>
-
-          <div className="po-summary-row">
-            <span className="po-summary-label">Shipping</span>
-            {shippingPrice === 0 ? (
-              <span className="po-summary-free">Free</span>
-            ) : (
-              <span className="po-summary-value">
-                ₹{shippingPrice.toFixed(2)}
-              </span>
-            )}
-          </div>
-
-          <div className="po-summary-row">
-            <span className="po-summary-label">Tax (18%)</span>
-            <span className="po-summary-value">₹{taxPrice.toFixed(2)}</span>
-          </div>
-
-          <hr className="po-summary-divider" />
-
-          <div className="po-summary-row total">
-            <span className="po-summary-label">Total</span>
-            <span className="po-summary-value">₹{totalPrice.toFixed(2)}</span>
-          </div>
-
-          {shippingPrice === 0 && (
-            <p className="free-shipping-note">✓ Free shipping applied</p>
-          )}
-
-          <button
-            className="place-order-btn"
-            onClick={placeOrderHandler}
-            disabled={cartItems.length === 0 || loading}
-          >
-            {loading ? (
-              <>
-                <span className="btn-spinner" />
-                Placing Order...
-              </>
-            ) : (
-              <>
-                Place Order
-                <span className="place-order-btn-arrow">→</span>
-              </>
-            )}
-          </button>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

@@ -4,6 +4,7 @@ import axios from "axios";
 import "../css/AdminUsersPage.css";
 import FloatingAIButton from "../components/FloatingAIButton";
 import API_URL from "@/config/api";
+import ParticleBackground from "@/components/ParticleBackground";
 
 const ROLE_CONFIG = {
   admin: {
@@ -81,6 +82,7 @@ const AdminUsersPage = () => {
 
   return (
     <>
+      <ParticleBackground />
       <div className="au-root">
         {/* TOGGLE */}
         <button className="au-toggle" onClick={() => setSidebarOpen((o) => !o)}>

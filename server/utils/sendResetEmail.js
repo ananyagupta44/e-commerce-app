@@ -1,38 +1,59 @@
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 
 const sendResetEmail = async (email, resetUrl) => {
-  const resend = new Resend(process.env.RESEND_API_KEY);
-  await resend.emails.send({
-    from: "onboarding@resend.dev",
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
+    },
+  });
+
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
     to: email,
-    subject: "Password Reset Request",
+    subject: "Reset Your Password",
 
     html: `
-      <h2>Reset Password</h2>
+      <div style="
+        max-width:600px;
+        margin:auto;
+        padding:30px;
+        font-family:Arial,sans-serif;
+      ">
+        <h2>Password Reset Request</h2>
 
-      <p>
-        Click the button below to reset
-        your password.
-      </p>
+        <p>
+          We received a request to reset your password.
+        </p>
 
-      <a
-        href="${resetUrl}"
-        style="
-          background:#4f46e5;
-          color:white;
-          padding:12px 18px;
-          text-decoration:none;
-          border-radius:8px;
-        "
-      >
-        Reset Password
-      </a>
+        <a
+          href="${resetUrl}"
+          style="
+            display:inline-block;
+            background:#4f46e5;
+            color:white;
+            padding:12px 20px;
+            text-decoration:none;
+            border-radius:8px;
+          "
+        >
+          Reset Password
+        </a>
 
-      <p>
-        This link expires in 15 minutes.
-      </p>
+        <p>
+          This link will expire in 15 minutes.
+        </p>
+
+        <p>
+          If you didn't request this,
+          you can safely ignore this email.
+        </p>
+      </div>
     `,
-  });
+  };
+
+  await transporter.sendMail(mailOptions);
 };
 
 export default sendResetEmail;

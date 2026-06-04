@@ -5,7 +5,6 @@
         .au-root {
           min-height: 100vh;
           display: flex;
-          background: #05080f;
           color: #e2e8f0;
           font-family: 'Syne', sans-serif;
           position: relative;
@@ -25,7 +24,7 @@
         .au-sidebar {
           min-height: 100vh;
           margin-top: 30px;
-          background: #080c17;
+          background: rgba(8, 12, 23,0.5);
           border-right: 1px solid rgba(148,163,184,0.08);
           overflow: hidden;
           transition: width 0.35s cubic-bezier(0.4,0,0.2,1);
@@ -51,13 +50,6 @@
           margin-bottom: 12px;
         }
 
-        .au-brand-gem {
-          width: 36px; height: 36px;
-          background: linear-gradient(135deg, #38bdf8, #818cf8);
-          clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
-          flex-shrink: 0;
-        }
-
         .au-brand-name {
           font-size: 18px; font-weight: 800;
           letter-spacing: -0.02em;
@@ -71,7 +63,7 @@
           font-family: 'DM Mono', monospace;
           font-size: 10px;
           letter-spacing: 0.15em;
-          color: #475569;
+          color: #4f5b6b;
           text-transform: uppercase;
           padding: 8px 14px 4px;
           white-space: nowrap;
@@ -121,7 +113,7 @@
           z-index: 9999;
           background: #0d1424;
           border: 1px solid rgba(148,163,184,0.12);
-          color: #94a3b8;
+          color: #b7c2d0;
           width: 44px; height: 44px;
           border-radius: 10px;
           cursor: pointer; font-size: 16px;
@@ -145,7 +137,7 @@
 
         .au-breadcrumb {
           font-family: 'DM Mono', monospace;
-          font-size: 11px; color: #475569;
+          font-size: 11px; color: #858f9c;
           letter-spacing: 0.1em; text-transform: uppercase;
           margin-bottom: 4px;
         }
@@ -177,10 +169,10 @@
 
         .au-search-icon {
           position: absolute;
-          left: 14px; top: 50%;
+          left: 75px; top: 45%;
           transform: translateY(-50%);
-          color: #334155;
-          font-size: 14px;
+          color: #bdc5d1;
+          font-size: 24px;
           pointer-events: none;
         }
 
@@ -188,7 +180,7 @@
           width: 100%;
           padding: 11px 14px 11px 38px;
           background: #080c17;
-          border: 1px solid rgba(148,163,184,0.1);
+          border: 2px solid rgba(148,163,184,0.1);
           border-radius: 10px;
           color: #e2e8f0;
           font-size: 13px;
@@ -197,7 +189,7 @@
           transition: border-color 0.2s;
         }
         .au-search:focus { border-color: rgba(167,139,250,0.35); }
-        .au-search::placeholder { color: #334155; }
+        .au-search::placeholder { color: #747d8a; }
 
         /* ——— STATS ROW ——— */
         .au-stats-row {
@@ -226,12 +218,12 @@
 
         .au-stat-chip-label {
           font-family: 'DM Mono', monospace;
-          font-size: 10px; color: #475569;
-          text-transform: uppercase; letter-spacing: 0.1em;
+          font-size: 14px; color: #95a1b3;
+          text-transform: uppercase;
         }
 
         .au-stat-chip-val {
-          font-size: 15px; font-weight: 800;
+          font-size: 17px; font-weight: 800;
           color: #e2e8f0;
         }
 

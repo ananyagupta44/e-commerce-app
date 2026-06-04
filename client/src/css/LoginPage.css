@@ -3,8 +3,6 @@
 .login-page {
   min-height: 100vh;
   display: flex;
-  background:
-    linear-gradient(to bottom,#020617,#0f172a);
   overflow: hidden;
 }
 
@@ -15,6 +13,18 @@
   flex-direction: column;
   justify-content: center;
   padding: 80px;
+}
+
+.login-success {
+  background: rgba(16, 185, 129, 0.12);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  color: #10b981;
+  padding: 12px 16px;
+  border-radius: 12px;
+  margin-bottom: 18px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-align: center;
 }
 
 .login-left::before {

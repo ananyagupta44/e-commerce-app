@@ -5,6 +5,7 @@ import "../css/AdminProductsPage.css";
 import FloatingAIButton from "../components/FloatingAIButton";
 import API_URL from "@/config/api";
 import getImageUrl from "@/utils/getImageUrl";
+import ParticleBackground from "@/components/ParticleBackground";
 
 const AdminProductsPage = () => {
   const [products, setProducts] = useState([]);
@@ -144,6 +145,7 @@ const AdminProductsPage = () => {
 
   return (
     <>
+      <ParticleBackground />
       <div className="ap-root">
         {/* TOGGLE */}
         <button className="ap-toggle" onClick={() => setSidebarOpen((o) => !o)}>

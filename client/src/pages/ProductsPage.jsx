@@ -1,12 +1,11 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useLocation, useSearchParams, Link } from "react-router-dom";
-
 import ProductCard from "../components/ProductCard";
 import FilterBar from "../components/FilterBar";
-
 import "../css/productsPage.css";
 import API_URL from "@/config/api";
+import ParticleBackground from "@/components/ParticleBackground";
 
 const ProductsPage = () => {
   const [products, setProducts] = useState([]);
@@ -14,15 +13,10 @@ const ProductsPage = () => {
   const [pages, setPages] = useState(1);
   const [page, setPage] = useState(1);
   const [activeCategory, setActiveCategory] = useState("");
-
   const [searchParams] = useSearchParams();
-
   const location = useLocation();
-
   const queryParams = new URLSearchParams(location.search);
-
   const category = queryParams.get("category");
-
   const keyword = searchParams.get("keyword") || "";
 
   useEffect(() => {
@@ -58,6 +52,7 @@ const ProductsPage = () => {
 
   return (
     <main className="products-page">
+      <ParticleBackground />
       {/* BACKGROUND GLOW */}
       <div className="products-glow" />
 

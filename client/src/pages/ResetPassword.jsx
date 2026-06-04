@@ -4,29 +4,39 @@ import { useState } from "react";
 import { Lock } from "lucide-react";
 import API_URL from "@/config/api";
 import "../css/AuthPages.css";
+import { useNavigate } from "react-router-dom";
 
 function ResetPassword() {
   const { token } = useParams();
-
   const [password, setPassword] = useState("");
-
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const submitHandler = async (e) => {
     e.preventDefault();
 
     try {
-      setLoading(true);
-
       await axios.put(`${API_URL}/api/users/reset-password/${token}`, {
         password,
       });
 
-      alert("Password changed successfully");
+      // Clear old login session
+      localStorage.removeItem("userInfo");
+      sessionStorage.removeItem("userInfo");
+
+      window.dispatchEvent(new Event("storage"));
+
+      navigate("/login", {
+        replace: true,
+        state: {
+          message: "Password updated successfully. Please login again.",
+        },
+      });
+
+      localStorage.removeItem("token");
+      sessionStorage.removeItem("token");
     } catch (error) {
       alert(error.response?.data?.message || "Password reset failed");
-    } finally {
-      setLoading(false);
     }
   };
 

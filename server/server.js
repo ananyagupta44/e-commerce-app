@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 
 dotenv.config();
-console.log("RESEND:", process.env.RESEND_API_KEY);
+
 import express from "express";
 import mongoose from "mongoose";
 import path from "path";

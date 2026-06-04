@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../css/ProfilePage.css";
 import API_URL from "@/config/api";
+import ParticleBackground from "@/components/ParticleBackground";
 
 const ProfilePage = () => {
   const navigate = useNavigate();
@@ -137,6 +138,7 @@ const ProfilePage = () => {
 
   return (
     <>
+      <ParticleBackground />
       <div className="prof-root">
         {/* ── BANNER ── */}
         <div className="prof-banner">

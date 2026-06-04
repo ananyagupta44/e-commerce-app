@@ -4,6 +4,7 @@ import axios from "axios";
 import "../css/AdminOrdersPage.css";
 import FloatingAIButton from "../components/FloatingAIButton";
 import API_URL from "@/config/api";
+import ParticleBackground from "@/components/ParticleBackground";
 
 const STATUS_CONFIG = {
   Pending: {
@@ -97,6 +98,7 @@ const AdminOrdersPage = () => {
 
   return (
     <>
+      <ParticleBackground />
       <div className="ao-root">
         {/* TOGGLE */}
         <button className="ao-toggle" onClick={() => setSidebarOpen((o) => !o)}>
@@ -182,7 +184,7 @@ const AdminOrdersPage = () => {
                       </span>
 
                       <span className="ao-order-price">
-                        ₹{order.totalPrice}
+                        ₹{order.totalPrice.toFixed(2)}
                       </span>
 
                       <span

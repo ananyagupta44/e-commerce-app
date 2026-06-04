@@ -5,7 +5,6 @@
         .ao-root {
           min-height: 100vh;
           display: flex;
-          background: #05080f;
           color: #e2e8f0;
           font-family: 'Syne', sans-serif;
           position: relative;
@@ -25,7 +24,7 @@
         .ao-sidebar {
           min-height: 100vh;
           margin-top: 30px;
-          background: #080c17;
+          background: rgba(8, 12, 23,0.5);
           border-right: 1px solid rgba(148,163,184,0.08);
           overflow: hidden;
           transition: width 0.35s cubic-bezier(0.4,0,0.2,1);

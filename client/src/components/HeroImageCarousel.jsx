@@ -1,13 +1,18 @@
-import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
 import "../css/HeroImageCarousel.css";
+import CarouselImage1 from "../assets/CarouselImage1.png";
+import CarouselImage2 from "../assets/CarouselImage2.png";
+import CarouselImage3 from "../assets/CarouselImage3.png";
+import CarouselImage4 from "../assets/CarouselImage4.png";
+import CarouselImage5 from "../assets/CarouselImage5.png";
 
 const images = [
-  "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=900",
-  "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=900",
-  "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=900",
-  "https://images.unsplash.com/photo-1512436991641-6745cdb1723f?w=900",
-  "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=900",
+  CarouselImage1,
+  CarouselImage2,
+  CarouselImage3,
+  CarouselImage4,
+  CarouselImage5,
 ];
 
 const slideStyles = [
@@ -26,18 +31,47 @@ export default function HeroImageCarousel() {
   const prevSlide = () =>
     setActive((prev) => (prev - 1 + images.length) % images.length);
 
+  const touchStartX = useRef(0);
+
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e) => {
+    const touchEndX = e.changedTouches[0].clientX;
+    const distance = touchStartX.current - touchEndX;
+
+    if (distance > 50) {
+      nextSlide(); // swipe left
+    } else if (distance < -50) {
+      prevSlide(); // swipe right
+    }
+  };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      nextSlide();
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="carousel-container">
       <div className="carousel-glow" />
 
-      <div className="carousel-wrapper">
+      <div
+        className="carousel-wrapper"
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
         {images.map((img, index) => {
           const position = (index - active + images.length) % images.length;
 
           const slideClass = slideStyles[position] || "hidden-slide";
 
           return (
-            <div key={img} className={`carousel-card ${slideClass}`}>
+            <div key={index} className={`carousel-card ${slideClass}`}>
               <img
                 src={img}
                 alt={`Hero slide ${index + 1}`}

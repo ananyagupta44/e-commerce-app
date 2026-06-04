@@ -28,7 +28,6 @@
 /* ──── PAGE ──── */
 .product-page {
   min-height: 100vh;
-  background: var(--bg-void);
   color: var(--text-primary);
   font-family: 'Syne', sans-serif;
   padding: 56px 64px;

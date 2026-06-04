@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
@@ -26,11 +26,22 @@ import ProfilePage from "./pages/ProfilePage";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 
-function App() {
+function AppLayout() {
+  const location = useLocation();
+
+  const hideLayout =
+    location.pathname === "/login" ||
+    location.pathname === "/register" ||
+    location.pathname === "/forgot-password" ||
+    location.pathname.startsWith("/reset-password");
+
+
   return (
-    <BrowserRouter>
-      <Navbar />
+    <>
+      {!hideLayout && <Navbar />}
+
       <ScrollToTop />
+
       <Routes>
         <Route
           path="/"
@@ -145,6 +156,7 @@ function App() {
             </AdminRoute>
           }
         />
+
         <Route
           path="/profile"
           element={
@@ -162,13 +174,23 @@ function App() {
             </AdminRoute>
           }
         />
+
         <Route path="/admin/ai" element={<AdminAIPage />} />
 
         <Route path="/forgot-password" element={<ForgotPassword />} />
 
         <Route path="/reset-password/:token" element={<ResetPassword />} />
       </Routes>
-      <Footer />
+
+      {!hideLayout && <Footer />}
+    </>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <AppLayout />
     </BrowserRouter>
   );
 }

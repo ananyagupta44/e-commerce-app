@@ -22,7 +22,6 @@ const HomePage = () => {
   const [bestDeals, setBestDeals] = useState([]);
   const dealsRef = useRef(null);
   const [categories, setCategories] = useState([]);
-  const [isDragging, setIsDragging] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
   useEffect(() => {
@@ -68,6 +67,7 @@ const HomePage = () => {
     home: homeImage,
     shoes: shoesImage,
   };
+  const mobileDeals = bestDeals.slice(0, 5);
 
   return (
     <div className="homepage">
@@ -169,40 +169,53 @@ const HomePage = () => {
           </div>
 
           <div className="deals-slider">
-            <motion.div
-              drag={isMobile ? "x" : false}
-              dragConstraints={{
-                left: -2000,
-                right: 0,
-              }}
-              whileTap={{ cursor: "grabbing" }}
-              animate={
-                !isMobile
-                  ? {
-                      x: ["0%", "-50%"],
-                    }
-                  : {}
-              }
-              transition={{
-                repeat: Infinity,
-                duration: 60,
-                ease: "linear",
-              }}
-              className="deals-track"
-            >
-              {[...bestDeals, ...bestDeals].map((product, index) => (
-                <motion.div
-                  key={`${product._id}-${index}`}
-                  whileHover={{ y: -8 }}
-                  transition={{ duration: 0.35 }}
-                  className="deal-card-wrapper"
-                >
-                  <div className="homepage-product-wrapper">
-                    <ProductCard product={product} />
+            {isMobile ? (
+              <div className="mobile-deals-list">
+                {mobileDeals.map((product) => (
+                  <div key={product._id} className="mobile-deal-item">
+                    <div className="homepage-product-wrapper">
+                      <ProductCard product={product} />
+                    </div>
                   </div>
-                </motion.div>
-              ))}
-            </motion.div>
+                ))}
+
+                <div
+                  className="view-all-mobile-card"
+                  onClick={() => navigate("/products")}
+                >
+                  <div className="view-all-mobile-arrow">→</div>
+
+                  <span>View All Products</span>
+                </div>
+              </div>
+            ) : (
+              <motion.div
+                animate={{
+                  x: ["0%", "-50%"],
+                }}
+                transition={{
+                  repeat: Infinity,
+                  duration: 60,
+                  ease: "linear",
+                }}
+                className="deals-track"
+              >
+                {[...bestDeals, ...bestDeals].map((product, index) => (
+                  <motion.div
+                    key={`${product._id}-${index}`}
+                    whileHover={{ y: -8 }}
+                    transition={{
+                      duration: 0.35,
+                    }}
+                    className="deal-card-wrapper"
+                  >
+                    <div className="homepage-product-wrapper">
+                      <ProductCard product={product} />
+                    </div>
+                  </motion.div>
+                ))}
+              </motion.div>
+            )}
           </div>
         </section>
 

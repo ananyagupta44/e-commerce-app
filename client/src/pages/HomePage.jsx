@@ -22,6 +22,18 @@ const HomePage = () => {
   const [bestDeals, setBestDeals] = useState([]);
   const dealsRef = useRef(null);
   const [categories, setCategories] = useState([]);
+  const [isDragging, setIsDragging] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     const fetchBestDeals = async () => {
@@ -158,8 +170,24 @@ const HomePage = () => {
 
           <div className="deals-slider">
             <motion.div
-              animate={{ x: ["0%", "-50%"] }}
-              transition={{ repeat: Infinity, duration: 60, ease: "linear" }}
+              drag={isMobile ? "x" : false}
+              dragConstraints={{
+                left: -2000,
+                right: 0,
+              }}
+              whileTap={{ cursor: "grabbing" }}
+              animate={
+                !isMobile
+                  ? {
+                      x: ["0%", "-50%"],
+                    }
+                  : {}
+              }
+              transition={{
+                repeat: Infinity,
+                duration: 60,
+                ease: "linear",
+              }}
               className="deals-track"
             >
               {[...bestDeals, ...bestDeals].map((product, index) => (

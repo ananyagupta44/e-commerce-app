@@ -368,18 +368,105 @@ body {
 
   border-color: #6366f1;
 }
-.deals-slider {
-  overflow: hidden;
-  touch-action: pan-x;
+
+
+/* MOBILE DEALS SWIPE LIST */
+
+.mobile-deals-list {
+  display: flex;
+  gap: 16px;
+
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  padding: 10px 0;
+
+  scroll-snap-type: x mandatory;
+
+  -webkit-overflow-scrolling: touch;
+
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
-.deals-track {
-  cursor: grab;
+.mobile-deals-list::-webkit-scrollbar {
+  display: none;
 }
 
-.deals-track:active {
-  cursor: grabbing;
+.mobile-deal-item {
+  flex: 0 0 auto;
+
+  width: min(260px, 75vw);
+
+  scroll-snap-align: start;
 }
+
+.view-all-mobile-circle {
+  flex: 0 0 auto;
+
+  width: 52px;
+  height: 52px;
+
+  border-radius: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+
+  font-size: 1.5rem;
+  font-weight: 900;
+
+  color: white;
+
+  background: linear-gradient(
+    135deg,
+    #6366f1,
+    #8b5cf6
+  );
+
+  box-shadow:
+    0 10px 25px rgba(99, 102, 241, 0.35),
+    0 0 20px rgba(139, 92, 246, 0.25);
+
+  transition: all 0.3s ease;
+
+  scroll-snap-align: center;
+
+  align-self: center;
+}
+
+.view-all-mobile-circle:hover {
+  transform: scale(1.08);
+}
+
+.view-all-mobile-circle:active {
+  transform: scale(0.95);
+}
+
+@keyframes pulseArrow {
+  0% {
+    box-shadow:
+      0 10px 25px rgba(99, 102, 241, 0.35);
+  }
+
+  50% {
+    box-shadow:
+      0 10px 35px rgba(99, 102, 241, 0.55);
+  }
+
+  100% {
+    box-shadow:
+      0 10px 25px rgba(99, 102, 241, 0.35);
+  }
+}
+
+.view-all-mobile-circle {
+  animation: pulseArrow 2.5s infinite;
+}
+
+
 /* =========================================
    LARGE TABLETS
 ========================================= */
@@ -523,8 +610,9 @@ body {
   .cssbuttons-io-button {
     min-width: 150px;
   }
-  
-
+  .view-all-btn {
+  display: none;
+}
 }
 
 /* =========================================

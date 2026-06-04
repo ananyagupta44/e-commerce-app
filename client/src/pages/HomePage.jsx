@@ -180,12 +180,10 @@ const HomePage = () => {
                 ))}
 
                 <div
-                  className="view-all-mobile-card"
+                  className="view-all-mobile-circle"
                   onClick={() => navigate("/products")}
                 >
-                  <div className="view-all-mobile-arrow">→</div>
-
-                  <span>View All Products</span>
+                  →
                 </div>
               </div>
             ) : (

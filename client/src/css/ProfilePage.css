@@ -184,7 +184,7 @@
         .prof-tabs {
           display: flex;
           gap: 6px;
-          background: rgba(8,15,30,0.9);
+          background: rgba(8,15,30,0.7);
           border: 1px solid rgba(99,102,241,0.15);
           border-radius: 18px;
           padding: 6px;
@@ -228,7 +228,7 @@
 
         /* ── SECTION CARD ── */
         .section-card {
-          background: rgba(8,15,30,0.9);
+          background: rgba(8,15,30,0.7);
           border: 1px solid rgba(99,102,241,0.15);
           border-radius: 20px;
           padding: 28px;

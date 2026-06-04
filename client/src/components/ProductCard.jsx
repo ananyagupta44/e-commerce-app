@@ -147,6 +147,8 @@ const ProductCard = ({ product }) => {
           <img
             src={getImageUrl(product.images?.[currentImage])}
             alt={product.name}
+            loading="lazy"
+            decoding="async"
             className={`pc-img ${fade ? "fade-out" : "fade-in"}`}
           />
         </div>

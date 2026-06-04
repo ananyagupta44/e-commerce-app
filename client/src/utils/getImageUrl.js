@@ -5,7 +5,12 @@ const getImageUrl = (img) => {
     return "/placeholder.jpg";
   }
 
-  // External image
+  // Cloudinary image
+  if (img.startsWith("http") && img.includes("res.cloudinary.com")) {
+    return img.replace("/upload/", "/upload/f_auto,q_auto/");
+  }
+
+  // Other external image
   if (img.startsWith("http")) {
     return img;
   }

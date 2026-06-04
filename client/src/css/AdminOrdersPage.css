@@ -261,6 +261,84 @@
           align-items: start;
           animation: slideDown 0.2s ease;
         }
+        /* PAGINATION */
+
+.ao-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  gap: 10px;
+
+  margin-top: 40px;
+
+  flex-wrap: wrap;
+}
+
+.ao-page-number,
+.ao-page-arrow {
+  width: 42px;
+  height: 42px;
+
+  border-radius: 12px;
+
+  border: 1px solid rgba(
+    56,
+    189,
+    248,
+    0.2
+  );
+
+  background: rgba(
+    8,
+    12,
+    23,
+    0.9
+  );
+
+  color: #cbd5e1;
+
+  cursor: pointer;
+
+  font-weight: 600;
+
+  transition: all 0.25s ease;
+}
+
+.ao-page-number:hover,
+.ao-page-arrow:hover:not(:disabled) {
+  transform: translateY(-2px);
+
+  border-color: #38bdf8;
+
+  color: white;
+}
+
+.ao-page-number.active {
+  background: linear-gradient(
+    135deg,
+    #38bdf8,
+    #818cf8
+  );
+
+  color: white;
+
+  border: none;
+
+  box-shadow:
+    0 8px 20px rgba(
+      56,
+      189,
+      248,
+      0.3
+    );
+}
+
+.ao-page-arrow:disabled {
+  opacity: 0.4;
+
+  cursor: not-allowed;
+}
 
         @keyframes slideDown {
           from { opacity: 0; transform: translateY(-8px); }
@@ -367,10 +445,66 @@
           to   { opacity: 1; transform: translateY(0); }
         }
 
-        @media (max-width: 640px) {
-          .ao-main { padding: 28px 16px; }
-          .ao-main-header, .ao-order-list { padding-left: 10px; }
-          .ao-order-body { grid-template-columns: 1fr; }
-          .ao-select-wrap { align-items: flex-start; }
-          .ao-order-user, .ao-order-id { display: none; }
-        }
+        @media (max-width: 768px) {
+
+
+  .ao-main {
+    width: 100%;
+    padding: 24px 14px;
+  }
+
+  .ao-main-header,
+  .ao-order-list {
+    padding-left: 0;
+  }
+
+  .ao-main-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .ao-page-title {
+    font-size: 30px;
+  }
+
+  .ao-order-top {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .ao-order-id {
+    width: 100%;
+    flex: unset;
+  }
+
+  .ao-order-user {
+    width: 100%;
+    flex: unset;
+  }
+
+  .ao-order-price {
+    width: 100%;
+  }
+
+  .ao-order-body {
+    grid-template-columns: 1fr;
+  }
+
+  .ao-select-wrap {
+    align-items: stretch;
+  }
+
+  .ao-select {
+    width: 100%;
+  }
+
+  .ao-meta-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .ao-meta-key {
+    width: auto;
+  }
+}

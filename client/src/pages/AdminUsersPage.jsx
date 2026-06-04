@@ -44,6 +44,8 @@ const avatarColor = (name = "") =>
 const AdminUsersPage = () => {
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const usersPerPage = 8;
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const location = useLocation();
 
@@ -79,6 +81,14 @@ const AdminUsersPage = () => {
       u.name?.toLowerCase().includes(search.toLowerCase()) ||
       u.email?.toLowerCase().includes(search.toLowerCase()),
   );
+
+  const indexOfLastUser = currentPage * usersPerPage;
+
+  const indexOfFirstUser = indexOfLastUser - usersPerPage;
+
+  const currentUsers = filtered.slice(indexOfFirstUser, indexOfLastUser);
+
+  const totalPages = Math.ceil(filtered.length / usersPerPage);
 
   return (
     <>
@@ -170,7 +180,10 @@ const AdminUsersPage = () => {
               className="au-search"
               placeholder="Search by name or email..."
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setCurrentPage(1);
+              }}
             />
           </div>
 
@@ -179,7 +192,7 @@ const AdminUsersPage = () => {
             {filtered.length === 0 ? (
               <div className="au-empty">NO USERS FOUND</div>
             ) : (
-              filtered.map((user, i) => {
+              currentUsers.map((user, i) => {
                 const cfg = ROLE_CONFIG[user.role] || ROLE_CONFIG.user;
                 const color = avatarColor(user.name);
                 return (
@@ -217,7 +230,58 @@ const AdminUsersPage = () => {
             )}
           </div>
         </div>
+
         <FloatingAIButton />
+      </div>
+      <div className="au-pagination">
+        <button
+          className="au-page-arrow"
+          disabled={currentPage === 1}
+          onClick={() => {
+            setCurrentPage((prev) => prev - 1);
+
+            window.scrollTo({
+              top: 0,
+              behavior: "smooth",
+            });
+          }}
+        >
+          ←
+        </button>
+
+        {[...Array(totalPages)].map((_, index) => (
+          <button
+            key={index}
+            className={`au-page-number ${
+              currentPage === index + 1 ? "active" : ""
+            }`}
+            onClick={() => {
+              setCurrentPage(index + 1);
+
+              window.scrollTo({
+                top: 0,
+                behavior: "smooth",
+              });
+            }}
+          >
+            {index + 1}
+          </button>
+        ))}
+
+        <button
+          className="au-page-arrow"
+          disabled={currentPage === totalPages}
+          onClick={() => {
+            setCurrentPage((prev) => prev + 1);
+
+            window.scrollTo({
+              top: 0,
+              behavior: "smooth",
+            });
+          }}
+        >
+          →
+        </button>
       </div>
     </>
   );

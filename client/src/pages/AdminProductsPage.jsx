@@ -13,6 +13,18 @@ const AdminProductsPage = () => {
   const [categories, setCategories] = useState([]);
   const [customCategory, setCustomCategory] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 8;
+  const indexOfLastProduct = currentPage * productsPerPage;
+
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+
+  const currentProducts = products.slice(
+    indexOfFirstProduct,
+    indexOfLastProduct,
+  );
+
+  const totalPages = Math.ceil(products.length / productsPerPage);
   const [newProduct, setNewProduct] = useState({
     name: "",
     images: [],
@@ -204,7 +216,7 @@ const AdminProductsPage = () => {
             {products.length === 0 ? (
               <div className="ap-empty">NO PRODUCTS FOUND</div>
             ) : (
-              products.map(
+              currentProducts.map(
                 (product, i) => (
                   console.log(product.images),
                   (
@@ -276,6 +288,56 @@ const AdminProductsPage = () => {
                 ),
               )
             )}
+          </div>
+          <div className="ap-pagination">
+            <button
+              className="ap-page-arrow"
+              disabled={currentPage === 1}
+              onClick={() => {
+                setCurrentPage((prev) => prev - 1);
+
+                window.scrollTo({
+                  top: 0,
+                  behavior: "smooth",
+                });
+              }}
+            >
+              ←
+            </button>
+
+            {[...Array(totalPages)].map((_, index) => (
+              <button
+                key={index}
+                className={`ap-page-number ${
+                  currentPage === index + 1 ? "active" : ""
+                }`}
+                onClick={() => {
+                  setCurrentPage(index + 1);
+
+                  window.scrollTo({
+                    top: 0,
+                    behavior: "smooth",
+                  });
+                }}
+              >
+                {index + 1}
+              </button>
+            ))}
+
+            <button
+              className="ap-page-arrow"
+              disabled={currentPage === totalPages}
+              onClick={() => {
+                setCurrentPage((prev) => prev + 1);
+
+                window.scrollTo({
+                  top: 0,
+                  behavior: "smooth",
+                });
+              }}
+            >
+              →
+            </button>
           </div>
         </div>
 

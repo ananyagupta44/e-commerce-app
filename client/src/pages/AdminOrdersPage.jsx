@@ -52,6 +52,17 @@ const AdminOrdersPage = () => {
   const [expanded, setExpanded] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const location = useLocation();
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const ordersPerPage = 10;
+
+  const indexOfLastOrder = currentPage * ordersPerPage;
+
+  const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
+
+  const currentOrders = orders.slice(indexOfFirstOrder, indexOfLastOrder);
+
+  const totalPages = Math.ceil(orders.length / ordersPerPage);
 
   const navLinks = [
     { to: "/admin", label: "Dashboard", icon: "⬡" },
@@ -152,7 +163,7 @@ const AdminOrdersPage = () => {
             {orders.length === 0 ? (
               <div className="ao-empty">NO ORDERS FOUND</div>
             ) : (
-              orders.map((order, i) => {
+              currentOrders.map((order, i) => {
                 const cfg =
                   STATUS_CONFIG[order.orderStatus] || STATUS_CONFIG.Pending;
                 const isOpen = expanded === order._id;
@@ -294,6 +305,56 @@ const AdminOrdersPage = () => {
                 );
               })
             )}
+          </div>
+          <div className="ao-pagination">
+            <button
+              className="ao-page-arrow"
+              disabled={currentPage === 1}
+              onClick={() => {
+                setCurrentPage((prev) => prev - 1);
+
+                window.scrollTo({
+                  top: 0,
+                  behavior: "smooth",
+                });
+              }}
+            >
+              ←
+            </button>
+
+            {[...Array(totalPages)].map((_, index) => (
+              <button
+                key={index}
+                className={`ao-page-number ${
+                  currentPage === index + 1 ? "active" : ""
+                }`}
+                onClick={() => {
+                  setCurrentPage(index + 1);
+
+                  window.scrollTo({
+                    top: 0,
+                    behavior: "smooth",
+                  });
+                }}
+              >
+                {index + 1}
+              </button>
+            ))}
+
+            <button
+              className="ao-page-arrow"
+              disabled={currentPage === totalPages}
+              onClick={() => {
+                setCurrentPage((prev) => prev + 1);
+
+                window.scrollTo({
+                  top: 0,
+                  behavior: "smooth",
+                });
+              }}
+            >
+              →
+            </button>
           </div>
         </div>
         <FloatingAIButton />

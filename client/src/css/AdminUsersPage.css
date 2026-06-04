@@ -307,14 +307,163 @@
           font-family: 'DM Mono', monospace;
           font-size: 13px; letter-spacing: 0.08em;
         }
+        .au-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  gap: 10px;
+
+  margin-top: 40px;
+
+  flex-wrap: wrap;
+}
+
+.au-page-number,
+.au-page-arrow {
+  width: 42px;
+  height: 42px;
+
+  border-radius: 12px;
+
+  border: 1px solid rgba(
+    167,
+    139,
+    250,
+    0.2
+  );
+
+  background: rgba(
+    8,
+    12,
+    23,
+    0.9
+  );
+
+  color: #cbd5e1;
+
+  cursor: pointer;
+
+  font-weight: 600;
+
+  transition: all 0.25s ease;
+}
+
+.au-page-number:hover,
+.au-page-arrow:hover:not(:disabled) {
+  transform: translateY(-2px);
+
+  border-color: #a78bfa;
+
+  color: white;
+}
+
+.au-page-number.active {
+  background: linear-gradient(
+    135deg,
+    #a78bfa,
+    #818cf8
+  );
+
+  color: white;
+
+  border: none;
+
+  box-shadow:
+    0 8px 20px rgba(
+      167,
+      139,
+      250,
+      0.35
+    );
+}
+
+.au-page-arrow:disabled {
+  opacity: 0.4;
+
+  cursor: not-allowed;
+}
 
         @keyframes fadeUp {
           from { opacity: 0; transform: translateY(14px); }
           to   { opacity: 1; transform: translateY(0); }
         }
 
-        @media (max-width: 640px) {
-          .au-main { padding: 28px 16px; }
-          .au-main-header, .au-search-wrap, .au-stats-row, .au-user-list { padding-left: 10px; }
-          .au-user-id { display: none; }
-        }
+  @media (max-width: 768px) {
+
+  .au-sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+
+    margin-top: 0;
+
+    z-index: 999;
+  }
+
+  .au-sidebar-inner {
+    padding-top: 90px;
+  }
+
+  .au-toggle {
+    top: 80px;
+    left: 12px;
+  }
+
+  .au-main {
+    width: 100%;
+    padding: 20px 14px;
+  }
+
+  .au-main-header,
+  .au-search-wrap,
+  .au-stats-row,
+  .au-user-list {
+    padding-left: 0;
+  }
+
+  .au-main-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .au-page-title {
+    font-size: 30px;
+  }
+
+  .au-search-wrap {
+    max-width: 100%;
+  }
+
+  .au-search-icon {
+    left: 15px;
+  }
+
+  .au-stats-row {
+    gap: 10px;
+  }
+
+  .au-stat-chip {
+    flex: 1 1 100%;
+  }
+
+  .au-user-card {
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+
+  .au-user-info {
+    width: calc(100% - 64px);
+  }
+
+  .au-role-pill {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .au-user-id {
+    display: none;
+  }
+}

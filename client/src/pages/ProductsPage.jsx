@@ -125,7 +125,13 @@ const ProductsPage = () => {
             {[...Array(pages).keys()].map((x) => (
               <button
                 key={x + 1}
-                onClick={() => setPage(x + 1)}
+                onClick={() => {
+                  setPage(x + 1);
+                  window.scrollTo({
+                    top: 0,
+                    behavior: "smooth",
+                  });
+                }}
                 className={`products-page-btn ${
                   page === x + 1 ? "active" : ""
                 }`}

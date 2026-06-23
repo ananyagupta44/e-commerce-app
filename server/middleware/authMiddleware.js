@@ -52,8 +52,11 @@ export const protect = async (req, res, next) => {
       });
     }
   } catch (error) {
+    console.log("AUTH ERROR:");
+    console.log(error);
+
     return res.status(401).json({
-      message: "Token failed",
+      message: error.message,
     });
   }
 };
